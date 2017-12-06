@@ -1,0 +1,256 @@
+<resources>
+    <string name="app_name"> Programmes Enquiry Application </string>
+    <string name="hint_name"> Full Name </string>
+    <string name="hint_email"> Email </string>
+    <string name="hint_password"> Password </string>
+    <string name="err_msg_name"> Please enter full name </string>
+    <string name="err_msg_email"> Please enter valid email address </string>
+    <string name="err_contact_number"> Please enter valid contact number </string>
+    <string name="err_IC"> Please enter valid IC </string>
+
+    <string-array name="result_type">
+        <item> SPM </item>
+        <item> STPM </item>
+        <item> UEC </item>
+        <item> O-Level </item>
+        <item> A-Level </item>
+        <item> STAM </item>
+    </string-array>
+
+    <!-- SPM -->
+    <string-array name="spm_subjects">
+        <item> </item>
+        <item> Bahasa Malaysia </item>
+        <item> Bahasa Inggeris </item>
+        <item> Bahasa Cina </item>
+        <item> Bahasa Tamil </item>
+        <item> Sejarah </item>
+        <item> Additional Mathematics </item>
+        <item> Mathematics </item>
+        <item> Physics </item>
+        <item> Chemistry </item>
+        <item> Biology </item>
+        <item> Science </item>
+        <item> Pendidikan Moral </item>
+        <item> Pendidikan Islam </item>
+        <item> Prinsip Perakaunan </item>
+        <item> Ekonomi Asas </item>
+        <item> Perdagangan </item>
+    </string-array>
+    <string-array name="spm_grades">
+        <item>  </item>
+        <item> A+ </item>
+        <item> A </item>
+        <item> A- </item>
+        <item> B+ </item>
+        <item> B </item>
+        <item> C+ </item>
+        <item> C </item>
+        <item> D </item>
+        <item> E </item>
+        <item> G </item>
+    </string-array>
+
+    <!-- STPM -->
+    <string-array name="stpm_subjects">
+        <item> </item>
+        <item> Pengajian Am </item>
+        <item> Bahasa Melayu </item>
+        <item> Bahasa Cina </item>
+        <item> Bahasa Tamil </item>
+        <item> Bahasa Arab </item>
+        <item> Kesusasteraan Inggeris </item> <!-- Literature in English -->
+        <!-- Communicative Malay Literature -->
+        <item> Kesusasteraan Melayu Komunikatif </item>
+        <item> Sejarah </item>
+        <item> Matematik (M) </item>
+        <item> Matematik (T) </item>
+        <item> Geografi </item>
+        <item> Fizik </item>
+        <item> Kimia </item> <!--chemistry -->
+        <item> Biology </item>
+        <item> Syariah </item> <!-- Islamic Law -->
+        <item> Usuluddin </item> <!-- Islamic Studies -->
+        <item> Perakaunan </item>
+        <item> Ekonomi </item>
+        <item> Pengajian Perniagaan </item>
+        <!--Information and Communications Technology (ICT) -->
+        <item> Teknologi Komunikasi dan Informasi </item>
+        <item> Sains Sukan </item>
+        <item> Sains Visual </item>
+    </string-array>
+    <string-array name="stpm_grades">
+        <item>  </item>
+        <item> A </item>
+        <item> A- </item>
+        <item> B+ </item>
+        <item> B </item>
+        <item> B- </item>
+        <item> C+ </item>
+        <item> C </item>
+        <item> C- </item>
+        <item> D+ </item>
+        <item> D </item>
+        <item> F </item>
+    </string-array>
+
+    <!-- UEC -->
+    <string-array name="uec_subjects">
+        <item> </item>
+        <item> Bahasa Melayu </item>
+        <item> Chinese </item>
+        <item> English </item>
+        <item> Advanced Mathematics </item>
+        <item> Mathematics </item>
+        <item> Arts </item>
+        <item> History </item>
+        <item> Geography </item>
+        <item> Accounting </item>
+        <item> Physics </item>
+        <item> Chemistry </item>
+        <item> Biology </item>
+        <item> Bookkeeping </item>
+        <item> Computing and Information Technology </item>
+        <item> Principal Electronic </item>
+        <item> Fundamentals of Electrical Engineering </item>
+        <item> Economics </item>
+        <item> Basic Circuit Theory </item>
+        <item> Commercial Studies </item>
+        <item> Digital Logic </item>
+        <item> Basic Circuit Theory </item>
+    </string-array>
+    <string-array name="uec_grades">
+        <item>  </item> <!-- SPM equivalent -->
+        <item> A1 </item> <!-- A+ -->
+        <item> A2 </item> <!-- A -->
+        <item> B3 </item> <!-- A- -->
+        <item> B4 </item> <!-- B+ -->
+        <item> B5 </item> <!-- B -->
+        <item> B6 </item> <!-- C+ -->
+        <item> C7 </item> <!-- C -->
+        <item> C8 </item> <!-- D -->
+    </string-array>
+
+    <!-- O-Level -->
+    <string-array name="oLevel_subjects"> <!-- got 40 subjects -->
+        <item>  </item>
+        <!--Mathematics-->
+        <item> Additional Mathematics </item>
+        <item> Mathematics D </item>
+        <!--English language and literature-->
+        <item> English Language </item>
+        <item> Literature in English </item>
+        <!--business, technical and creative-->
+        <item> Art and Design </item>
+        <item> Business Studies </item>
+        <item> Commerce </item>
+        <item> Commercial studies </item>
+        <item> Computer Science </item>
+        <item> Statistics </item>
+        <item> Principles of Accounting </item>
+        <item> CDT: Design and Communication </item>
+        <item> Design and Technology </item>
+        <item> Fashion and Textiles </item>
+        <item> Fashion and Fabrics </item>
+        <item> Food and Nutrition </item>
+        <!--Science-->
+        <item> Chemistry </item>
+        <item> Biology </item>
+        <item> Physics </item>
+        <item> Combined Science </item>
+        <item> Marine Science </item>
+        <item> Agriculture </item>
+        <item> Environmental Management </item>
+        <!--Humanities and social science-->
+        <item> Economics </item>
+        <item> Geography </item>
+        <item> Bangladesh Studies </item>
+        <item> Hinduism </item>
+        <item> Islamiyat </item>
+        <item> Islamic Religion and Culture </item>
+        <item> Religious Studies </item>
+        <item> Islamic Studies </item>
+        <item> Sociology </item>
+        <item> History </item>
+        <item> Pakistan Studies </item>
+        <!--Languages-->
+        <item> First Language Urdu </item>
+        <item> Second Language Urdu </item>
+        <item> Setswana </item>
+        <item> Sinhala </item>
+        <item> Swahili </item>
+        <item> Tamil </item>
+        <item> Nepali </item>
+        <item> German </item>
+        <item> Spanish </item>
+        <item> French </item>
+        <item> Arabic </item>
+        <item> Bengali </item>
+        <!--other-->
+        <item> Human and Social Biology </item>
+        <item> Travel and Tourism </item>
+    </string-array>
+    <string-array name="oLevel_grades">
+        <item>  </item>
+        <item> A </item>
+        <item> B </item>
+        <item> C </item>
+        <item> D </item>
+        <item> E </item>
+        <item> U </item>
+    </string-array>
+
+    <!-- A-Level -->
+    <string-array name="aLevel_subjects">
+        <item>  </item>
+        <item> Business Studies </item>
+        <item> Accounting </item>
+        <item> Law </item>
+        <item> Psychology </item>
+        <item> Economics </item>
+        <item> Religious Studies </item>
+        <item> Mathematics </item>
+        <item> Further Mathematics </item>
+        <item> Literature in English </item>
+        <item> Computing </item>
+        <item> Physics </item>
+        <item> Biology </item>
+        <item> Chemistry </item>
+        <item> Computer Science </item>
+        <item> Sociology </item>
+    </string-array>
+    <string-array name="aLevel_grades">
+        <item>  </item>
+        <item> A </item>
+        <item> B </item>
+        <item> C </item>
+        <item> D </item>
+        <item> E </item>
+        <item> F </item>
+    </string-array>
+
+    <!-- STAM -->
+    <string-array name="STAM_subjects">
+        <item></item>
+        <item>Hifz Al-Quran dan Tajwid</item>
+        <item>Fiqh</item>
+        <item>Tafsir dan Ulumuhu</item>
+        <item>Hadith dan Mustolah</item>
+        <item>Arud dan Qafiyah</item>
+        <item>Balaghah</item>
+        <item>Adab dan Nusus</item>
+        <item>Tauhid dan Mantiq</item>
+        <item>Nahu dan Sarf</item>
+        <item>Insya' dan Mutalaah</item>
+        <item>Arudh dan Qafiyah</item>
+    </string-array>
+    <string-array name="STAM_grades">
+        <item></item>
+        <item>Mumtaz</item> <!-- Cemerlang -->
+        <item>Jayyid Jiddan</item> <!-- Sangat Baik -->
+        <item>Jayyid</item> <!-- Baik -->
+        <item>Maqbul</item> <!-- Lulus -->
+        <item>Rasib</item> <!-- Gagal -->
+    </string-array>
+
+</resources>
