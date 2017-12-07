@@ -1,6 +1,7 @@
 package com.example.ahshing.qiupprogrammesenquiryapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +18,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.Objects;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 
@@ -30,10 +31,6 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
     LinearLayout parentLinearLayout;
     TextView addNewField, deleteFieldText;
     boolean flagForNewField;
-    int count;
-
-    //test
-    ArrayList<MaterialSpinner> newSpinners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,20 +47,20 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
         subjectsSpinner = findViewById(R.id.subjectsSpinner);
         gradesSpinner = findViewById(R.id.gradesSpinner);
 
-       // setting the results type Adapter
+        // setting the results type Adapter
         ArrayAdapter<CharSequence> resultsArrayAdapter = ArrayAdapter.createFromResource(this, R.array.result_type, R.layout.spinner_text);
         resultsArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        //possibly dont want
-        newSpinners = new ArrayList<>();
-
+        addNewField.setEnabled(false);
+        addNewField.setTextColor(Color.GRAY);
+        deleteFieldText.setEnabled(false);
+        deleteFieldText.setTextColor(Color.GRAY);
+        flagForNewField = false;
         subjectsSpinner.setEnabled(false);
         gradesSpinner.setEnabled(false);
+        filterButton.setEnabled(false);
         resultsSpinner.setAdapter(resultsArrayAdapter);
         resultsSpinner.setOnItemSelectedListener(this);
-
-        flagForNewField = false;
-        count = 0;
         setSpinnerScrollbar(); //set spinner scrollbar for resultsSpinner, subjectsSpinner and gradesSpinner
 
         //add new dropdown field
@@ -72,15 +69,60 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View view)
             {
+                TextView selection = (TextView)resultsSpinner.getSelectedView();
+                String selectedItem = selection.getText().toString();
+                if(Objects.equals(selectedItem, "SPM"))
+                {
+                    if(parentLinearLayout.getChildCount() > 13) // max 12
+                    {
+                        addNewField.setEnabled(false);
+                        addNewField.setTextColor(Color.GRAY);
+                    }
+                }
+                else if(Objects.equals(selectedItem, "O-Level")) // max 10
+                {
+                    if(parentLinearLayout.getChildCount() > 11)
+                    {
+                        addNewField.setEnabled(false);
+                        addNewField.setTextColor(Color.GRAY);
+                    }
+                }
+                else if(Objects.equals(selectedItem, "A-Level")) // max 4
+                {
+                    if(parentLinearLayout.getChildCount() > 5)
+                    {
+                        addNewField.setEnabled(false);
+                        addNewField.setTextColor(Color.GRAY);
+                    }
+                }
+                else if(Objects.equals(selectedItem, "STPM")) // max 5
+                {
+                    if(parentLinearLayout.getChildCount() > 6)
+                    {
+                        addNewField.setEnabled(false);
+                        addNewField.setTextColor(Color.GRAY);
+                    }
+                }
+                else if(Objects.equals(selectedItem, "STAM")) // max 11
+                {
+                    if(parentLinearLayout.getChildCount() > 12)
+                    {
+                        addNewField.setEnabled(false);
+                        addNewField.setTextColor(Color.GRAY);
+                    }
+                }
+
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View rowView = inflater.inflate(R.layout.new_dropdown_field, null);
-
                 // Add the new row before the add field button.
                 parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 1);
-
+                if(parentLinearLayout.getChildCount() != 4) // if added new field, make the delete field text enable
+                {
+                    deleteFieldText.setEnabled(true);
+                    deleteFieldText.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+                }
                 subjectsSpinner1 = rowView.findViewById(R.id.subjectsSpinner1);
                 gradesSpinner1 = rowView.findViewById(R.id.gradesSpinner1);
-
                 try {
                     loadSpinnerData(subjectsSpinner1, gradesSpinner1);
                 } catch (IOException e) {
@@ -94,7 +136,25 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View view)
             {
-                parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 2);
+                if(parentLinearLayout.getChildCount() != 4) // if added new field
+                {
+                    parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 2);
+                }
+                if(parentLinearLayout.getChildCount() == 4) // if deleted and back to original layout
+                {
+                    deleteFieldText.setEnabled(false);
+                    deleteFieldText.setTextColor(Color.GRAY);
+                }
+            }
+        });
+
+        filterButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent resultsOfFiltering = new Intent(filterProgrammes.this, ResultsOfFiltering.class);
+                startActivity(resultsOfFiltering);
             }
         });
     }
@@ -113,25 +173,6 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
     {
         switch(position)
         {
-            case -1: // if hint was selected, reset back to default selection. Start on default
-            {
-                addNewField.setEnabled(false);
-                addNewField.setTextColor(Color.GRAY);
-                deleteFieldText.setEnabled(false);
-                deleteFieldText.setTextColor(Color.GRAY);
-                subjectsSpinner.setSelection(0);
-                gradesSpinner.setSelection(0);
-                if(count > 0)
-                {
-                    subjectsSpinner.setEnabled(false);
-                    gradesSpinner.setEnabled(false);
-                    subjectsSpinner1.setSelection(0);
-                    gradesSpinner1.setSelection(0);
-                    subjectsSpinner1.setEnabled(false);
-                    gradesSpinner1.setEnabled(false);
-                }
-            }
-            break;
             case 0: // SPM selected
             {
                 subjectsList = getResources().getStringArray(R.array.spm_subjects);
@@ -448,30 +489,30 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
         // if both subject and grades spinner is disabled, make them both enable back
         if(position != -1)
         {
+            filterButton.setEnabled(true);
             subjectsSpinner.setEnabled(true);
             gradesSpinner.setEnabled(true);
             addNewField.setEnabled(true);
             addNewField.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
-            deleteFieldText.setEnabled(true);
-            deleteFieldText.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
-            count++;
-            //load the subjects and grades list into the existing newly added spinner
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.new_dropdown_field, null);
-            subjectsSpinner1 = rowView.findViewById(R.id.subjectsSpinner1);
-            gradesSpinner1 = rowView.findViewById(R.id.gradesSpinner1);
-            try {
-                loadSpinnerData(subjectsSpinner1, gradesSpinner1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
+            if(parentLinearLayout.getChildCount() != 4 ) // if added new view
+            {
+                deleteFieldText.setEnabled(true);
+                deleteFieldText.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+                for(int i = parentLinearLayout.getChildCount(); i != 4; i--)
+                {
+                    parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 2);
+                }
+                try {
+                    loadSpinnerData(subjectsSpinner1, gradesSpinner1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
     @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
+    public void onNothingSelected(AdapterView<?> adapterView) { }
 
     public void setSpinnerScrollbar() {
         try

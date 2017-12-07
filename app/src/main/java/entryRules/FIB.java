@@ -8,61 +8,49 @@ import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Rule(name = "FIB/FIA", description = "Entry rule to join Foundation in Business or Foundation in Arts")
 public class FIB
 {
-    // rule attribute
-    List<String> programmeNameList = Arrays.asList("FIB", "FIA"),
-            resultsTypeList = Arrays.asList("SPM", "O-Level", "UEC");
-    int numberOfCreditNeeded  = 5;
-    boolean joinProgramme = false;
-    RuleAttribute ruleAttribute;
+    RuleAttribute fibRuleAttribute = new RuleAttribute();
+
+    public FIB()
+    {
+        fibRuleAttribute.setResultsTypeList(Arrays.asList("SPM", "O-Level", "UEC"));
+        fibRuleAttribute.setNumberOfCredit(Arrays.asList(5, 3));
+    }
 
     // when
-    // receive parameter for how many credit, which results type\
+    // receive parameter for how many credit, which results type
     // dont check for programme name. because wan see all programme qualify or not
     @Condition
     public boolean allowToJoin(@Fact("Number of Credit") int number, @Fact("Results Type") String resultsType)
     {
-        if(resultsType.matches(resultsTypeList.get(2))) // for uec
+        if(resultsType.matches(fibRuleAttribute.getResultsTypeList().get(2))) // if is uec
         {
-            if(number >= 3)
-            {
-                joinProgramme = true;
-            }
+            if(number >= fibRuleAttribute.getNumberOfCredit().get(1)) // minimum 3 credit
+                return true;
         }
         else // for SPM and O-Level
         {
-            if(number >= numberOfCreditNeeded)
-            {
-                   joinProgramme = true;
-            }
+            if(number >= fibRuleAttribute.getNumberOfCredit().get(0))  // minimum 5 credit
+                return true;
         }
-        joinProgramme =  false;
-        if(!isJoinProgramme())
-        {
-            Log.d("myTag", "Not joined");
-        }
-        return joinProgramme;
+        return false;
     }
 
     //then
     @Action
     public void joinProgramme() throws Exception
     {
-        Log.d("myTag", "Joined");
-        setJoinProgrammen(true);
+        // if rule is statisfied (return true), this action will be executed
+        fibRuleAttribute.setJoinProgramme(true);
+        Log.d("joinProgramme : ", "Joined");
     }
 
     public boolean isJoinProgramme()
     {
-        return joinProgramme;
-    }
-
-    public void setJoinProgrammen(boolean joinProgramme) {
-        this.joinProgramme = joinProgramme;
+        return fibRuleAttribute.isJoinProgramme();
     }
 
 }

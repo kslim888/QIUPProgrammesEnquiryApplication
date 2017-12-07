@@ -6,9 +6,12 @@ public class RuleAttribute
 {
     private List<String> resultsTypeList, englishTestList, requiredSubjectCreditList, requiredSubjectPassList;
     //numberOfCredit is for SPM and O-Level
-    private int numberOfCredit, countSubjectsUEC, countSubjectsSTPM, countSubjectsALevel, countSubjectsSTAM;
+    private int countSubjectsUEC, countSubjectsSTPM, countSubjectsALevel, countSubjectsSTAM;
     private float minimumCGPA, minimumGP, englishScore;
-    private boolean joinProgramme = false;
+    private boolean joinProgramme;
+    private List<Integer> numberOfCredit;
+
+    RuleAttribute() { joinProgramme = false; }
 
     public int getCountSubjectsUEC() {
         return countSubjectsUEC;
@@ -74,14 +77,6 @@ public class RuleAttribute
         this.requiredSubjectPassList = requiredSubjectPassList;
     }
 
-    public int getNumberOfCredit() {
-        return numberOfCredit;
-    }
-
-    public void setNumberOfCredit(int numberOfCredit) {
-        this.numberOfCredit = numberOfCredit;
-    }
-
     public float getMinimumCGPA() {
         return minimumCGPA;
     }
@@ -112,5 +107,13 @@ public class RuleAttribute
 
     public void setJoinProgramme(boolean joinProgramme) {
         this.joinProgramme = joinProgramme;
+    }
+
+    public List<Integer> getNumberOfCredit() {
+        return numberOfCredit;
+    }
+
+    public void setNumberOfCredit(List<Integer> numberOfCredit) {
+        this.numberOfCredit = numberOfCredit;
     }
 }

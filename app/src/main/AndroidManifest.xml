@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ahshing.qiupprogrammesenquiryapplication">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="roboguice.modules"
-            android:value="org.drools.android.roboguice.DroolsModule"/>
+            android:value="org.drools.android.roboguice.DroolsModule" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,13 +25,11 @@
         </activity>
         <activity
             android:name=".filterProgrammes"
-            android:label="Programme Enquiry">
-        </activity>
-
+            android:label="Programme Enquiry"></activity>
         <activity
             android:name=".captureData"
-            android:label="Key-in Particulars">
-        </activity>
+            android:label="Key-in Particulars"></activity>
+        <activity android:name=".ResultsOfFiltering"></activity>
     </application>
 
 </manifest>
