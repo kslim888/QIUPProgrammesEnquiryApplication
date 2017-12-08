@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
@@ -26,7 +27,6 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
 {
     MaterialSpinner resultsSpinner, subjectsSpinner, gradesSpinner, subjectsSpinner1, gradesSpinner1;
     ArrayAdapter<String> subjectsAdapter, gradesAdapter;
-    String [] subjectsList, gradesList;
     Button filterButton;
     LinearLayout parentLinearLayout;
     TextView addNewField, deleteFieldText;
@@ -131,8 +131,7 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        deleteFieldText.setOnClickListener(new View.OnClickListener()
-        {
+        deleteFieldText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
@@ -153,16 +152,50 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View view)
             {
+                ArrayList<TextView> addedSubjectsList = new ArrayList<>();
+                ArrayList<TextView> addedGradesList = new ArrayList<>();
+
+                for (int i = 0; i < parentLinearLayout.getChildCount(); i++)
+                {
+                    view = parentLinearLayout.getChildAt(i);
+                    if(view instanceof LinearLayout)
+                    {
+                        if(view.getId() == R.id.newField)
+                        {
+                            subjectsSpinner1 = (MaterialSpinner) ((LinearLayout) view).getChildAt(0);
+                            gradesSpinner1 = (MaterialSpinner) ((LinearLayout) view).getChildAt(1);
+
+                            addedSubjectsList.add((TextView)subjectsSpinner1.getSelectedView());
+                            addedGradesList.add((TextView)gradesSpinner1.getSelectedView());
+                        }
+                    }
+                }
+
+                // copy all subjects list to arrays and pass to next activity
+                String[] arrayStringSubjects = new String[addedSubjectsList.size()];
+                for(int i = 0; i < addedSubjectsList.size(); i++)
+                    arrayStringSubjects[i] = addedSubjectsList.get(i).getText().toString();
+
+                String[] arrayStringGrades = new String[addedGradesList.size()];
+                for(int i = 0; i < addedGradesList.size(); i++)
+                    arrayStringGrades[i] = addedGradesList.get(i).getText().toString();
+                Bundle extras = new Bundle();
+
+                extras.putStringArray("STUDENT_SUBJECTS_LIST", arrayStringSubjects);
+                extras.putStringArray("STUDENT_GRADES_LIST", arrayStringGrades);
+
                 Intent resultsOfFiltering = new Intent(filterProgrammes.this, ResultsOfFiltering.class);
+                resultsOfFiltering.putExtras(extras);
                 startActivity(resultsOfFiltering);
             }
         });
     }
 
-    private void loadSpinnerData(Spinner s, Spinner g) throws IOException
+    private void loadSpinnerData(MaterialSpinner s, MaterialSpinner g) throws IOException
     {
         s.setAdapter(subjectsAdapter);
         g.setAdapter(gradesAdapter);
+       // newSpinner.add(subjectsSpinner1);
         flagForNewField = true; // to only set spinner scrollbar for newly added field
         setSpinnerScrollbar();
     }
@@ -171,6 +204,7 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l)
     {
+        String [] subjectsList, gradesList;
         switch(position)
         {
             case 0: // SPM selected
@@ -497,31 +531,24 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
 
             if(parentLinearLayout.getChildCount() != 4 ) // if added new view
             {
-                deleteFieldText.setEnabled(true);
-                deleteFieldText.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
-                for(int i = parentLinearLayout.getChildCount(); i != 4; i--)
-                {
+                deleteFieldText.setEnabled(false);
+                deleteFieldText.setTextColor(Color.GRAY);
+                for(int i = parentLinearLayout.getChildCount(); i != 4; i--) // if switch result, reset back to default
                     parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 2);
-                }
-                try {
-                    loadSpinnerData(subjectsSpinner1, gradesSpinner1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
             }
         }
     }
+
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) { }
 
     public void setSpinnerScrollbar() {
-        try
-        {
+        try {
             Field popup = Spinner.class.getDeclaredField("mPopup");
             popup.setAccessible(true);
 
-            if(flagForNewField)
-            {
+            if(flagForNewField) {
                 android.widget.ListPopupWindow newSubjectsListPopupWindow = (android.widget.ListPopupWindow) popup.get(subjectsSpinner1);
                 android.widget.ListPopupWindow newGradesListPopupWindow = (android.widget.ListPopupWindow) popup.get(gradesSpinner1);
                 newSubjectsListPopupWindow.setHeight(500);

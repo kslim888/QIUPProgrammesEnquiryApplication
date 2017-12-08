@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ExpandableListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,11 +29,23 @@ public class ResultsOfFiltering extends AppCompatActivity
 
     }
 
-    private void initData() {
+    private void initData()
+    {
         listDataHeader = new ArrayList<>();
         listHashMap = new HashMap<>();
 
-        listDataHeader.add("EDMTDev");
+
+        Bundle extras = getIntent().getExtras();
+
+        String[] subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
+        String[] gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
+
+        listDataHeader.addAll(Arrays.asList(subjectsStringArray));
+
+        //getIntent().getStringExtra("Results_Type")
+        //getIntent().getSerializableExtra("Results_Type");
+
+        listDataHeader.add("Windows");
         listDataHeader.add("Android");
         listDataHeader.add("Xamarin");
         listDataHeader.add("UWP");
