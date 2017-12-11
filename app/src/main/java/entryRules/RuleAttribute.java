@@ -1,17 +1,33 @@
 package entryRules;
 
-import java.util.List;
-
 public class RuleAttribute
 {
-    private List<String> resultsTypeList, englishTestList, requiredSubjectCreditList, requiredSubjectPassList;
-    //numberOfCredit is for SPM and O-Level
-    private int countSubjectsUEC, countSubjectsSTPM, countSubjectsALevel, countSubjectsSTAM;
-    private float minimumCGPA, minimumGP, englishScore;
-    private boolean joinProgramme;
-    private List<Integer> numberOfCredit;
+    public String[] arraysResultsType, arraysEnglishTest;
+    public int countCredits, countRequiredSubject, countSubjectsUEC, countSubjectsSTPM, countSubjectsALevel, countSubjectsSTAM;
+    public float minimumCGPA, minimumGP, englishScore;
+    public boolean joinProgramme;
 
-    RuleAttribute() { joinProgramme = false; }
+    RuleAttribute() {
+        joinProgramme = false;
+        countCredits = 0;
+        countRequiredSubject = 0;
+    }
+
+    public String[] getResultsTypeList() {
+        return arraysResultsType;
+    }
+
+    public void setResultsTypeList(String[] resultsTypeList) {
+        this.arraysResultsType = resultsTypeList;
+    }
+
+    public String[] getEnglishTestList() {
+        return arraysEnglishTest;
+    }
+
+    public void setEnglishTestList(String[] englishTestList) {
+        this.arraysEnglishTest = englishTestList;
+    }
 
     public int getCountSubjectsUEC() {
         return countSubjectsUEC;
@@ -43,38 +59,6 @@ public class RuleAttribute
 
     public void setCountSubjectsSTAM(int countSubjectsSTAM) {
         this.countSubjectsSTAM = countSubjectsSTAM;
-    }
-
-    public List<String> getResultsTypeList() {
-        return resultsTypeList;
-    }
-
-    public void setResultsTypeList(List<String> resultsTypeList) {
-        this.resultsTypeList = resultsTypeList;
-    }
-
-    public List<String> getEnglishTestList() {
-        return englishTestList;
-    }
-
-    public void setEnglishTestList(List<String> englishTestList) {
-        this.englishTestList = englishTestList;
-    }
-
-    public List<String> getRequiredSubjectCreditList() {
-        return requiredSubjectCreditList;
-    }
-
-    public void setRequiredSubjectCreditList(List<String> requiredSubjectCreditList) {
-        this.requiredSubjectCreditList = requiredSubjectCreditList;
-    }
-
-    public List<String> getRequiredSubjectPassList() {
-        return requiredSubjectPassList;
-    }
-
-    public void setRequiredSubjectPassList(List<String> requiredSubjectPassList) {
-        this.requiredSubjectPassList = requiredSubjectPassList;
     }
 
     public float getMinimumCGPA() {
@@ -109,11 +93,19 @@ public class RuleAttribute
         this.joinProgramme = joinProgramme;
     }
 
-    public List<Integer> getNumberOfCredit() {
-        return numberOfCredit;
+    public int getCountCredits() {
+        return countCredits;
     }
 
-    public void setNumberOfCredit(List<Integer> numberOfCredit) {
-        this.numberOfCredit = numberOfCredit;
+    public void incrementCountCredit(int credit) {
+        this.countCredits += credit;
+    }
+
+    public int getCountRequiredSubject() {
+        return countRequiredSubject;
+    }
+
+    public void incrementCountRequiredSubject(int countRequiredSubject) {
+        this.countRequiredSubject += countRequiredSubject;
     }
 }

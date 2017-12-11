@@ -16,14 +16,21 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.jeasy.rules.api.Facts;
+import org.jeasy.rules.api.Rules;
+import org.jeasy.rules.api.RulesEngine;
+import org.jeasy.rules.core.DefaultRulesEngine;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import entryRules.FIBFIA;
+import entryRules.FIS;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
-public class filterProgrammes extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+public class FilterProgrammes extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
     MaterialSpinner resultsSpinner, subjectsSpinner, gradesSpinner, subjectsSpinner1, gradesSpinner1;
     ArrayAdapter<String> subjectsAdapter, gradesAdapter;
@@ -48,7 +55,27 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
         gradesSpinner = findViewById(R.id.gradesSpinner);
 
         // setting the results type Adapter
-        ArrayAdapter<CharSequence> resultsArrayAdapter = ArrayAdapter.createFromResource(this, R.array.result_type, R.layout.spinner_text);
+        String[] stringsResultsType = getResources().getStringArray(R.array.result_type);
+        ArrayAdapter<String> resultsArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, stringsResultsType)
+        {
+            // If is position 0(the initial dummy entry), make it hidden
+            // else, pass convertView as null to prevent reuse of special case views
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent)
+            {
+                View v;
+                if (position == 0) {
+                    CheckedTextView tv = new CheckedTextView(getContext());
+                    tv.setHeight(0);
+                    tv.setVisibility(View.GONE);
+                    v = tv;
+                }
+                else {
+                    v = super.getDropDownView(position, null, parent);
+                }
+                return v;
+            }
+        };
         resultsArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         addNewField.setEnabled(false);
@@ -164,7 +191,6 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
                         {
                             subjectsSpinner1 = (MaterialSpinner) ((LinearLayout) view).getChildAt(0);
                             gradesSpinner1 = (MaterialSpinner) ((LinearLayout) view).getChildAt(1);
-
                             addedSubjectsList.add((TextView)subjectsSpinner1.getSelectedView());
                             addedGradesList.add((TextView)gradesSpinner1.getSelectedView());
                         }
@@ -172,21 +198,73 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
 
                 // copy all subjects list to arrays and pass to next activity
-                String[] arrayStringSubjects = new String[addedSubjectsList.size()];
-                for(int i = 0; i < addedSubjectsList.size(); i++)
-                    arrayStringSubjects[i] = addedSubjectsList.get(i).getText().toString();
+                String[] arrayStringSubjects = new String[addedSubjectsList.size() + 1];
+                TextView selection = (TextView)subjectsSpinner.getSelectedView();
+                String selectedItem = selection.getText().toString();
+                arrayStringSubjects[0] = selectedItem;
 
-                String[] arrayStringGrades = new String[addedGradesList.size()];
-                for(int i = 0; i < addedGradesList.size(); i++)
-                    arrayStringGrades[i] = addedGradesList.get(i).getText().toString();
-                Bundle extras = new Bundle();
+                for(int i = 1; i < arrayStringSubjects.length; i++)
+                    arrayStringSubjects[i] = addedSubjectsList.get(i-1).getText().toString();
 
-                extras.putStringArray("STUDENT_SUBJECTS_LIST", arrayStringSubjects);
-                extras.putStringArray("STUDENT_GRADES_LIST", arrayStringGrades);
+                for(int i = 0; i < arrayStringSubjects.length; i++)
+                {
+                    if(Objects.equals(arrayStringSubjects[i], "Bahasa Inggeris") || Objects.equals(arrayStringSubjects[i], "English Language"))
+                    {
+                        arrayStringSubjects[i] = "English";
+                    }
+                    if(Objects.equals(arrayStringSubjects[i], "Mathematics D"))
+                    {
+                        arrayStringSubjects[i] = "Mathematics";
+                    }
+                }
 
-                Intent resultsOfFiltering = new Intent(filterProgrammes.this, ResultsOfFiltering.class);
-                resultsOfFiltering.putExtras(extras);
+                String[] arrayStringGrades = new String[addedGradesList.size() + 1];
+                selection = (TextView)gradesSpinner.getSelectedView();
+                selectedItem = selection.getText().toString();
+                arrayStringGrades[0] = selectedItem;
+                for(int i = 1; i <  arrayStringSubjects.length; i++)
+                    arrayStringGrades[i] = addedGradesList.get(i-1).getText().toString();
+
+                selection = (TextView)resultsSpinner.getSelectedView();
+                selectedItem = selection.getText().toString();
+
+                // create facts
+                Facts facts = new Facts();
+                facts.put("Results Type", selectedItem);
+                facts.put("Student's Subjects", arrayStringSubjects);
+                facts.put("Student's Grades",arrayStringGrades);
+
+                // create and define rules
+                Rules rules = new Rules(new FIS(), new FIBFIA());
+
+                // create a rules engine and fire rules on known facts
+                RulesEngine rulesEngine = new DefaultRulesEngine();
+                rulesEngine.fire(rules, facts);
+
+
+                // send to next activity
+                //Bundle extras = new Bundle();
+                //extras.putStringArray("STUDENT_SUBJECTS_LIST", arrayStringSubjects);
+                //extras.putStringArray("STUDENT_GRADES_LIST", arrayStringGrades);
+
+                Intent resultsOfFiltering = new Intent(FilterProgrammes.this, ResultsOfFiltering.class);
+                //resultsOfFiltering.putExtras(extras);
                 startActivity(resultsOfFiltering);
+
+                //reset back to default
+                /*
+                resultsSpinner.setSelection(0);
+                while ( parentLinearLayout.getChildCount() != 4)
+                {
+                    parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 2);
+                }
+                subjectsSpinner.setSelection(0);
+                gradesSpinner.setSelection(0);
+                subjectsSpinner.setEnabled(false);
+                gradesSpinner.setEnabled(false);
+                filterButton.setEnabled(false);
+                deleteFieldText.setEnabled(false);
+                deleteFieldText.setTextColor(Color.GRAY); */
             }
         });
     }
@@ -207,7 +285,7 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
         String [] subjectsList, gradesList;
         switch(position)
         {
-            case 0: // SPM selected
+            case 1: // SPM selected
             {
                 subjectsList = getResources().getStringArray(R.array.spm_subjects);
                 gradesList = getResources().getStringArray(R.array.spm_grades);
@@ -260,7 +338,7 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
             }
             break;
 
-            case 1: // STPM selected
+            case 2: // STPM selected
             {
                 subjectsList = getResources().getStringArray(R.array.stpm_subjects);
                 gradesList = getResources().getStringArray(R.array.stpm_grades);
@@ -312,7 +390,7 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
             }
             break;
 
-            case 2: // UEC selected
+            case 3: // UEC selected
             {
                 subjectsList = getResources().getStringArray(R.array.uec_subjects);
                 gradesList = getResources().getStringArray(R.array.uec_grades);
@@ -364,7 +442,7 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
             }
             break;
 
-            case 3: // O-Level selected
+            case 4: // O-Level selected
             {
                 subjectsList = getResources().getStringArray(R.array.oLevel_subjects);
                 gradesList = getResources().getStringArray(R.array.oLevel_grades);
@@ -415,7 +493,7 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
             }
             break;
 
-            case 4: // A-Level selected
+            case 5: // A-Level selected
             {
                 subjectsList = getResources().getStringArray(R.array.aLevel_subjects);
                 gradesList = getResources().getStringArray(R.array.aLevel_grades);
@@ -467,7 +545,7 @@ public class filterProgrammes extends AppCompatActivity implements AdapterView.O
             }
             break;
 
-            case 5: // STAM selected
+            case 6: // STAM selected
             {
                 subjectsList = getResources().getStringArray(R.array.STAM_subjects);
                 gradesList = getResources().getStringArray(R.array.STAM_grades);

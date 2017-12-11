@@ -5,7 +5,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
-public interface spreadsheetsAPI
+public interface SpreadsheetsAPI
 {
 
     @POST("1FAIpQLSd70K4tb93owJ7e8uyYXaZXAMOrlwrWUWnTG91SALNfwmDObQ/formResponse")

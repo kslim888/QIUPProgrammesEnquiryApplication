@@ -24,7 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class captureData extends AppCompatActivity
+public class CaptureData extends AppCompatActivity
 {
     private EditText editName,editIC,editContactNumber,editEmail,editRemark;
     private TextInputLayout inputLayoutName, inputLayoutIC, inputLayoutContactNumber, inputLayoutEmail;
@@ -219,7 +219,7 @@ public class captureData extends AppCompatActivity
                 .baseUrl("https://docs.google.com/forms/d/e/")
                 .build();
 
-        final spreadsheetsAPI spreadsheetWebService = retrofit.create(spreadsheetsAPI.class);
+        final SpreadsheetsAPI spreadsheetWebService = retrofit.create(SpreadsheetsAPI.class);
         Call<Void> postToSpreadsheetsCall = spreadsheetWebService.postToSpreadsheets(nameInput, icInput, contactNumberInput, emailInput, remarkInput);
         postToSpreadsheetsCall.enqueue(new Callback<Void>()
         {

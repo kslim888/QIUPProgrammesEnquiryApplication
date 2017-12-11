@@ -1,17 +1,21 @@
 package com.example.ahshing.qiupprogrammesenquiryapplication;
 
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import entryRules.FIBFIA;
+import entryRules.FIS;
+
 public class ResultsOfFiltering extends AppCompatActivity
 {
-    ExpandableListView expandableListView;
+    ExpandableListView eligibleListView, ineligibleListView;
     ExpandableListAdapter expandableListAdapter;
     List<String> listDataHeader;
     HashMap<String, List<String>> listHashMap;
@@ -22,11 +26,56 @@ public class ResultsOfFiltering extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results_of_filtering);
 
-        expandableListView = findViewById(R.id.filterResult);
+        eligibleListView = findViewById(R.id.eligibleProgrammes);
+        ineligibleListView = findViewById(R.id.ineligibleProgrammes);
         initData();
-        expandableListAdapter = new ExpandableListAdapter(this, listDataHeader, listHashMap);
-        expandableListView.setAdapter(expandableListAdapter);
 
+        expandableListAdapter = new ExpandableListAdapter(this, listDataHeader, listHashMap);
+        eligibleListView.setAdapter(expandableListAdapter);
+        eligibleListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                setListViewHeight(expandableListView, i);
+                return false;
+            }
+        });
+        ineligibleListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                setListViewHeight(expandableListView, i);
+                return false;
+            }
+        });
+        ineligibleListView.setAdapter(expandableListAdapter);
+
+    }
+    private void setListViewHeight(ExpandableListView listView, int group)
+    {
+        ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.EXACTLY);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++)
+        {
+            View groupItem = listAdapter.getGroupView(i, false, null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += groupItem.getMeasuredHeight();
+            if (((listView.isGroupExpanded(i)) && (i != group)) || ((!listView.isGroupExpanded(i)) && (i == group)))
+            {
+                for (int j = 0; j < listAdapter.getChildrenCount(i); j++)
+                {
+                    View listItem = listAdapter.getChildView(i, j, false, null, listView);
+                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+                    totalHeight += listItem.getMeasuredHeight();
+                }
+            }
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        int height = totalHeight + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+        if (height < 10)
+            height = 200;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     private void initData()
@@ -34,46 +83,56 @@ public class ResultsOfFiltering extends AppCompatActivity
         listDataHeader = new ArrayList<>();
         listHashMap = new HashMap<>();
 
-
-        Bundle extras = getIntent().getExtras();
-
-        String[] subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
-        String[] gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
-
-        listDataHeader.addAll(Arrays.asList(subjectsStringArray));
+        //get student's academic data
+        //Bundle extras = getIntent().getExtras();
+        //String[] subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
+        //String[] gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
+        // here for loop through and add
+        //listDataHeader.addAll(Arrays.asList(subjectsStringArray));
 
         //getIntent().getStringExtra("Results_Type")
         //getIntent().getSerializableExtra("Results_Type");
 
-        listDataHeader.add("Windows");
-        listDataHeader.add("Android");
-        listDataHeader.add("Xamarin");
-        listDataHeader.add("UWP");
 
-        List<String> edmtDev = new ArrayList<>();
-        edmtDev.add("This is Expandable ListView");
+        if(FIS.isJoinProgramme())
+        {
+            listDataHeader.add("Foundation in Sciences");
+        }
+        if(FIBFIA.isJoinProgramme())
+        {
+            listDataHeader.add("Foundation in Business");
+        }
 
-        List<String> androidStudio = new ArrayList<>();
-        androidStudio.add("Expandable ListView");
-        androidStudio.add("Google Map");
-        androidStudio.add("Chat Application");
-        androidStudio.add("Firebase ");
+        listDataHeader.add("Foundation in Arts");
+        listDataHeader.add("Bachelor of Computer Sciences");
+        listDataHeader.add("Bachelor of Information Technology");
+        listDataHeader.add("Bachelor of Business Administrator");
+        listDataHeader.add("MBBS");
+        listDataHeader.add("Bachelor of Information System");
 
-        List<String> xamarin = new ArrayList<>();
-        xamarin.add("Xamarin Expandable ListView");
-        xamarin.add("Xamarin Google Map");
-        xamarin.add("Xamarin Chat Application");
-        xamarin.add("Xamarin Firebase ");
+        // here is requirement of the programme, or child of the programme group
+        List<String> description1 = new ArrayList<>();
+        description1.add("ABC");
 
-        List<String> uwp = new ArrayList<>();
-        uwp.add("UWP Expandable ListView");
-        uwp.add("UWP Google Map");
-        uwp.add("UWP Chat Application");
-        uwp.add("UWP Firebase ");
+        List<String> description2 = new ArrayList<>();
+        description2.add("ABC");
+        description2.add("DEF");
+        description2.add("GHI");
 
-        listHashMap.put(listDataHeader.get(0),edmtDev);
-        listHashMap.put(listDataHeader.get(1),androidStudio);
-        listHashMap.put(listDataHeader.get(2),xamarin);
-        listHashMap.put(listDataHeader.get(3),uwp);
+        List<String> description3 = new ArrayList<>();
+        description3.add("123");
+        description3.add("456");
+        description3.add("789");
+        description3.add("10");
+
+        listHashMap.put(listDataHeader.get(0),description1);
+        listHashMap.put(listDataHeader.get(1),description2);
+        listHashMap.put(listDataHeader.get(2),description3);
+        listHashMap.put(listDataHeader.get(3),description1);
+        listHashMap.put(listDataHeader.get(4),description3);
+        listHashMap.put(listDataHeader.get(5),description2);
+//        listHashMap.put(listDataHeader.get(6),description3);
+//        listHashMap.put(listDataHeader.get(7),description1);
+
     }
 }

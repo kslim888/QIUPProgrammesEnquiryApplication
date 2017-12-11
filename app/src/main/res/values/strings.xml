@@ -9,6 +9,7 @@
     <string name="err_IC"> Please enter valid IC </string>
 
     <string-array name="result_type">
+        <item> Results Type </item>
         <item> SPM </item>
         <item> STPM </item>
         <item> UEC </item>
@@ -134,6 +135,7 @@
     <!-- O-Level -->
     <string-array name="oLevel_subjects"> <!-- got 40 subjects -->
         <item>  </item>
+        <item> Bahasa Malaysia </item>
         <!--Mathematics-->
         <item> Additional Mathematics </item>
         <item> Mathematics D </item>
@@ -192,12 +194,19 @@
     </string-array>
     <string-array name="oLevel_grades">
         <item>  </item>
+        <item> A1 </item>
+        <item> A2 </item>
         <item> A </item>
+        <item> B3 </item>
+        <item> B4 </item>
         <item> B </item>
+        <item> C5 </item>
+        <item> C6 </item>
         <item> C </item>
+        <item> D7 </item>
         <item> D </item>
-        <item> E </item>
-        <item> U </item>
+        <item> E8 </item>
+        <item> E9 </item>
     </string-array>
 
     <!-- A-Level -->

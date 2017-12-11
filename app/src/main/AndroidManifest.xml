@@ -12,9 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="roboguice.modules"
-            android:value="org.drools.android.roboguice.DroolsModule" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -24,12 +21,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".filterProgrammes"
-            android:label="Programme Enquiry"></activity>
+            android:name=".FilterProgrammes"
+            android:label="Programme Enquiry">
+        </activity>
+
         <activity
-            android:name=".captureData"
-            android:label="Key-in Particulars"></activity>
-        <activity android:name=".ResultsOfFiltering"></activity>
+            android:name=".CaptureData"
+            android:label="Key-in Particulars">
+        </activity>
+
+        <activity
+            android:name=".ResultsOfFiltering"
+            android:label="Eligibility Results">
+        </activity>
     </application>
 
 </manifest>
