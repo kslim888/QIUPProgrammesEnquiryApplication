@@ -1,7 +1,8 @@
 package com.example.ahshing.qiupprogrammesenquiryapplication;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
@@ -49,6 +50,16 @@ public class ResultsOfFiltering extends AppCompatActivity
         ineligibleListView.setAdapter(expandableListAdapter);
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.main, menu);
+        //return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
     private void setListViewHeight(ExpandableListView listView, int group)
     {
         ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();

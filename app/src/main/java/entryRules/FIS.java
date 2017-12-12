@@ -33,9 +33,7 @@ public class FIS
             if ((Objects.equals(studentSubjects[i], "Additional Mathematics")))
             {
                 if(Objects.equals(studentGrades[i], "D") || Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
-                {
                     countAddMathFail++;
-                }
             }
 
             // if is fail, check maths fail or not. if both also fail return false
@@ -45,9 +43,7 @@ public class FIS
                 if ((Objects.equals(studentSubjects[i], "Mathematics")))
                 {
                     if(Objects.equals(studentGrades[i], "D") || Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
-                    {
                         return false;
-                    }
                 }
             }
 
@@ -55,9 +51,7 @@ public class FIS
             if ((Objects.equals(studentSubjects[i], "English")) || (Objects.equals(studentSubjects[i], "Bahasa Malaysia")))
             {
                 if(Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
-                {
                     return false;
-                }
             }
 
             // here is for check all 3 science subject
@@ -65,14 +59,11 @@ public class FIS
             {
                 countScience++; // check he got how many science subject
                 if(Objects.equals(studentGrades[i], "D") || Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
-                {
                     countScienceFail++; // each time found 1 science subject fail, increment by 1
-                }
+
                 // if got 2 science subjects is fail, straight away return false
                 if(countScienceFail == 2)
-                {
                     return false;
-                }
             }
         }
 
@@ -85,9 +76,8 @@ public class FIS
                 if((Objects.equals(studentSubjects[i], "Chemistry")) || (Objects.equals(studentSubjects[i], "Biology")) || (Objects.equals(studentSubjects[i], "Physics")))
                 {
                     if(Objects.equals(studentGrades[i], "D") || Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
-                    {
                         return false;
-                    }
+
                 }
             }
         }
@@ -96,19 +86,15 @@ public class FIS
         for(int i = 0; i < studentSubjects.length; i++)
         {
             if (Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Chemistry") || Objects.equals(studentSubjects[i], "Biology") || Objects.equals(studentSubjects[i], "Physics"))
-            {
                 // for checking the students is science stream or not
                 fisRuleAttribute.incrementCountRequiredSubject(1);
-            }
+
             if(!Objects.equals(studentGrades[i], "D") && !Objects.equals(studentGrades[i], "E") && !Objects.equals(studentGrades[i], "G"))
-            {
                 fisRuleAttribute.incrementCountCredit(1);
-            }
         }
 
         String abc = "" + fisRuleAttribute.getCountCredits();
         Log.d("FIS number of creits", abc);
-
         abc = "" + fisRuleAttribute.getCountRequiredSubject();
         Log.d("FIS required subject", abc);
 

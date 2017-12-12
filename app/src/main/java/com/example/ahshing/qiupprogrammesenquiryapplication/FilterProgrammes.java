@@ -28,6 +28,7 @@ import java.util.Objects;
 
 import entryRules.FIBFIA;
 import entryRules.FIS;
+import entryRules.FIS_MedicineDentistryPharmacy;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class FilterProgrammes extends AppCompatActivity implements AdapterView.OnItemSelectedListener
@@ -216,6 +217,10 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     {
                         arrayStringSubjects[i] = "Mathematics";
                     }
+                    if(Objects.equals(arrayStringSubjects[i], "Advanced Mathematics"))
+                    {
+                        arrayStringSubjects[i] = "Additional Mathematics";
+                    }
                 }
 
                 String[] arrayStringGrades = new String[addedGradesList.size() + 1];
@@ -235,7 +240,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 facts.put("Student's Grades",arrayStringGrades);
 
                 // create and define rules
-                Rules rules = new Rules(new FIS(), new FIBFIA());
+                Rules rules = new Rules(new FIS(), new FIBFIA(), new FIS_MedicineDentistryPharmacy());
 
                 // create a rules engine and fire rules on known facts
                 RulesEngine rulesEngine = new DefaultRulesEngine();

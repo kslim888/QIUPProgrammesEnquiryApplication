@@ -2,63 +2,14 @@ package entryRules;
 
 public class RuleAttribute
 {
-    public String[] arraysResultsType, arraysEnglishTest;
-    public int countCredits, countRequiredSubject, countSubjectsUEC, countSubjectsSTPM, countSubjectsALevel, countSubjectsSTAM;
-    public float minimumCGPA, minimumGP, englishScore;
-    public boolean joinProgramme;
+    int countCredits, countRequiredSubject;
+    float minimumCGPA, minimumGP, englishScore;
+    boolean joinProgramme;
 
     RuleAttribute() {
         joinProgramme = false;
         countCredits = 0;
         countRequiredSubject = 0;
-    }
-
-    public String[] getResultsTypeList() {
-        return arraysResultsType;
-    }
-
-    public void setResultsTypeList(String[] resultsTypeList) {
-        this.arraysResultsType = resultsTypeList;
-    }
-
-    public String[] getEnglishTestList() {
-        return arraysEnglishTest;
-    }
-
-    public void setEnglishTestList(String[] englishTestList) {
-        this.arraysEnglishTest = englishTestList;
-    }
-
-    public int getCountSubjectsUEC() {
-        return countSubjectsUEC;
-    }
-
-    public void setCountSubjectsUEC(int countSubjectsUEC) {
-        this.countSubjectsUEC = countSubjectsUEC;
-    }
-
-    public int getCountSubjectsSTPM() {
-        return countSubjectsSTPM;
-    }
-
-    public void setCountSubjectsSTPM(int countSubjectsSTPM) {
-        this.countSubjectsSTPM = countSubjectsSTPM;
-    }
-
-    public int getCountSubjectsALevel() {
-        return countSubjectsALevel;
-    }
-
-    public void setCountSubjectsALevel(int countSubjectsALevel) {
-        this.countSubjectsALevel = countSubjectsALevel;
-    }
-
-    public int getCountSubjectsSTAM() {
-        return countSubjectsSTAM;
-    }
-
-    public void setCountSubjectsSTAM(int countSubjectsSTAM) {
-        this.countSubjectsSTAM = countSubjectsSTAM;
     }
 
     public float getMinimumCGPA() {

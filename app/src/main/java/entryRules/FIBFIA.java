@@ -13,41 +13,44 @@ import java.util.Objects;
 public class FIBFIA
 {
     static RuleAttribute fibfiaRuleAttribute;
-
     public FIBFIA() {
         fibfiaRuleAttribute = new RuleAttribute();
     }
 
     // when
-    // dont check for programme name. because wan see all programme qualify or not
     @Condition
     public boolean allowToJoin(@Fact("Results Type") String resultsType, @Fact("Student's Subjects")String[] studentSubjects, @Fact("Student's Grades")String[] studentGrades)
     {
-        for(int i = 0; i < studentSubjects.length; i++)
+        if(!Objects.equals(resultsType, "UEC")) // is SPM or O-Level
         {
-            if(!Objects.equals(studentGrades[i], "D") && !Objects.equals(studentGrades[i], "E") && !Objects.equals(studentGrades[i], "G"))
+            for(int i = 0; i < studentSubjects.length; i++)
             {
-                fibfiaRuleAttribute.incrementCountCredit(1);
+                if(!Objects.equals(studentGrades[i], "D") && !Objects.equals(studentGrades[i], "E") && !Objects.equals(studentGrades[i], "G"))
+                    fibfiaRuleAttribute.incrementCountCredit(1);
+            }
+        }
+        else // is UEC
+        {
+            for(int i = 0; i < studentSubjects.length; i++)
+            {
+                if(!Objects.equals(studentGrades[i], "B6") && !Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8"))
+                    fibfiaRuleAttribute.incrementCountCredit(1);
             }
         }
 
-        if(Objects.equals(resultsType, "SPM") || Objects.equals(resultsType, "O-Level"))
+        if(!Objects.equals(resultsType, "UEC")) // is SPM or O-Level
         {
             if(fibfiaRuleAttribute.getCountCredits() < 5)
-            {
                 return false;
-            }
         }
-        else if(Objects.equals(resultsType, "UEC"))
+        else // is UEC
         {
             if(fibfiaRuleAttribute.getCountCredits() < 3)
-            {
                 return false;
-            }
         }
+
         String abc = "" + fibfiaRuleAttribute.getCountCredits();
         Log.d("FIA number of creits", abc);
-
         return true;
     }
 
@@ -64,5 +67,4 @@ public class FIBFIA
     {
         return fibfiaRuleAttribute.isJoinProgramme();
     }
-
 }
