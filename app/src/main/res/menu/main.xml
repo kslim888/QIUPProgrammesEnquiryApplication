@@ -10,6 +10,7 @@
         android:title="Student's Academic Qualification"
         android:icon="@drawable/ic_assignment_black_24dp"
         app:showAsAction="always"
+        android:iconTint="@android:color/background_light"
         />
 
 </menu>

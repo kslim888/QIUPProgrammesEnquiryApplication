@@ -246,14 +246,14 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 RulesEngine rulesEngine = new DefaultRulesEngine();
                 rulesEngine.fire(rules, facts);
 
-
                 // send to next activity
-                //Bundle extras = new Bundle();
-                //extras.putStringArray("STUDENT_SUBJECTS_LIST", arrayStringSubjects);
-                //extras.putStringArray("STUDENT_GRADES_LIST", arrayStringGrades);
+                Bundle extras = new Bundle();
+                extras.putString("RESULT_TYPE", selectedItem);
+                extras.putStringArray("STUDENT_SUBJECTS_LIST", arrayStringSubjects);
+                extras.putStringArray("STUDENT_GRADES_LIST", arrayStringGrades);
 
                 Intent resultsOfFiltering = new Intent(FilterProgrammes.this, ResultsOfFiltering.class);
-                //resultsOfFiltering.putExtras(extras);
+                resultsOfFiltering.putExtras(extras);
                 startActivity(resultsOfFiltering);
 
                 //reset back to default
