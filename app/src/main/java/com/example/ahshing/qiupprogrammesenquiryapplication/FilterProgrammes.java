@@ -37,7 +37,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
     ArrayAdapter<String> subjectsAdapter, gradesAdapter;
     Button filterButton;
     LinearLayout parentLinearLayout;
-    TextView addNewField, deleteFieldText;
+    TextView addNewField, deleteFieldText, subjectsText, gradesText;
     boolean flagForNewField;
 
     @Override
@@ -51,6 +51,8 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         filterButton = findViewById(R.id.filterButton);
         deleteFieldText = findViewById(R.id.deleteFieldText);
         addNewField = findViewById(R.id.addNewSpinnerField);
+        subjectsText = findViewById(R.id.subjectsText);
+        gradesText  = findViewById(R.id.gradesText);
         resultsSpinner = findViewById(R.id.resultsSpinner);
         subjectsSpinner = findViewById(R.id.subjectsSpinner);
         gradesSpinner = findViewById(R.id.gradesSpinner);
@@ -83,6 +85,8 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         addNewField.setTextColor(Color.GRAY);
         deleteFieldText.setEnabled(false);
         deleteFieldText.setTextColor(Color.GRAY);
+        subjectsText.setTextColor(Color.GRAY);
+        gradesText.setTextColor(Color.GRAY);
         flagForNewField = false;
         subjectsSpinner.setEnabled(false);
         gradesSpinner.setEnabled(false);
@@ -269,7 +273,11 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 gradesSpinner.setEnabled(false);
                 filterButton.setEnabled(false);
                 deleteFieldText.setEnabled(false);
-                deleteFieldText.setTextColor(Color.GRAY); */
+                deleteFieldText.setTextColor(Color.GRAY);
+                subjectsText.setTextColor(Color.GRAY);
+                gradesText.setTextColor(Color.GRAY);
+                */
+
             }
         });
     }
@@ -611,14 +619,14 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             gradesSpinner.setEnabled(true);
             addNewField.setEnabled(true);
             addNewField.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
-
+            subjectsText.setTextColor(getResources().getColor(R.color.colorAccent));
+            gradesText.setTextColor(getResources().getColor(R.color.colorAccent));
             if(parentLinearLayout.getChildCount() != 4 ) // if added new view
             {
                 deleteFieldText.setEnabled(false);
                 deleteFieldText.setTextColor(Color.GRAY);
                 for(int i = parentLinearLayout.getChildCount(); i != 4; i--) // if switch result, reset back to default
                     parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 2);
-
             }
         }
     }

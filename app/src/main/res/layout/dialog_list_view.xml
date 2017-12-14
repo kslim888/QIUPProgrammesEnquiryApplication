@@ -3,6 +3,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#dfdede"
+        android:layout_marginTop="2.5dp"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,10 +34,25 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#dfdede"
+        android:layout_marginTop="5dp"
+        />
+
     <ListView
         android:id="@+id/dialogListView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"/>
+        android:divider="#dfdede"
+        android:dividerHeight="2dp"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#dfdede"
+        />
+
 
 </LinearLayout>
