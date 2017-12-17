@@ -12,13 +12,13 @@ import java.util.Objects;
 @Rule(name = "FIS", description = "Entry rule to join Foundation in Sciences")
 public class FIS
 {
-    static RuleAttribute fisRuleAttribute;
-    int countScienceFail, countAddMathFail, countScience;
+    private static RuleAttribute fisRuleAttribute;
+    private int countScienceNotCredit, countAddMathNotCredit, countScience;
 
     public FIS() {
         fisRuleAttribute = new RuleAttribute();
-        countScienceFail = 0;
-        countAddMathFail = 0;
+        countScienceNotCredit = 0;
+        countAddMathNotCredit = 0;
         countScience = 0;
     }
 
@@ -29,16 +29,16 @@ public class FIS
         // for all student subjects
         for(int i = 0; i < studentSubjects.length; i++)
         {
-            // if got add maths, check is fail or not
+            // if got add maths, check is credit or not
             if ((Objects.equals(studentSubjects[i], "Additional Mathematics")))
             {
                 if(Objects.equals(studentGrades[i], "D") || Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
-                    countAddMathFail++;
+                    countAddMathNotCredit++;
             }
 
-            // if is fail, check maths fail or not. if both also fail return false
+            // if is not credit, check maths is credit or not. if both also not return false
             // if add maths credit, math no credit, or opposite, continue...
-            if(countAddMathFail == 1)
+            if(countAddMathNotCredit == 1)
             {
                 if ((Objects.equals(studentSubjects[i], "Mathematics")))
                 {
@@ -50,7 +50,7 @@ public class FIS
             // if either eng or bm fail, return false straight away
             if ((Objects.equals(studentSubjects[i], "English")) || (Objects.equals(studentSubjects[i], "Bahasa Malaysia")))
             {
-                if(Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
+                if(Objects.equals(studentGrades[i], "G"))
                     return false;
             }
 
@@ -59,16 +59,16 @@ public class FIS
             {
                 countScience++; // check he got how many science subject
                 if(Objects.equals(studentGrades[i], "D") || Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
-                    countScienceFail++; // each time found 1 science subject fail, increment by 1
+                    countScienceNotCredit++; // each time found 1 science subject not credit, increment by 1
 
                 // if got 2 science subjects is fail, straight away return false
-                if(countScienceFail == 2)
+                if(countScienceNotCredit == 2)
                     return false;
             }
         }
 
-        // if only got 2 science subject, check either 1 of them is fail or not
-        // if either 1 of them is fail, return false
+        // if only got 2 science subject, check either 1 of them is credit or not
+        // if either 1 of them is not credit, return false
         if(countScience == 2)
         {
             for(int i = 0; i < studentSubjects.length; i++)
@@ -77,7 +77,6 @@ public class FIS
                 {
                     if(Objects.equals(studentGrades[i], "D") || Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
                         return false;
-
                 }
             }
         }

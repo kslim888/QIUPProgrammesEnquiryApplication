@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="3dp"
             android:paddingStart="23dp"
-            android:text="Result Type : "
+            android:text="Qualification Level : "
             android:textSize="16sp" />
 
         <TextView

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import entryRules.BBA;
 import entryRules.FIBFIA;
 import entryRules.FIS;
 import entryRules.FIS_MedicineDentistryPharmacy;
@@ -33,11 +35,13 @@ import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class FilterProgrammes extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
-    MaterialSpinner resultsSpinner, subjectsSpinner, gradesSpinner, subjectsSpinner1, gradesSpinner1;
+    MaterialSpinner resultsSpinner, subjectsSpinner, gradesSpinner,
+            subjectsSpinner1, gradesSpinner1, spmOLevelSpinner, mathematicsSpinner, englishSpinner;
     ArrayAdapter<String> subjectsAdapter, gradesAdapter;
     Button filterButton;
     LinearLayout parentLinearLayout;
-    TextView addNewField, deleteFieldText, subjectsText, gradesText;
+    TextView addNewField, deleteFieldText, subjectsText,
+            gradesText, englishText, mathematicsText, spmOlevelText;
     boolean flagForNewField;
 
     @Override
@@ -53,12 +57,18 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         addNewField = findViewById(R.id.addNewSpinnerField);
         subjectsText = findViewById(R.id.subjectsText);
         gradesText  = findViewById(R.id.gradesText);
+        englishText = findViewById(R.id.englishText);
+        mathematicsText = findViewById(R.id.mathematicsText);
         resultsSpinner = findViewById(R.id.resultsSpinner);
         subjectsSpinner = findViewById(R.id.subjectsSpinner);
         gradesSpinner = findViewById(R.id.gradesSpinner);
+        spmOlevelText = findViewById(R.id.spmOlevelText);
+        spmOLevelSpinner = findViewById(R.id.spmOLevelSpinner);
+        mathematicsSpinner = findViewById(R.id.mathematicsSpinner);
+        englishSpinner = findViewById(R.id.englishSpinner);
 
         // setting the results type Adapter
-        String[] stringsResultsType = getResources().getStringArray(R.array.result_type);
+        String[] stringsResultsType = getResources().getStringArray(R.array.qualification_type);
         ArrayAdapter<String> resultsArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, stringsResultsType)
         {
             // If is position 0(the initial dummy entry), make it hidden
@@ -81,6 +91,30 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         };
         resultsArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        // setting the results type Adapter
+        String[] stringsSPMOLevelType = getResources().getStringArray(R.array.spm_or_oLevel_type);
+        ArrayAdapter<String> SPMOLevelArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, stringsSPMOLevelType)
+        {
+            // If is position 0(the initial dummy entry), make it hidden
+            // else, pass convertView as null to prevent reuse of special case views
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent)
+            {
+                View v;
+                if (position == 0) {
+                    CheckedTextView tv = new CheckedTextView(getContext());
+                    tv.setHeight(0);
+                    tv.setVisibility(View.GONE);
+                    v = tv;
+                }
+                else {
+                    v = super.getDropDownView(position, null, parent);
+                }
+                return v;
+            }
+        };
+        SPMOLevelArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         addNewField.setEnabled(false);
         addNewField.setTextColor(Color.GRAY);
         deleteFieldText.setEnabled(false);
@@ -88,9 +122,19 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         subjectsText.setTextColor(Color.GRAY);
         gradesText.setTextColor(Color.GRAY);
         flagForNewField = false;
+        mathematicsSpinner.setEnabled(false);
+        englishSpinner.setEnabled(false);
         subjectsSpinner.setEnabled(false);
         gradesSpinner.setEnabled(false);
         filterButton.setEnabled(false);
+        englishText.setVisibility(View.GONE);
+        mathematicsText.setVisibility(View.GONE);
+        spmOlevelText.setVisibility(View.GONE);
+        spmOLevelSpinner.setVisibility(View.GONE);
+        mathematicsSpinner.setVisibility(View.GONE);
+        englishSpinner.setVisibility(View.GONE);
+        spmOLevelSpinner.setAdapter(SPMOLevelArrayAdapter);
+        spmOLevelSpinner.setOnItemSelectedListener(this);
         resultsSpinner.setAdapter(resultsArrayAdapter);
         resultsSpinner.setOnItemSelectedListener(this);
         setSpinnerScrollbar(); //set spinner scrollbar for resultsSpinner, subjectsSpinner and gradesSpinner
@@ -101,11 +145,23 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View view)
             {
-                TextView selection = (TextView)resultsSpinner.getSelectedView();
-                String selectedItem = selection.getText().toString();
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View rowView = inflater.inflate(R.layout.new_dropdown_field, null);
+
+                // Add the new row before the add field button.
+                parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 6);
+                if(parentLinearLayout.getChildCount() != 9) // if added new field, make the delete field text enable
+                {
+                    deleteFieldText.setEnabled(true);
+                    deleteFieldText.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+                }
+                subjectsSpinner1 = rowView.findViewById(R.id.subjectsSpinner1);
+                gradesSpinner1 = rowView.findViewById(R.id.gradesSpinner1);
+
+                String selectedItem = resultsSpinner.getSelectedItem().toString();
                 if(Objects.equals(selectedItem, "SPM"))
                 {
-                    if(parentLinearLayout.getChildCount() > 13) // max 12
+                    if(parentLinearLayout.getChildCount() == 20) // max 12
                     {
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
@@ -113,7 +169,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
                 else if(Objects.equals(selectedItem, "O-Level")) // max 10
                 {
-                    if(parentLinearLayout.getChildCount() > 11)
+                    if(parentLinearLayout.getChildCount() == 18)
                     {
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
@@ -121,7 +177,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
                 else if(Objects.equals(selectedItem, "A-Level")) // max 4
                 {
-                    if(parentLinearLayout.getChildCount() > 5)
+                    if(parentLinearLayout.getChildCount() == 12)
                     {
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
@@ -129,7 +185,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
                 else if(Objects.equals(selectedItem, "STPM")) // max 5
                 {
-                    if(parentLinearLayout.getChildCount() > 6)
+                    if(parentLinearLayout.getChildCount() == 13)
                     {
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
@@ -137,24 +193,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
                 else if(Objects.equals(selectedItem, "STAM")) // max 11
                 {
-                    if(parentLinearLayout.getChildCount() > 12)
+                    if(parentLinearLayout.getChildCount() == 19)
                     {
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
                     }
                 }
 
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View rowView = inflater.inflate(R.layout.new_dropdown_field, null);
-                // Add the new row before the add field button.
-                parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 1);
-                if(parentLinearLayout.getChildCount() != 4) // if added new field, make the delete field text enable
-                {
-                    deleteFieldText.setEnabled(true);
-                    deleteFieldText.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
-                }
-                subjectsSpinner1 = rowView.findViewById(R.id.subjectsSpinner1);
-                gradesSpinner1 = rowView.findViewById(R.id.gradesSpinner1);
                 try {
                     loadSpinnerData(subjectsSpinner1, gradesSpinner1);
                 } catch (IOException e) {
@@ -167,11 +212,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View view)
             {
-                if(parentLinearLayout.getChildCount() != 4) // if added new field
+                if(parentLinearLayout.getChildCount() != 9) // if added new field
                 {
-                    parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 2);
+                    parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 7);
+                    addNewField.setEnabled(true);
+                    addNewField.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 }
-                if(parentLinearLayout.getChildCount() == 4) // if deleted and back to original layout
+                if(parentLinearLayout.getChildCount() == 9) // if deleted and back to original layout
                 {
                     deleteFieldText.setEnabled(false);
                     deleteFieldText.setTextColor(Color.GRAY);
@@ -207,7 +254,6 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 TextView selection = (TextView)subjectsSpinner.getSelectedView();
                 String selectedItem = selection.getText().toString();
                 arrayStringSubjects[0] = selectedItem;
-
                 for(int i = 1; i < arrayStringSubjects.length; i++)
                     arrayStringSubjects[i] = addedSubjectsList.get(i-1).getText().toString();
 
@@ -234,8 +280,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 for(int i = 1; i <  arrayStringSubjects.length; i++)
                     arrayStringGrades[i] = addedGradesList.get(i-1).getText().toString();
 
-                selection = (TextView)resultsSpinner.getSelectedView();
-                selectedItem = selection.getText().toString();
+                selectedItem = resultsSpinner.getSelectedItem().toString(); // lastly is result
 
                 // create facts
                 Facts facts = new Facts();
@@ -243,8 +288,35 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 facts.put("Student's Subjects", arrayStringSubjects);
                 facts.put("Student's Grades",arrayStringGrades);
 
+                if(spmOLevelSpinner.getSelectedItem() != null)
+                {
+                    facts.put("Student's SPM or O-Level", spmOLevelSpinner.getSelectedItem().toString());
+                }
+                else
+                {
+                    facts.put("Student's SPM or O-Level", " ");
+                }
+
+                if(mathematicsSpinner.getSelectedItem() != null)
+                {
+                    facts.put("Student's Mathematics", mathematicsSpinner.getSelectedItem().toString());
+                }
+                else
+                {
+                    facts.put("Student's Mathematics", " ");
+                }
+
+                if(englishSpinner.getSelectedItem() != null)
+                {
+                    facts.put("Student's English", englishSpinner.getSelectedItem().toString());
+                }
+                else
+                {
+                    facts.put("Student's English", " ");
+                }
+
                 // create and define rules
-                Rules rules = new Rules(new FIS(), new FIBFIA(), new FIS_MedicineDentistryPharmacy());
+                Rules rules = new Rules(new FIS(), new FIBFIA(), new FIS_MedicineDentistryPharmacy(), new BBA());
 
                 // create a rules engine and fire rules on known facts
                 RulesEngine rulesEngine = new DefaultRulesEngine();
@@ -277,7 +349,6 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 subjectsText.setTextColor(Color.GRAY);
                 gradesText.setTextColor(Color.GRAY);
                 */
-
             }
         });
     }
@@ -286,347 +357,463 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
     {
         s.setAdapter(subjectsAdapter);
         g.setAdapter(gradesAdapter);
-       // newSpinner.add(subjectsSpinner1);
         flagForNewField = true; // to only set spinner scrollbar for newly added field
         setSpinnerScrollbar();
     }
 
-    //results spinner listener
+    //results and SPMOLevel spinner listener
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l)
     {
         String [] subjectsList, gradesList;
-        switch(position)
+
+        switch(adapterView.getId())
         {
-            case 1: // SPM selected
+            case R.id.resultsSpinner:
             {
-                subjectsList = getResources().getStringArray(R.array.spm_subjects);
-                gradesList = getResources().getStringArray(R.array.spm_grades);
-
-                //subject list
-                subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
+                switch(position)
                 {
-                    // If is position 0(the initial dummy entry), make it hidden
-                    // else, pass convertView as null to prevent reuse of special case views
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
+                    case 1: // SPM selected
                     {
-                        View v;
-                        if (position == 0) {
-                            CheckedTextView tv = new CheckedTextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
-                    }
-                };
+                        Log.d("SPM", "onItemSelected: SPM");
+                        subjectsList = getResources().getStringArray(R.array.spm_subjects);
+                        gradesList = getResources().getStringArray(R.array.spm_grades);
+                        Log.d("SPM", "onItemSelected: SPM 2");
 
-                //grade list
-                gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
-                    {
-                        View v;
-                        if (position == 0) {
-                            CheckedTextView tv = new CheckedTextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
-                    }
-                };
-                subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                subjectsSpinner.setAdapter(subjectsAdapter);
-                gradesSpinner.setAdapter(gradesAdapter);
-            }
-            break;
-
-            case 2: // STPM selected
-            {
-                subjectsList = getResources().getStringArray(R.array.stpm_subjects);
-                gradesList = getResources().getStringArray(R.array.stpm_grades);
-
-                // subject list
-                subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
-                {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
-                    {
-                        View v;
-                        if (position == 0) {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
-                    }
-                };
-
-                //grade list
-                gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
-                    {
-                        View v;
-                        if (position == 0) {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else
+                        //subject list
+                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
                         {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
-                    }
-                };
-                subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                subjectsSpinner.setAdapter(subjectsAdapter);
-                gradesSpinner.setAdapter(gradesAdapter);
-            }
-            break;
+                            // If is position 0(the initial dummy entry), make it hidden
+                            // else, pass convertView as null to prevent reuse of special case views
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    CheckedTextView tv = new CheckedTextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+                        Log.d("SPM", "onItemSelected: SPM 3 ");
 
-            case 3: // UEC selected
-            {
-                subjectsList = getResources().getStringArray(R.array.uec_subjects);
-                gradesList = getResources().getStringArray(R.array.uec_grades);
-
-                //subject list
-                subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
-                {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
-                    {
-                        View v;
-                        if (position == 0) {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
-                    }
-                };
-
-                //grade list
-                gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
-                    {
-                        View v;
-                        if (position == 0)
+                        //grade list
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
                         {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    CheckedTextView tv = new CheckedTextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+                        Log.d("SPM", "onItemSelected: SPM 4");
+                        subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        gradesSpinner.setAdapter(gradesAdapter);
+                        Log.d("SPM", "onItemSelected: SPM 5 ");
                     }
-                };
-                subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                subjectsSpinner.setAdapter(subjectsAdapter);
-                gradesSpinner.setAdapter(gradesAdapter);
-            }
-            break;
+                    break;
 
-            case 4: // O-Level selected
-            {
-                subjectsList = getResources().getStringArray(R.array.oLevel_subjects);
-                gradesList = getResources().getStringArray(R.array.oLevel_grades);
-
-                //subject list
-                subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
-                {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
+                    case 2: // STPM selected
                     {
-                        View v;
-                        if (position == 0) {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
-                    }
-                };
+                        Log.d("STPM", "onItemSelected: STPM");
+                        subjectsList = getResources().getStringArray(R.array.stpm_subjects);
+                        gradesList = getResources().getStringArray(R.array.stpm_grades);
 
-                //grade list
-                gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
-                    {
-                        View v;
-                        if (position == 0) {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
-                    }
-                };
-                subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                subjectsSpinner.setAdapter(subjectsAdapter);
-                gradesSpinner.setAdapter(gradesAdapter);
-            }
-            break;
-
-            case 5: // A-Level selected
-            {
-                subjectsList = getResources().getStringArray(R.array.aLevel_subjects);
-                gradesList = getResources().getStringArray(R.array.aLevel_grades);
-
-                //subject list
-                subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
-                {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
-                    {
-                        View v;
-                        if (position == 0) {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
-                    }
-                };
-
-                //grade list
-                gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
-                    {
-                        View v;
-                        if (position == 0) {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else
+                        // subject list
+                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
                         {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+
+                        //grade list
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else
+                                {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+                        subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        gradesSpinner.setAdapter(gradesAdapter);
                     }
-                };
-                subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                subjectsSpinner.setAdapter(subjectsAdapter);
-                gradesSpinner.setAdapter(gradesAdapter);
+                    break;
+
+                    case 3: // UEC selected
+                    {
+                        subjectsList = getResources().getStringArray(R.array.uec_subjects);
+                        gradesList = getResources().getStringArray(R.array.uec_grades);
+
+                        //subject list
+                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+
+                        //grade list
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0)
+                                {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+                        subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        gradesSpinner.setAdapter(gradesAdapter);
+                    }
+                    break;
+
+                    case 4: // O-Level selected
+                    {
+                        subjectsList = getResources().getStringArray(R.array.oLevel_subjects);
+                        gradesList = getResources().getStringArray(R.array.oLevel_grades);
+
+                        //subject list
+                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+
+                        //grade list
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+                        subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        gradesSpinner.setAdapter(gradesAdapter);
+                    }
+                    break;
+
+                    case 5: // A-Level selected
+                    {
+                        subjectsList = getResources().getStringArray(R.array.aLevel_subjects);
+                        gradesList = getResources().getStringArray(R.array.aLevel_grades);
+
+                        //subject list
+                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+
+                        //grade list
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else
+                                {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+                        subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        gradesSpinner.setAdapter(gradesAdapter);
+                    }
+                    break;
+
+                    case 6: // STAM selected
+                    {
+                        subjectsList = getResources().getStringArray(R.array.STAM_subjects);
+                        gradesList = getResources().getStringArray(R.array.STAM_grades);
+
+                        //subject list
+                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+
+                        //grade list
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+                        subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        gradesSpinner.setAdapter(gradesAdapter);
+                    }
+                    break;
+                }
             }
             break;
 
-            case 6: // STAM selected
+            case R.id.spmOLevelSpinner:
             {
-                subjectsList = getResources().getStringArray(R.array.STAM_subjects);
-                gradesList = getResources().getStringArray(R.array.STAM_grades);
-
-                //subject list
-                subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
+                switch(position)
                 {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
+                    case 1: // spm
                     {
-                        View v;
-                        if (position == 0) {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
+                        Log.d("spmOLevelSpinner", "onItemSelected: SPM");
+                        gradesList = getResources().getStringArray(R.array.spm_grades);
+                        //grade list
+                        gradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, gradesList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+                        gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        mathematicsSpinner.setAdapter(gradesAdapter);
+                        englishSpinner.setAdapter(gradesAdapter);
                     }
-                };
+                    break;
 
-                //grade list
-                gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                {
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent)
+                    case 2: // o-level
                     {
-                        View v;
-                        if (position == 0) {
-                            TextView tv = new TextView(getContext());
-                            tv.setHeight(0);
-                            tv.setVisibility(View.GONE);
-                            v = tv;
-                        }
-                        else {
-                            v = super.getDropDownView(position, null, parent);
-                        }
-                        return v;
+                        gradesList = getResources().getStringArray(R.array.oLevel_grades);
+                        //grade list
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
+                        gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        mathematicsSpinner.setAdapter(gradesAdapter);
+                        englishSpinner.setAdapter(gradesAdapter);
                     }
-                };
-                subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                subjectsSpinner.setAdapter(subjectsAdapter);
-                gradesSpinner.setAdapter(gradesAdapter);
+                    break;
+                }
             }
             break;
         }
 
+        if(adapterView.getId() == R.id.resultsSpinner)
+        {
+            if(position == 2 || position == 5 || position == 6)
+            {
+                englishText.setVisibility(View.VISIBLE);
+                mathematicsText.setVisibility(View.VISIBLE);
+                spmOlevelText.setVisibility(View.VISIBLE);
+                spmOLevelSpinner.setVisibility(View.VISIBLE);
+                mathematicsSpinner.setVisibility(View.VISIBLE);
+                englishSpinner.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                englishText.setVisibility(View.GONE);
+                mathematicsText.setVisibility(View.GONE);
+                spmOlevelText.setVisibility(View.GONE);
+                spmOLevelSpinner.setVisibility(View.GONE);
+                mathematicsSpinner.setVisibility(View.GONE);
+                englishSpinner.setVisibility(View.GONE);
+
+                mathematicsSpinner.setEnabled(false);
+                englishSpinner.setEnabled(false);
+            }
+        }
+        else if(adapterView.getId() == R.id.spmOLevelSpinner)
+        {
+            if(position != 0)
+            {
+                mathematicsSpinner.setEnabled(true);
+                englishSpinner.setEnabled(true);
+            }
+        }
+
         // after choose results type and set the adapters, make subjects and grades spinner enable
         // if both subject and grades spinner is disabled, make them both enable back
-        if(position != -1)
+        if(adapterView.getId() == R.id.resultsSpinner)
         {
-            filterButton.setEnabled(true);
-            subjectsSpinner.setEnabled(true);
-            gradesSpinner.setEnabled(true);
-            addNewField.setEnabled(true);
-            addNewField.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
-            subjectsText.setTextColor(getResources().getColor(R.color.colorAccent));
-            gradesText.setTextColor(getResources().getColor(R.color.colorAccent));
-            if(parentLinearLayout.getChildCount() != 4 ) // if added new view
+            if(position != -1)
             {
-                deleteFieldText.setEnabled(false);
-                deleteFieldText.setTextColor(Color.GRAY);
-                for(int i = parentLinearLayout.getChildCount(); i != 4; i--) // if switch result, reset back to default
-                    parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 2);
+                filterButton.setEnabled(true);
+                subjectsSpinner.setEnabled(true);
+                gradesSpinner.setEnabled(true);
+                addNewField.setEnabled(true);
+                addNewField.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+                subjectsText.setTextColor(getResources().getColor(R.color.colorAccent));
+                gradesText.setTextColor(getResources().getColor(R.color.colorAccent));
+
+                if(parentLinearLayout.getChildCount() != 9 ) // if added new view
+                {
+                    deleteFieldText.setEnabled(false);
+                    deleteFieldText.setTextColor(Color.GRAY);
+                    for(int i = parentLinearLayout.getChildCount(); i != 9; i--)  // if switch result, reset back to default
+                    {
+                        parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 7);
+                    }
+                }
             }
         }
     }
@@ -648,14 +835,18 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             }
 
             // Get private mPopup member variable and try cast to ListPopupWindow
-            android.widget.ListPopupWindow resultsTypePopupWindow = (android.widget.ListPopupWindow) popup.get(resultsSpinner);
+            android.widget.ListPopupWindow mathematicsPopupWindow = (android.widget.ListPopupWindow) popup.get(mathematicsSpinner);
+            android.widget.ListPopupWindow englishPopupWindow = (android.widget.ListPopupWindow) popup.get(englishSpinner);
+            android.widget.ListPopupWindow qualificationTypePopupWindow = (android.widget.ListPopupWindow) popup.get(resultsSpinner);
             android.widget.ListPopupWindow subjectsListPopupWindow = (android.widget.ListPopupWindow) popup.get(subjectsSpinner);
             android.widget.ListPopupWindow gradesListPopupWindow = (android.widget.ListPopupWindow) popup.get(gradesSpinner);
 
             // Set popupWindow height to 500px
+            mathematicsPopupWindow.setHeight(500);
+            englishPopupWindow.setHeight(500);
             subjectsListPopupWindow.setHeight(500);
             gradesListPopupWindow.setHeight(500);
-            resultsTypePopupWindow.setHeight(500);
+            qualificationTypePopupWindow.setHeight(500);
         }
         catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

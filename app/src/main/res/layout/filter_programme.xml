@@ -19,7 +19,7 @@
             app:ms_baseColor="@color/colorAccent"
             app:ms_errorColor="@color/colorAccent"
             app:ms_floatingLabelColor="@color/colorAccent"
-            app:ms_hint="Results Type"
+            app:ms_hint="Qualification Level"
             app:ms_hintTextSize="15sp"
             app:ms_hintColor="@android:color/darker_gray"
             />
@@ -35,7 +35,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:paddingEnd="10dp"
-                android:paddingStart="5dp"
+                android:paddingStart="7dp"
                 android:text="Subjects"
                 android:textColor="@color/colorAccent" />
 
@@ -72,14 +72,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/filterButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:text="Generate" />
-
             <TextView
                 android:id="@+id/addNewSpinnerField"
                 android:layout_width="wrap_content"
@@ -99,6 +91,96 @@
                 android:text="Delete dropdown"
                 android:textAlignment="center"
                 android:textSize="12sp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/spmOlevelText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Choose SPM or O-Level "
+                android:textSize="12sp"
+                android:textColor="@color/colorAccent"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spmOLevelSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/mathematicsText"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="30dp"
+                android:text="Mathematics : "
+                android:textSize="12sp" />
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/mathematicsSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="2.5" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/englishText"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:text="English : "
+                android:textSize="12sp"
+                android:layout_marginTop="30dp" />
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/englishSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="2.5" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/filterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="127dp"
+                android:text="Generate" />
 
         </RelativeLayout>
 

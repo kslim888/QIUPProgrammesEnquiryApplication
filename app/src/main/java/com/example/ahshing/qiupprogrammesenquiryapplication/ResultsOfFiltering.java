@@ -16,6 +16,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import entryRules.FIBFIA;
 import entryRules.FIS;
@@ -27,6 +28,8 @@ public class ResultsOfFiltering extends AppCompatActivity
     ExpandableListAdapter eligibleListAdapter, ineligibleListAdapter;
     List<String> eligibleDataHeader, ineligibleDataHeader;
     HashMap<String, List<String>> eligibleHashMap, ineligibleHashMap;
+    String resultType;
+    Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,6 +39,8 @@ public class ResultsOfFiltering extends AppCompatActivity
 
         eligibleListView = findViewById(R.id.eligibleProgrammes);
         ineligibleListView = findViewById(R.id.ineligibleProgrammes);
+        extras = getIntent().getExtras();
+        resultType = extras.getString("RESULT_TYPE");
         initData();
 
         eligibleListAdapter = new ExpandableListAdapter(this, eligibleDataHeader, eligibleHashMap);
@@ -71,10 +76,8 @@ public class ResultsOfFiltering extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item)
     {
         //get student's academic data
-        Bundle extras = getIntent().getExtras();
         String[] subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
         String[] gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
-        String resultType = extras.getString("RESULT_TYPE");
 
         MaterialDialog materialDialog = new MaterialDialog.Builder(ResultsOfFiltering.this)
                 .title("Student's Academic Qualification")
@@ -134,31 +137,34 @@ public class ResultsOfFiltering extends AppCompatActivity
         ineligibleHashMap = new HashMap<>();
 
         //Foundation
-        if(FIS.isJoinProgramme())
+        if(Objects.equals(resultType, "SPM") || Objects.equals(resultType, "O-Level"))
         {
-            eligibleDataHeader.add("Foundation in Sciences");
-        }
-        else
-        {
-            ineligibleDataHeader.add("Foundation in Sciences");
-        }
-        if(FIBFIA.isJoinProgramme())
-        {
-            eligibleDataHeader.add("Foundation in Business");
-            eligibleDataHeader.add("Foundation in Arts");
-        }
-        else
-        {
-            ineligibleDataHeader.add("Foundation in Business");
-            ineligibleDataHeader.add("Foundation in Arts");
-        }
-        if(FIS_MedicineDentistryPharmacy.isJoinProgramme())
-        {
-            eligibleDataHeader.add("Foundation in Sciences\n(to pursue degree programme in Medicine, Dentistry or Pharmacy)");
-        }
-        else
-        {
-            ineligibleDataHeader.add("Foundation in Sciences\n(to pursue degree programme in Medicine, Dentistry or Pharmacy)");
+            if(FIS.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Foundation in Sciences");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Foundation in Sciences");
+            }
+            if(FIBFIA.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Foundation in Business");
+                eligibleDataHeader.add("Foundation in Arts");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Foundation in Business");
+                ineligibleDataHeader.add("Foundation in Arts");
+            }
+            if(FIS_MedicineDentistryPharmacy.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Foundation in Sciences\n(to pursue degree programme in Medicine, Dentistry or Pharmacy)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Foundation in Sciences\n(to pursue degree programme in Medicine, Dentistry or Pharmacy)");
+            }
         }
 
         /*
@@ -224,9 +230,9 @@ public class ResultsOfFiltering extends AppCompatActivity
         fisOtherRequirements.add("789");
         fisOtherRequirements.add("10");
 
-        eligibleHashMap.put(eligibleDataHeader.get(0),fibfiaRequirements);
-        eligibleHashMap.put(eligibleDataHeader.get(1),fisRequirements);
-        eligibleHashMap.put(eligibleDataHeader.get(2),fisOtherRequirements);
+//        eligibleHashMap.put(eligibleDataHeader.get(0),fibfiaRequirements);
+//        eligibleHashMap.put(eligibleDataHeader.get(1),fisRequirements);
+//        eligibleHashMap.put(eligibleDataHeader.get(2),fisOtherRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(3),description1);
 //        eligibleHashMap.put(eligibleDataHeader.get(4),description3);
 //        eligibleHashMap.put(eligibleDataHeader.get(5),description2);

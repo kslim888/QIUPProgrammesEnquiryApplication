@@ -8,14 +8,23 @@
     <string name="err_contact_number"> Please enter valid contact number </string>
     <string name="err_IC"> Please enter valid IC </string>
 
-    <string-array name="result_type">
-        <item> Results Type </item>
+    <string-array name="spm_or_oLevel_type">
+        <item> </item>
+        <item> SPM </item>
+        <item> O-Level </item>
+    </string-array>
+    
+    <string-array name="qualification_type">
+        <item> Qualification Level </item>
         <item> SPM </item>
         <item> STPM </item>
         <item> UEC </item>
         <item> O-Level </item>
         <item> A-Level </item>
         <item> STAM </item>
+        <item> Foundation </item>
+        <item> Matriculation </item>
+        <item> Diploma </item>
     </string-array>
 
     <!-- SPM -->
@@ -46,10 +55,10 @@
         <item> B+ </item>
         <item> B </item>
         <item> C+ </item>
-        <item> C </item>
-        <item> D </item>
-        <item> E </item>
-        <item> G </item>
+        <item> C </item> <!-- credit -->
+        <item> D </item> <!-- pass -->
+        <item> E </item> <!-- pass -->
+        <item> G </item> <!-- fail-->
     </string-array>
 
     <!-- STPM -->
@@ -130,6 +139,7 @@
         <item> B6 </item> <!-- C+ -->
         <item> C7 </item> <!-- C -->
         <item> C8 </item> <!-- D -->
+        <item> F9 </item>
     </string-array>
 
     <!-- O-Level -->
@@ -196,17 +206,14 @@
         <item>  </item>
         <item> A1 </item>
         <item> A2 </item>
-        <item> A </item>
         <item> B3 </item>
         <item> B4 </item>
-        <item> B </item>
         <item> C5 </item>
-        <item> C6 </item>
-        <item> C </item>
+        <item> C6 </item> <!-- pass -->
         <item> D7 </item>
-        <item> D </item>
         <item> E8 </item>
-        <item> E9 </item>
+        <item> F9 </item>
+        <item> U </item>
     </string-array>
 
     <!-- A-Level -->
@@ -235,12 +242,12 @@
         <item> C </item>
         <item> D </item>
         <item> E </item>
-        <item> F </item>
+        <item> F </item> <!-- fail -->
     </string-array>
 
     <!-- STAM -->
     <string-array name="STAM_subjects">
-        <item></item>
+        <item> </item>
         <item>Hifz Al-Quran dan Tajwid</item>
         <item>Fiqh</item>
         <item>Tafsir dan Ulumuhu</item>
@@ -254,7 +261,7 @@
         <item>Arudh dan Qafiyah</item>
     </string-array>
     <string-array name="STAM_grades">
-        <item></item>
+        <item> </item>
         <item>Mumtaz</item> <!-- Cemerlang -->
         <item>Jayyid Jiddan</item> <!-- Sangat Baik -->
         <item>Jayyid</item> <!-- Baik -->

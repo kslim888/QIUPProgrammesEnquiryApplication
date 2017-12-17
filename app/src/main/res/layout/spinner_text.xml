@@ -8,6 +8,6 @@
     android:scrollHorizontally="true"
     android:marqueeRepeatLimit="marquee_forever"
     android:ellipsize="marquee"
-    android:paddingStart="5dp"
+    android:paddingStart="9dp"
     android:paddingEnd="10dp"
     />

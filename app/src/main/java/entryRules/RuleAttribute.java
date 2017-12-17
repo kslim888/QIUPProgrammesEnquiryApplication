@@ -2,14 +2,50 @@ package entryRules;
 
 public class RuleAttribute
 {
-    int countCredits, countRequiredSubject;
-    float minimumCGPA, minimumGP, englishScore;
-    boolean joinProgramme;
+    private int countCredits, countRequiredSubject, countSTPM, countSTAM, countALevel, countUEC;
+    private float minimumCGPA, minimumGP, englishScore;
+    private boolean joinProgramme;
 
     RuleAttribute() {
         joinProgramme = false;
         countCredits = 0;
         countRequiredSubject = 0;
+        countSTPM = 0;
+        countSTAM = 0;
+        countALevel = 0;
+        countUEC = 0;
+    }
+
+    public int getCountUEC() {
+        return countUEC;
+    }
+
+    public void incrementCountUEC(int countUEC) {
+        this.countUEC += countUEC;
+    }
+
+    public int getCountALevel() {
+        return countALevel;
+    }
+
+    public void incrementCountALevel(int countALevel) {
+        this.countALevel += countALevel;
+    }
+
+    public int getCountSTAM() {
+        return countSTAM;
+    }
+
+    public void incrementCountSTAM(int countSTAM) {
+        this.countSTAM += countSTAM;
+    }
+
+    public int getCountSTPM() {
+        return countSTPM;
+    }
+
+    public void incrementCountSTPM(int countSTPM) {
+        this.countSTPM += countSTPM;
     }
 
     public float getMinimumCGPA() {

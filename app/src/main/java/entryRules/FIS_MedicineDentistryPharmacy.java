@@ -141,7 +141,7 @@ public class FIS_MedicineDentistryPharmacy
                     FIS_MedicineDentistryPharmacy.incrementCountRequiredSubject(1);
                 }
 
-                // except BM and EG, check other subjects got credit or not
+                // except BM and EG, check other subjects got B or not
                 if ((!Objects.equals(studentSubjects[i], "English")) && (!Objects.equals(studentSubjects[i], "Bahasa Malaysia")))
                 {
                     if(!Objects.equals(studentGrades[i], "C+")
