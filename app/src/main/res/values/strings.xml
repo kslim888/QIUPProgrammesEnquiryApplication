@@ -74,7 +74,7 @@
         <item> Kesusasteraan Melayu Komunikatif </item>
         <item> Sejarah </item>
         <item> Matematik (M) </item>
-        <item> Matematik (T) </item>
+        <item> Matematik (T)</item>
         <item> Geografi </item>
         <item> Fizik </item>
         <item> Kimia </item> <!--chemistry -->
@@ -97,7 +97,7 @@
         <item> B </item>
         <item> B- </item>
         <item> C+ </item>
-        <item> C </item>
+        <item> C </item> <!-- credit -->
         <item> C- </item>
         <item> D+ </item>
         <item> D </item>
@@ -139,7 +139,7 @@
         <item> B6 </item> <!-- C+ -->
         <item> C7 </item> <!-- C -->
         <item> C8 </item> <!-- D -->
-        <item> F9 </item>
+        <item> F9 </item> <!-- fail -->
     </string-array>
 
     <!-- O-Level -->
@@ -209,11 +209,11 @@
         <item> B3 </item>
         <item> B4 </item>
         <item> C5 </item>
-        <item> C6 </item> <!-- pass -->
-        <item> D7 </item>
-        <item> E8 </item>
-        <item> F9 </item>
-        <item> U </item>
+        <item> C6 </item> <!-- credit -->
+        <item> D7 </item> <!-- pass -->
+        <item> E8 </item> <!-- fail -->
+        <item> F9 </item> <!-- fail -->
+        <item> U </item> <!-- fail -->
     </string-array>
 
     <!-- A-Level -->
@@ -239,9 +239,9 @@
         <item>  </item>
         <item> A </item>
         <item> B </item>
-        <item> C </item>
+        <item> C </item> <!-- credit -->
         <item> D </item>
-        <item> E </item>
+        <item> E </item> <!-- pass -->
         <item> F </item> <!-- fail -->
     </string-array>
 

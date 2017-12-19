@@ -12,30 +12,35 @@ import java.util.Objects;
 @Rule(name = "FIS_Other", description = "Entry rule to join Foundation in Science to pursue degree programme in Medicine, Dentistry or Pharmacy")
 public class FIS_MedicineDentistryPharmacy
 {
-    static RuleAttribute FIS_MedicineDentistryPharmacy;
-    int countUECFailSubject, countAddMathFail;
-    boolean gotAddMaths;
+    private static RuleAttribute FIS_MedicineDentistryPharmacy;
+    private int countUECFailSubject;
+    private boolean gotAddMaths, addMathFail;
 
     public FIS_MedicineDentistryPharmacy() {
         FIS_MedicineDentistryPharmacy = new RuleAttribute();
         countUECFailSubject = 0;
-        countAddMathFail = 0;
+        addMathFail = false;
         gotAddMaths = false;
     }
 
     // when
     @Condition
-    public boolean allowToJoin(@Fact("Results Type") String resultsType, @Fact("Student's Subjects")String[] studentSubjects, @Fact("Student's Grades")String[] studentGrades)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel, @Fact("Student's Subjects")String[] studentSubjects, @Fact("Student's Grades")String[] studentGrades)
     {
+        // here spm only
         // first, check basic requirement fulfill or not
-        if(Objects.equals(resultsType, "UEC")) // if is UEC
+        if(Objects.equals(qualificationLevel, "UEC")) // if is UEC
         {
             for(int i = 0; i < studentSubjects.length; i++) // for all the student results
             {
                 // if biology or chemi at least not B4, straight away return false
                 if ((Objects.equals(studentSubjects[i], "Biology")) || (Objects.equals(studentSubjects[i], "Chemistry")))
                 {
-                    if(Objects.equals(studentGrades[i], "B5") || Objects.equals(studentGrades[i], "B6") || Objects.equals(studentGrades[i], "C7") || Objects.equals(studentGrades[i], "C8"))
+                    if(Objects.equals(studentGrades[i], "B5")
+                            || Objects.equals(studentGrades[i], "B6")
+                            || Objects.equals(studentGrades[i], "C7")
+                            || Objects.equals(studentGrades[i], "C8")
+                            || Objects.equals(studentGrades[i], "F9"))
                         return false;
                 }
             }
@@ -67,13 +72,34 @@ public class FIS_MedicineDentistryPharmacy
                             || Objects.equals(studentGrades[i], "E")
                             || Objects.equals(studentGrades[i], "G"))
                     {
-                        countAddMathFail++;
+                        addMathFail = true; // here is at least no B consider fail
                     }
                 }
 
                 // if is at least not B, check maths at least B or not. if both also not, return false
                 // if add maths at least got B, math no, or opposite, continue...
-                if(countAddMathFail == 1)
+                if(gotAddMaths)
+                {
+                    Log.d("maths", "1");
+                    if(addMathFail)
+                    {
+                        Log.d("maths", "2");
+                        if ((Objects.equals(studentSubjects[i], "Mathematics")))
+                        {
+                            Log.d("maths", "3");
+                            if(Objects.equals(studentGrades[i], "C+")
+                                    || Objects.equals(studentGrades[i], "C")
+                                    || Objects.equals(studentGrades[i], "D")
+                                    || Objects.equals(studentGrades[i], "E")
+                                    || Objects.equals(studentGrades[i], "G"))
+                            {
+                                Log.d("maths", "4");
+                                return false;
+                            }
+                        }
+                    }
+                }
+                else // that person no add maths, check maths got at least B or not. if no return false
                 {
                     if ((Objects.equals(studentSubjects[i], "Mathematics")))
                     {
@@ -92,16 +118,16 @@ public class FIS_MedicineDentistryPharmacy
                 if ((Objects.equals(studentSubjects[i], "English")) || (Objects.equals(studentSubjects[i], "Bahasa Malaysia")))
                 {
                     if(Objects.equals(studentGrades[i], "D") || Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
+                    {
                         return false;
-                    else // increment the credit
-                        FIS_MedicineDentistryPharmacy.incrementCountCredit(1);
+                    }
                 }
             }
         }
 
         //if all basic requirement fulfill,
         // further check student credits and got required subjects or not
-        if(Objects.equals(resultsType, "UEC"))
+        if(Objects.equals(qualificationLevel, "UEC"))
         {
             for(int i = 0; i < studentSubjects.length; i++)
             {
@@ -119,7 +145,11 @@ public class FIS_MedicineDentistryPharmacy
                 {
                     // if all of the 3 at least is not B4, straight away return false.
                     // if 1 of them is B4, continue...Got 3 chance.
-                    if(Objects.equals(studentGrades[i], "B5") || Objects.equals(studentGrades[i], "B6") || Objects.equals(studentGrades[i], "C7") || Objects.equals(studentGrades[i], "C8"))
+                    if(Objects.equals(studentGrades[i], "B5")
+                            || Objects.equals(studentGrades[i], "B6")
+                            || Objects.equals(studentGrades[i], "C7")
+                            || Objects.equals(studentGrades[i], "C8")
+                            || Objects.equals(studentGrades[i], "F9"))
                     {
                         countUECFailSubject++;
                         if(countUECFailSubject == 3)
@@ -156,26 +186,17 @@ public class FIS_MedicineDentistryPharmacy
             }
         }
 
-        String abc = "" + FIS_MedicineDentistryPharmacy.getCountCredits();
-        Log.d("FIS_other credits", abc);
+        Log.d("FIS_other credits", "" + FIS_MedicineDentistryPharmacy.getCountCredits());
 
-        if(Objects.equals(resultsType, "UEC"))
+        if(Objects.equals(qualificationLevel, "UEC"))
         {
             if(FIS_MedicineDentistryPharmacy.getCountRequiredSubject() < 3)
                 return false;
         }
         else
         {
-            if(gotAddMaths)
-            {
-                if(FIS_MedicineDentistryPharmacy.getCountRequiredSubject() < 4 || FIS_MedicineDentistryPharmacy.getCountCredits() < 8)
-                    return false;
-            }
-            else
-            {
-                if(FIS_MedicineDentistryPharmacy.getCountRequiredSubject() < 4 || FIS_MedicineDentistryPharmacy.getCountCredits() < 7)
-                    return false;
-            }
+            if(FIS_MedicineDentistryPharmacy.getCountRequiredSubject() < 4 || FIS_MedicineDentistryPharmacy.getCountCredits() < 4)
+                return false;
         }
         return true;
     }
@@ -193,5 +214,4 @@ public class FIS_MedicineDentistryPharmacy
     {
         return FIS_MedicineDentistryPharmacy.isJoinProgramme();
     }
-
 }

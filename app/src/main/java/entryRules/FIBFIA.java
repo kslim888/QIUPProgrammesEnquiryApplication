@@ -12,16 +12,16 @@ import java.util.Objects;
 @Rule(name = "FIB/FIA", description = "Entry rule to join Foundation in Business or Foundation in Arts")
 public class FIBFIA
 {
-    static RuleAttribute fibfiaRuleAttribute;
+    private static RuleAttribute fibfiaRuleAttribute;
     public FIBFIA() {
         fibfiaRuleAttribute = new RuleAttribute();
     }
 
     // when
     @Condition
-    public boolean allowToJoin(@Fact("Results Type") String resultsType, @Fact("Student's Subjects")String[] studentSubjects, @Fact("Student's Grades")String[] studentGrades)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel, @Fact("Student's Subjects")String[] studentSubjects, @Fact("Student's Grades")String[] studentGrades)
     {
-        if(!Objects.equals(resultsType, "UEC")) // is SPM or O-Level
+        if(Objects.equals(qualificationLevel, "SPM"))
         {
             for(int i = 0; i < studentSubjects.length; i++)
             {
@@ -29,16 +29,24 @@ public class FIBFIA
                     fibfiaRuleAttribute.incrementCountCredit(1);
             }
         }
-        else // is UEC
+        else if(Objects.equals(qualificationLevel, "O-Level"))
         {
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "B6") && !Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8"))
+                if(!Objects.equals(studentGrades[i], "D7") && !Objects.equals(studentGrades[i], "E8") && !Objects.equals(studentGrades[i], "F9") && !Objects.equals(studentGrades[i], "U"))
+                    fibfiaRuleAttribute.incrementCountCredit(1);
+            }
+        }
+        else if(Objects.equals(qualificationLevel, "UEC"))// is UEC
+        {
+            for(int i = 0; i < studentSubjects.length; i++)
+            {
+                if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                     fibfiaRuleAttribute.incrementCountCredit(1);
             }
         }
 
-        if(!Objects.equals(resultsType, "UEC")) // is SPM or O-Level
+        if(!Objects.equals(qualificationLevel, "UEC")) // is SPM or O-Level
         {
             if(fibfiaRuleAttribute.getCountCredits() < 5)
                 return false;
@@ -49,8 +57,7 @@ public class FIBFIA
                 return false;
         }
 
-        String abc = "" + fibfiaRuleAttribute.getCountCredits();
-        Log.d("FIA number of creits", abc);
+        Log.d("FIA number of creits", "" + fibfiaRuleAttribute.getCountCredits());
         return true;
     }
 

@@ -13,19 +13,21 @@ import java.util.Objects;
 public class FIS
 {
     private static RuleAttribute fisRuleAttribute;
-    private int countScienceNotCredit, countAddMathNotCredit, countScience;
+    private int countScienceNotCredit, countScience;
+    private boolean addMathNotCredit;
 
     public FIS() {
         fisRuleAttribute = new RuleAttribute();
         countScienceNotCredit = 0;
-        countAddMathNotCredit = 0;
+        addMathNotCredit = false;
         countScience = 0;
     }
 
     // when
     @Condition
-    public boolean allowToJoin(@Fact("Student's Subjects")String[] studentSubjects, @Fact("Student's Grades")String[] studentGrades)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel, @Fact("Student's Subjects")String[] studentSubjects, @Fact("Student's Grades")String[] studentGrades)
     {
+        // TODO other qualification. here only for SPM
         // for all student subjects
         for(int i = 0; i < studentSubjects.length; i++)
         {
@@ -33,12 +35,12 @@ public class FIS
             if ((Objects.equals(studentSubjects[i], "Additional Mathematics")))
             {
                 if(Objects.equals(studentGrades[i], "D") || Objects.equals(studentGrades[i], "E") || Objects.equals(studentGrades[i], "G"))
-                    countAddMathNotCredit++;
+                    addMathNotCredit = true;
             }
 
             // if is not credit, check maths is credit or not. if both also not return false
             // if add maths credit, math no credit, or opposite, continue...
-            if(countAddMathNotCredit == 1)
+            if(addMathNotCredit)
             {
                 if ((Objects.equals(studentSubjects[i], "Mathematics")))
                 {
@@ -93,7 +95,7 @@ public class FIS
         }
 
         String abc = "" + fisRuleAttribute.getCountCredits();
-        Log.d("FIS number of creits", abc);
+        Log.d("FIS number of credits", abc);
         abc = "" + fisRuleAttribute.getCountRequiredSubject();
         Log.d("FIS required subject", abc);
 
@@ -110,7 +112,7 @@ public class FIS
     {
         // if rule is statisfied (return true), this action will be executed
         fisRuleAttribute.setJoinProgramme(true);
-        Log.d("FIS joinProgramme", "Joined");
+        Log.d("FISjoinProgramme", "Joined");
     }
 
     public static boolean isJoinProgramme()
