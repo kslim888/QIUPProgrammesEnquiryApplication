@@ -25,6 +25,7 @@
         <item> Foundation </item>
         <item> Matriculation </item>
         <item> Diploma </item>
+        <item> Sijil Kemahiran Malaysia </item>
     </string-array>
 
     <!-- SPM -->
@@ -269,4 +270,38 @@
         <item>Rasib</item> <!-- Gagal -->
     </string-array>
 
+    <string-array name="english_test">
+        <item> </item>
+        <item> MUET </item>
+        <item> IELTS </item>
+        <item> TOEFL </item>
+    </string-array>
+
+    <string-array name="muet_band">
+        <item> Band 6 </item>
+        <item> Band 5 </item>
+        <item> Band 4 </item>
+        <item> Band 3 </item>
+        <item> Band 2 </item>
+        <item> Band 1 </item>
+    </string-array>
+
+    <string-array name="IELTS_overall_band_score">
+        <item> 9   </item>
+        <item> 8.5 </item>
+        <item> 8   </item>
+        <item> 7.5 </item>
+        <item> 7   </item>
+        <item> 6.5 </item>
+        <item> 6   </item>
+        <item> 5.5 </item>
+        <item> 5   </item>
+        <item> 4.5 </item>
+        <item> 4   </item>
+        <item> 3.5 </item>
+        <item> 3   </item>
+        <item> 2.5 </item>
+    </string-array>
+
+    <!--paper test toefl 310 to 677, internet based 0 to 120 -->
 </resources>

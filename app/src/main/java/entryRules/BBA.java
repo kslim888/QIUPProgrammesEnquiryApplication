@@ -92,9 +92,11 @@ public class BBA
                         {
                             gotEnglishSubjectAndPass = true;
                         }
+                        break;
                     }
                 }
             }
+
             // if stpm got math subject but not pass, or no math subject at STPM
             if(!gotMathSubjectAndPass)
             {
@@ -117,7 +119,7 @@ public class BBA
                 }
             }
 
-            // if stpm got english subject but not pass, or no math subject at STPM
+            // if stpm got english subject but not pass, or no english subject at STPM
             if(!gotEnglishSubjectAndPass)
             {
                 // check english
@@ -139,7 +141,7 @@ public class BBA
                 }
             }
 
-            // for all students subject check got above at least C or not
+            // for all students subject check got above at least C or not. At least C only increment
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -234,6 +236,7 @@ public class BBA
                         {
                             gotEnglishSubjectAndPass = true;
                         }
+                        break;
                     }
                 }
             }
@@ -281,7 +284,7 @@ public class BBA
                 }
             }
 
-            // for all student subject, check got minimum grade E (pass)
+            // for all student subject, check got minimum grade E (pass). At least E only increment
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "F"))
@@ -334,6 +337,7 @@ public class BBA
                         {
                             mathCredit = true;
                         }
+                        break;
                     }
                 }
             }
@@ -350,6 +354,7 @@ public class BBA
                             {
                                 return false;
                             }
+                            break;
                         }
                     }
                 }
@@ -372,10 +377,11 @@ public class BBA
                     {
                         englishCredit = true;
                     }
+                    break;
                 }
             }
 
-            // for all subject check got at least minimum grade B or not
+            // for all subject check got at least minimum grade B or not. At least B only increment
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))

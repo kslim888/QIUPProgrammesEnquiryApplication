@@ -45,6 +45,7 @@ public class BAC
                 if(Objects.equals(studentSubjects[i], "Matematik (M)") || Objects.equals(studentSubjects[i], "Matematik (T)"))
                 {
                     gotMathSubject = true;
+                    break;
                 }
             }
 
@@ -168,6 +169,7 @@ public class BAC
                 if(Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Further Mathematics"))
                 {
                     gotMathSubject = true;
+                    break;
                 }
             }
 
@@ -210,7 +212,7 @@ public class BAC
             // if A-level got math subject but not credit, or no math subject at A-level
             if(!gotMathSubjectAndCredit)
             {
-                // check maths and english
+                // check maths and english at spm or o-level
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
                     // if maths no credit, straightaway return false
@@ -221,7 +223,7 @@ public class BAC
                 }
                 else // if is o-level
                 {
-                    // check maths got credit or not. if no credit return false
+                    // if math no credit return false
                     if(Objects.equals(studentMathematicsGrade, "D7") || Objects.equals(studentMathematicsGrade, "E8") || Objects.equals(studentMathematicsGrade, "F9") || Objects.equals(studentMathematicsGrade, "U"))
                     {
                         return false;

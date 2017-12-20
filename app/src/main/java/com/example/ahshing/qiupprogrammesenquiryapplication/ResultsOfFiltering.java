@@ -40,7 +40,7 @@ public class ResultsOfFiltering extends AppCompatActivity
         eligibleListView = findViewById(R.id.eligibleProgrammes);
         ineligibleListView = findViewById(R.id.ineligibleProgrammes);
         extras = getIntent().getExtras();
-        resultType = extras.getString("RESULT_TYPE");
+        resultType = extras.getString("QUALIFICATION_LEVEL");
         initData();
 
         eligibleListAdapter = new ExpandableListAdapter(this, eligibleDataHeader, eligibleHashMap);
@@ -78,6 +78,10 @@ public class ResultsOfFiltering extends AppCompatActivity
         //get student's academic data
         String[] subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
         String[] gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
+        String secondaryQualificationLevel  = extras.getString("STUDENT_SECONDARY_QUALIFICATION");
+        String secondaryMathGrade = extras.getString("STUDENT_SECONDARY_MATH");
+        String secondaryEngGrade  = extras.getString("STUDENT_SECONDARY_ENG");
+        String secondaryAddMathGrade = extras.getString("STUDENT_SECONDARY_ADDMATH");
 
         MaterialDialog materialDialog = new MaterialDialog.Builder(ResultsOfFiltering.this)
                 .title("Student's Academic Qualification")
