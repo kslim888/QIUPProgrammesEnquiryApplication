@@ -22,7 +22,8 @@
         </activity>
         <activity
             android:name=".FilterProgrammes"
-            android:label="Programme Enquiry">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Programmes Enquiry">
         </activity>
 
         <activity

@@ -54,5 +54,13 @@
         android:background="#dfdede"
         />
 
+    <TextView
+        android:id="@+id/abc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="3dp"
+        android:paddingStart="3dp"
+        android:text="Hello"
+        android:textSize="16sp" />
 
 </LinearLayout>

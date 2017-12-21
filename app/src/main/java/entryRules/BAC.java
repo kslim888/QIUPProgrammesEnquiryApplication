@@ -9,19 +9,17 @@ import org.jeasy.rules.annotation.Rule;
 
 import java.util.Objects;
 
-
 @Rule(name = "BAC", description = "Entry rule to join Bachelor of Accountancy")
 public class BAC
 {
     // advanced math is additional maths
     private static RuleAttribute bacRuleAttribute;
-    private boolean gotAdvancedMath, advancedMathFail, advancedMathCredit,
+    private boolean gotAdvancedMath, advancedMathCredit,
             mathCredit, gotMathSubject, gotMathSubjectAndCredit;
 
     public BAC() {
         bacRuleAttribute = new RuleAttribute();
         gotAdvancedMath = false;
-        advancedMathFail = false;
         advancedMathCredit = false;
         mathCredit = false;
         gotMathSubject = false;
@@ -248,13 +246,9 @@ public class BAC
                 if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
                 {
                     gotAdvancedMath = true; // if got advanced maths, set true
-                    if(Objects.equals(studentGrades[i], "C7") || Objects.equals(studentGrades[i], "C8") || Objects.equals(studentGrades[i], "F9"))
+                    if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        //if advanced math at least not grade B, set advancedMathFail to true
-                        advancedMathFail = true;
-                    }
-                    else
-                    {
+                        //if advanced math is at least grade B
                         advancedMathCredit = true;
                     }
                     break;
@@ -283,9 +277,9 @@ public class BAC
             }
             else // got adv math
             {
-                for(int i = 0; i < studentSubjects.length; i++)
+                if(advancedMathCredit)
                 {
-                    if(advancedMathFail)
+                    for(int i = 0; i < studentSubjects.length; i++)
                     {
                         if(Objects.equals(studentSubjects[i], "Mathematics"))
                         {

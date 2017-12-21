@@ -9,16 +9,25 @@ import android.widget.TextView;
 
 public class CustomAdapter extends ArrayAdapter<String>
 {
-    Context context;
-    String [] subject ={};
-    String [] grade ={};
+    private Context context;
+    private String [] subject ={};
+    private String [] grade ={};
+    private String secondaryQualificationLevel, secondaryEnglishGrade, secondaryMathGrade, secondaryAddMathGrade;
 
-    public CustomAdapter(Context context, String[] subject, String[] grade)
+    public CustomAdapter(Context context, String[] subject, String[] grade,
+                         String secondaryQualificationLevel,
+                         String secondaryEnglishGrade,
+                         String secondaryMathGrade,
+                         String secondaryAddMathGrade)
     {
         super(context, R.layout.dialog_list_view, subject);
         this.subject = subject;
         this.grade = grade;
         this.context = context;
+        this.secondaryQualificationLevel = secondaryQualificationLevel;
+        this.secondaryEnglishGrade = secondaryEnglishGrade;
+        this.secondaryMathGrade = secondaryMathGrade;
+        this.secondaryAddMathGrade = secondaryAddMathGrade;
     }
 
     public class ViewHolder

@@ -262,7 +262,7 @@ public class BBA
                 }
             }
 
-            // if a-level got english subject but not pass, or no math subject at a-level
+            // if a-level got english subject but not pass, or no eng subject at a-level
             if(!gotEnglishSubjectAndPass)
             {
                 // check english

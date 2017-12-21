@@ -18,9 +18,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import entryRules.BAC;
+import entryRules.BBA;
+import entryRules.BBA_HospitalityTourismManagement;
+import entryRules.BCE;
+import entryRules.BFI;
+import entryRules.CorporateComm;
 import entryRules.FIBFIA;
 import entryRules.FIS;
 import entryRules.FIS_MedicineDentistryPharmacy;
+import entryRules.MassCommAdvertising;
+import entryRules.MassCommJournalism;
+import entryRules.TESL;
 
 public class ResultsOfFiltering extends AppCompatActivity
 {
@@ -94,7 +103,8 @@ public class ResultsOfFiltering extends AppCompatActivity
         resultTypeText.setText(resultType);
 
         ListView listView = view.findViewById(R.id.dialogListView);
-        CustomAdapter customAdapter = new CustomAdapter(this, subjectsStringArray, gradesStringArray);
+        CustomAdapter customAdapter = new CustomAdapter(this, subjectsStringArray, gradesStringArray,
+                secondaryQualificationLevel, secondaryMathGrade, secondaryEngGrade, secondaryAddMathGrade);
         listView.setAdapter(customAdapter);
 
         materialDialog.show();
@@ -170,23 +180,99 @@ public class ResultsOfFiltering extends AppCompatActivity
                 ineligibleDataHeader.add("Foundation in Sciences\n(to pursue degree programme in Medicine, Dentistry or Pharmacy)");
             }
         }
+        else
+        {
+            //Faculty of Business, management & Social Sciences
+            if(BBA.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Business Administration (Hons)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Business Administration (Hons)");
+            }
 
-        /*
-        //Faculty of Business, management & Social Sciences
+            if(BBA_HospitalityTourismManagement.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Business Administration (Hons) in Hospitality & Tourism Management");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Business Administration (Hons) in Hospitality & Tourism Management");
+            }
+
+            if(BAC.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Accountancy (Hons)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Accountancy (Hons)");
+            }
+
+            if(BFI.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Finance (Hons)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Finance (Hons)");
+            }
+
+            if(TESL.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Arts (Hons) TESL");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Arts (Hons) TESL");
+            }
+
+            if(CorporateComm.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Corporate Communication (Hons)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Corporate Communication (Hons)");
+            }
+
+            if(MassCommJournalism.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Mass Communication (Hons) Journalism");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Mass Communication (Hons) Journalism");
+            }
+
+            if(MassCommAdvertising.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Mass Communication (Hons) Advertising");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Mass Communication (Hons) Advertising");
+            }
+
+            if(BCE.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Early Childhood Education (Hons)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Early Childhood Education (Hons)");
+            }
+
+           // eligibleDataHeader.add("Bachelor of Special Needs Education (Hons)");
+        }
+
+
+    /*
         eligibleDataHeader.add("Master of Business Administration (MBA)");
-        eligibleDataHeader.add("Bachelor of Business Administration (Hons)");
-        eligibleDataHeader.add("Bachelor of Business Administration (Hons) in Hospitality & Tourism Management");
-        eligibleDataHeader.add("Bachelor of Accountancy (Hons)");
-        eligibleDataHeader.add("Bachelor of Finance (Hons)");
         eligibleDataHeader.add("Diploma in Business Management");
         eligibleDataHeader.add("Diploma in Hotel Management");
         eligibleDataHeader.add("Diploma of Accountancy");
-        eligibleDataHeader.add("Bachelor of Arts (Hons) TESL");
-        eligibleDataHeader.add("Bachelor of Corporate Communication (Hons)");
-        eligibleDataHeader.add("Bachelor of Mass Communication (Hons) Journalism");
-        eligibleDataHeader.add("Bachelor of Mass Communication (Hons) Advertising");
-        eligibleDataHeader.add("Bachelor of Early Childhood Education (Hons)");
-        eligibleDataHeader.add("Bachelor of Special Needs Education (Hons)");
         eligibleDataHeader.add("Diploma in Early Childhood Education");
 
         //Faculty of Integrative Sciences & Technology
@@ -234,14 +320,14 @@ public class ResultsOfFiltering extends AppCompatActivity
         fisOtherRequirements.add("789");
         fisOtherRequirements.add("10");
 
+        // added description only can scroll
 //        eligibleHashMap.put(eligibleDataHeader.get(0),fibfiaRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(1),fisRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(2),fisOtherRequirements);
-//        eligibleHashMap.put(eligibleDataHeader.get(3),description1);
-//        eligibleHashMap.put(eligibleDataHeader.get(4),description3);
-//        eligibleHashMap.put(eligibleDataHeader.get(5),description2);
-//        listHashMap.put(listDataHeader.get(6),description3);
+//        eligibleHashMap.put(eligibleDataHeader.get(3),fisOtherRequirements);
+//        eligibleHashMap.put(eligibleDataHeader.get(4),fisOtherRequirements);
+//        eligibleHashMap.put(eligibleDataHeader.get(5),fisOtherRequirements);
+        //listHashMap.put(listDataHeader.get(6),description3);
 //        listHashMap.put(listDataHeader.get(7),description1);
-
     }
 }

@@ -305,7 +305,7 @@ public class BFI
             //at least grade D only increment
             for (int i = 0; i < studentSubjects.length; i++)
             {
-                if (!Objects.equals(studentGrades[i], "F"))
+                if (!Objects.equals(studentGrades[i], "D") && !Objects.equals(studentGrades[i], "F"))
                 {
                     bfiRuleAttribute.incrementCountALevel(1);
                 }

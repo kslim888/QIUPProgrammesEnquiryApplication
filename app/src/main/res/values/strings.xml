@@ -137,7 +137,7 @@
         <item> B3 </item> <!-- A- -->
         <item> B4 </item> <!-- B+ -->
         <item> B5 </item> <!-- B -->
-        <item> B6 </item> <!-- C+ -->
+        <item> B6 </item> <!-- C+ credit -->
         <item> C7 </item> <!-- C -->
         <item> C8 </item> <!-- D -->
         <item> F9 </item> <!-- fail -->
@@ -270,7 +270,7 @@
         <item>Rasib</item> <!-- Gagal -->
     </string-array>
 
-    <string-array name="english_test">
+    <string-array name="english_test_proficiency">
         <item> </item>
         <item> MUET </item>
         <item> IELTS </item>
@@ -302,6 +302,6 @@
         <item> 3   </item>
         <item> 2.5 </item>
     </string-array>
-
+    <!-- English Proficiency -->
     <!--paper test toefl 310 to 677, internet based 0 to 120 -->
 </resources>

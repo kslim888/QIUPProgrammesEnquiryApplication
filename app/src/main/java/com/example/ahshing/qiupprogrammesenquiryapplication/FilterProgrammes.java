@@ -29,10 +29,17 @@ import java.util.Objects;
 import entryRules.BAC;
 import entryRules.BBA;
 import entryRules.BBA_HospitalityTourismManagement;
+import entryRules.BCE;
+import entryRules.BCS;
 import entryRules.BFI;
+import entryRules.BIS;
+import entryRules.CorporateComm;
 import entryRules.FIBFIA;
 import entryRules.FIS;
 import entryRules.FIS_MedicineDentistryPharmacy;
+import entryRules.MassCommAdvertising;
+import entryRules.MassCommJournalism;
+import entryRules.TESL;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class FilterProgrammes extends AppCompatActivity implements AdapterView.OnItemSelectedListener
@@ -345,6 +352,8 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 {
                     facts.put("Student's Additional Mathematics", " ");
                 }
+                //@Fact("Student's English Test") String studentEnglishTest
+                //facts.put("Student's English Test", " ");
 
                 // create and define rules
                 Rules rules = new Rules(
@@ -354,7 +363,14 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         new BBA(),
                         new BBA_HospitalityTourismManagement(),
                         new BFI(),
-                        new BAC()
+                        new BAC(),
+                        new TESL(),
+                        new CorporateComm(),
+                        new MassCommAdvertising(),
+                        new MassCommJournalism(),
+                        new BCE(),
+                        new BIS(),
+                        new BCS()
                 );
 
                 // create a rules engine and fire rules on known facts
@@ -809,7 +825,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 mathematicsSpinner.setVisibility(View.VISIBLE);
                 addMathText.setVisibility(View.VISIBLE);
                 addMathSpinner.setVisibility(View.VISIBLE);
-                spmOLevelSpinner.setSelection(0);
+                //spmOLevelSpinner.setSelection(0);
                 mathematicsSpinner.setEnabled(false);
                 englishSpinner.setEnabled(false);
                 addMathSpinner.setEnabled(false);
@@ -852,6 +868,11 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 addNewField.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 subjectsText.setTextColor(getResources().getColor(R.color.colorAccent));
                 gradesText.setTextColor(getResources().getColor(R.color.colorAccent));
+
+                spmOLevelSpinner.setSelection(0);
+                mathematicsSpinner.setSelection(0);
+                englishSpinner.setSelection(0);
+                addMathSpinner.setSelection(0);
 
                 if(parentLinearLayout.getChildCount() != 9 ) // if added new view
                 {
