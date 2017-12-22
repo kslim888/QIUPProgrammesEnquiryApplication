@@ -14,15 +14,11 @@ public class BCS
 {
     // advanced math is additional maths
     private static RuleAttribute bcsRuleAttribute;
-    private boolean gotAdvancedMath, advancedMathFail, advancedMathCredit,
-            mathCredit, gotMathSubject, gotMathSubjectAndCredit;
+    private boolean advancedMathCredit, gotMathSubject, gotMathSubjectAndCredit;
 
     public BCS() {
         bcsRuleAttribute = new RuleAttribute();
-        gotAdvancedMath = false;
-        advancedMathFail = false;
         advancedMathCredit = false;
-        mathCredit = false;
         gotMathSubject = false;
         gotMathSubjectAndCredit = false;
     }
@@ -34,14 +30,14 @@ public class BCS
                                @Fact("Student's Grades")String[] studentGrades,
                                @Fact("Student's SPM or O-Level") String studentSPMOLevel,
                                @Fact("Student's Mathematics") String studentMathematicsGrade,
-                               @Fact("Student's English") String studentEnglishGrade)
+                               @Fact("Student's Additional Mathematics") String studentAddMathGrade)
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            // for all students subject check got mathematics subject or not
+            // for all students subject check got add math or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)") || Objects.equals(studentSubjects[i], "Matematik (T)"))
+                if(Objects.equals(studentSubjects[i], "Matematik (T)"))
                 {
                     gotMathSubject = true;
                     break;
@@ -52,17 +48,7 @@ public class BCS
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Matematik (M)"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "C-")
-                                && !Objects.equals(studentGrades[i], "D+")
-                                && !Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "F"))
-                        {
-                            gotMathSubjectAndCredit = true;
-                        }
-                    }
-                    else if(Objects.equals(studentSubjects[i], "Matematik (T)"))
+                    if(Objects.equals(studentSubjects[i], "Matematik (T)"))
                     {
                         if(!Objects.equals(studentGrades[i], "C-")
                                 && !Objects.equals(studentGrades[i], "D+")
@@ -75,25 +61,20 @@ public class BCS
                 }
             }
 
-            // if SPM english no pass, straightaway return false
-            if(Objects.equals(studentEnglishGrade, "G"))
-            {
-                return false;
-            }
-            // check O-level english got pass or not. if no pass return false
-            if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
-            {
-                return false;
-            }
-
-            // if stpm got math subject but not credit, or no math subject at STPM
+            // if stpm got add math subject but not credit, or no add math subject at STPM
             if(!gotMathSubjectAndCredit)
             {
-                // check maths and english
+                // if the student din take add maths, straight return false
+                if(Objects.equals(studentAddMathGrade, "None"))
+                {
+                    return false;
+                }
+
+                // if the student got take add maths, check is credit or not
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
                     // if maths no credit, straightaway return false
-                    if(Objects.equals(studentMathematicsGrade, "D") || Objects.equals(studentMathematicsGrade, "E") || Objects.equals(studentMathematicsGrade, "G"))
+                    if(Objects.equals(studentAddMathGrade, "D") || Objects.equals(studentAddMathGrade, "E") || Objects.equals(studentAddMathGrade, "G"))
                     {
                         return false;
                     }
@@ -101,7 +82,7 @@ public class BCS
                 else // if is o-level
                 {
                     // check maths got credit or not. if no credit return false
-                    if(Objects.equals(studentMathematicsGrade, "D7") || Objects.equals(studentMathematicsGrade, "E8") || Objects.equals(studentMathematicsGrade, "F9") || Objects.equals(studentMathematicsGrade, "U"))
+                    if(Objects.equals(studentAddMathGrade, "D7") || Objects.equals(studentAddMathGrade, "E8") || Objects.equals(studentAddMathGrade, "F9") || Objects.equals(studentAddMathGrade, "U"))
                     {
                         return false;
                     }
@@ -121,51 +102,12 @@ public class BCS
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
-        {
-            // check maths and english
-            if(Objects.equals(studentSPMOLevel, "SPM"))
-            {
-                // if maths no credit, straightaway return false
-                if(Objects.equals(studentMathematicsGrade, "D") || Objects.equals(studentMathematicsGrade, "E") || Objects.equals(studentMathematicsGrade, "G"))
-                {
-                    return false;
-                }
-                // if english no pass, straightaway return false
-                if(Objects.equals(studentEnglishGrade, "G"))
-                {
-                    return false;
-                }
-            }
-            else // if is o-level
-            {
-                // check maths got credit or not. if no credit return false
-                if(Objects.equals(studentMathematicsGrade, "D7") || Objects.equals(studentMathematicsGrade, "E8") || Objects.equals(studentMathematicsGrade, "F9") || Objects.equals(studentMathematicsGrade, "U"))
-                {
-                    return false;
-                }
-                // check english got pass or not. if no pass return false
-                if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
-                {
-                    return false;
-                }
-            }
-
-            // minimum grade of Jayyid, only increment
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
-                {
-                    bcsRuleAttribute.incrementCountSTAM(1);
-                }
-            }
-        }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            // for all students subject check got mathematics subject or not
+            // for all students subject check got add mathematics subject or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Further Mathematics"))
                 {
                     gotMathSubject = true;
                     break;
@@ -176,16 +118,7 @@ public class BCS
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Mathematics"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "F"))
-                        {
-                            gotMathSubjectAndCredit = true;
-                        }
-                    }
-                    else if(Objects.equals(studentSubjects[i], "Further Mathematics"))
+                    if(Objects.equals(studentSubjects[i], "Further Mathematics"))
                     {
                         if(!Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "E")
@@ -197,20 +130,15 @@ public class BCS
                 }
             }
 
-            // if SPM english no pass, straightaway return false
-            if(Objects.equals(studentEnglishGrade, "G"))
-            {
-                return false;
-            }
-            // check O-level english got pass or not. if no pass return false
-            if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
-            {
-                return false;
-            }
-
-            // if A-level got math subject but not credit, or no math subject at A-level
+            // if A-level got add math subject but not credit, or no add math subject at A-level
             if(!gotMathSubjectAndCredit)
             {
+                // if the student din take add maths, straight return false
+                if(Objects.equals(studentAddMathGrade, "None"))
+                {
+                    return false;
+                }
+
                 // check maths and english at spm or o-level
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
@@ -246,71 +174,13 @@ public class BCS
             {
                 if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
                 {
-                    gotAdvancedMath = true; // if got advanced maths, set true
                     if(Objects.equals(studentGrades[i], "C7") || Objects.equals(studentGrades[i], "C8") || Objects.equals(studentGrades[i], "F9"))
                     {
-                        //if advanced math at least not grade B, set advancedMathFail to true
-                        advancedMathFail = true;
+                        return false;
                     }
                     else
                     {
                         advancedMathCredit = true;
-                    }
-                    break;
-                }
-            }
-
-            // if no adv maths
-            if(!gotAdvancedMath)
-            {
-                // for all student subjects, check the mathematics is at least pass(C8) or not
-                for(int i = 0; i < studentSubjects.length; i++)
-                {
-                    if(Objects.equals(studentSubjects[i], "Mathematics"))
-                    {
-                        if(Objects.equals(studentGrades[i], "C7") || Objects.equals(studentGrades[i], "C8") || Objects.equals(studentGrades[i], "F9"))
-                        {
-                            return false;
-                        }
-                        else
-                        {
-                            mathCredit = true;
-                        }
-                        break;
-                    }
-                }
-            }
-            else // got adv math
-            {
-                for(int i = 0; i < studentSubjects.length; i++)
-                {
-                    if(advancedMathFail)
-                    {
-                        if(Objects.equals(studentSubjects[i], "Mathematics"))
-                        {
-                            // if both adv math and math at least not grade B, return false
-                            if(Objects.equals(studentGrades[i], "C7") || Objects.equals(studentGrades[i], "C8") || Objects.equals(studentGrades[i], "F9"))
-                            {
-                                return false;
-                            }
-                            else
-                            {
-                                mathCredit = true;
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // here check english is at least pass(C8) or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "English"))
-                {
-                    if(Objects.equals(studentGrades[i], "F9"))
-                    {
-                        return false; // if no return false means english is pass or credit
                     }
                     break;
                 }
@@ -327,20 +197,20 @@ public class BCS
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            //TODO minimum CGPA of 2.00 out of 4.00
-            // FIXME Foundation / Matriculation
+            // TODO minimum CGPA
+            // FIXME Foundation / Matriculation, Diploma
             // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
         }
 
-        if(bcsRuleAttribute.getCountUEC() >= 3)
+        if(bcsRuleAttribute.getCountUEC() >= 4)
         {
-            if(mathCredit || advancedMathCredit)
+            if(advancedMathCredit)
             {
                 return true;
             }
         }
 
-        if(bcsRuleAttribute.getCountALevel() >= 2 || bcsRuleAttribute.getCountSTAM() >= 1 || bcsRuleAttribute.getCountSTPM() >= 2)
+        if(bcsRuleAttribute.getCountALevel() >= 2 || bcsRuleAttribute.getCountSTPM() >= 2)
         {
             return true;
         }
@@ -353,7 +223,7 @@ public class BCS
     {
         // if rule is statisfied (return true), this action will be executed
         bcsRuleAttribute.setJoinProgramme(true);
-        Log.d("BACjoinProgramme", "Joined");
+        Log.d("BCSjoinProgramme", "Joined");
     }
 
     public static boolean isJoinProgramme()

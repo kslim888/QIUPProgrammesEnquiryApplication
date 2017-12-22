@@ -12,22 +12,13 @@ public class CustomAdapter extends ArrayAdapter<String>
     private Context context;
     private String [] subject ={};
     private String [] grade ={};
-    private String secondaryQualificationLevel, secondaryEnglishGrade, secondaryMathGrade, secondaryAddMathGrade;
 
-    public CustomAdapter(Context context, String[] subject, String[] grade,
-                         String secondaryQualificationLevel,
-                         String secondaryEnglishGrade,
-                         String secondaryMathGrade,
-                         String secondaryAddMathGrade)
+    private CustomAdapter(Context context, String[] subject, String[] grade)
     {
         super(context, R.layout.dialog_list_view, subject);
         this.subject = subject;
         this.grade = grade;
         this.context = context;
-        this.secondaryQualificationLevel = secondaryQualificationLevel;
-        this.secondaryEnglishGrade = secondaryEnglishGrade;
-        this.secondaryMathGrade = secondaryMathGrade;
-        this.secondaryAddMathGrade = secondaryAddMathGrade;
     }
 
     public class ViewHolder

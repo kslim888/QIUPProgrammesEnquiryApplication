@@ -270,6 +270,36 @@
         <item>Rasib</item> <!-- Gagal -->
     </string-array>
 
+    <!-- for add math grade -->
+    <string-array name="add_math_spm_grades">
+        <item>  </item>
+        <item> None </item>
+        <item> A+ </item>
+        <item> A </item>
+        <item> A- </item>
+        <item> B+ </item>
+        <item> B </item>
+        <item> C+ </item>
+        <item> C </item> <!-- credit -->
+        <item> D </item> <!-- pass -->
+        <item> E </item> <!-- pass -->
+        <item> G </item> <!-- fail-->
+    </string-array>
+    <string-array name="add_math_oLevel_grades">
+        <item>  </item>
+        <item> None </item>
+        <item> A1 </item>
+        <item> A2 </item>
+        <item> B3 </item>
+        <item> B4 </item>
+        <item> C5 </item>
+        <item> C6 </item> <!-- credit -->
+        <item> D7 </item> <!-- pass -->
+        <item> E8 </item> <!-- fail -->
+        <item> F9 </item> <!-- fail -->
+        <item> U </item> <!-- fail -->
+    </string-array>
+
     <string-array name="english_test_proficiency">
         <item> </item>
         <item> MUET </item>

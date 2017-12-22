@@ -77,39 +77,81 @@ public class ResultsOfFiltering extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.main, menu);
-        //return true;
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        //get student's academic data
-        String[] subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
-        String[] gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
-        String secondaryQualificationLevel  = extras.getString("STUDENT_SECONDARY_QUALIFICATION");
-        String secondaryMathGrade = extras.getString("STUDENT_SECONDARY_MATH");
-        String secondaryEngGrade  = extras.getString("STUDENT_SECONDARY_ENG");
-        String secondaryAddMathGrade = extras.getString("STUDENT_SECONDARY_ADDMATH");
-
         MaterialDialog materialDialog = new MaterialDialog.Builder(ResultsOfFiltering.this)
-                .title("Student's Academic Qualification")
+                .title("Student's Academic Qualification Info")
                 .customView(R.layout.dialog_list_view, false)
                 .positiveText("OK")
                 .build();
         View view = materialDialog.getCustomView();
 
+        //get student's academic data
+        String[] subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
+        String[] gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
+
+        //reference to list view in dialog
+        ListView listView = view.findViewById(R.id.dialogListView);
+        CustomAdapter customAdapter = new CustomAdapter(this, subjectsStringArray, gradesStringArray);
+        listView.setAdapter(customAdapter);
+
+        //reference to the qualification level and set text
         TextView resultTypeText = view.findViewById(R.id.resultTypeDialog);
         resultTypeText.setText(resultType);
 
-        ListView listView = view.findViewById(R.id.dialogListView);
-        CustomAdapter customAdapter = new CustomAdapter(this, subjectsStringArray, gradesStringArray,
-                secondaryQualificationLevel, secondaryMathGrade, secondaryEngGrade, secondaryAddMathGrade);
-        listView.setAdapter(customAdapter);
+        //reference to the vertical bar
+        View topbar = view.findViewById(R.id.topBar);
+        View bottomBar = view.findViewById(R.id.bottomBar);
+
+        //reference to the second qualification level and set text
+        TextView secondQualificationLevelText = view.findViewById(R.id.secondQualificationLevelText);
+        TextView secondQualificationLevel = view.findViewById(R.id.secondQualificationLevel);
+        TextView secondMathText = view.findViewById(R.id.secondMathText);
+        TextView secondMathGrade = view.findViewById(R.id.mathGrade);
+        TextView secondEngText = view.findViewById(R.id.secondEngText);
+        TextView secondEngGrade = view.findViewById(R.id.englishGrade);
+        TextView secondAddMathText = view.findViewById(R.id.secondAddMathText);
+        TextView secondAddMathGrade = view.findViewById(R.id.addMathGrade);
+        if(Objects.equals(resultType, "SPM") || Objects.equals(resultType, "O-Level"))
+        {
+            //textView
+            secondQualificationLevelText.setVisibility(View.GONE);
+            secondMathText.setVisibility(View.GONE);
+            secondEngText.setVisibility(View.GONE);
+            secondAddMathText.setVisibility(View.GONE);
+            //grade
+            secondQualificationLevel.setVisibility(View.GONE);
+            secondMathGrade.setVisibility(View.GONE);
+            secondEngGrade.setVisibility(View.GONE);
+            secondAddMathGrade.setVisibility(View.GONE);
+            topbar.setVisibility(View.GONE);
+            bottomBar.setVisibility(View.GONE);
+            //set the list view height
+            ViewGroup.LayoutParams param = listView.getLayoutParams();
+            param.height = 800;
+            listView.setLayoutParams(param);
+            listView.requestLayout();
+        }
+        else
+        {
+            // get the secondary qualification data
+            String secondaryQualificationLevel  = extras.getString("STUDENT_SECONDARY_QUALIFICATION");
+            String secondaryMathGrade = extras.getString("STUDENT_SECONDARY_MATH");
+            String secondaryEngGrade  = extras.getString("STUDENT_SECONDARY_ENG");
+            String secondaryAddMathGrade = extras.getString("STUDENT_SECONDARY_ADDMATH");
+            secondQualificationLevel.setText(secondaryQualificationLevel);
+            secondMathGrade.setText(secondaryMathGrade);
+            secondEngGrade.setText(secondaryEngGrade);
+            secondAddMathGrade.setText(secondaryAddMathGrade);
+        }
 
         materialDialog.show();
         materialDialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-        materialDialog.getWindow().setLayout(1000, 1000);
+        materialDialog.getWindow().setLayout(1000, 1100);
         return super.onOptionsItemSelected(item);
     }
 
@@ -321,8 +363,8 @@ public class ResultsOfFiltering extends AppCompatActivity
         fisOtherRequirements.add("10");
 
         // added description only can scroll
-//        eligibleHashMap.put(eligibleDataHeader.get(0),fibfiaRequirements);
-//        eligibleHashMap.put(eligibleDataHeader.get(1),fisRequirements);
+       eligibleHashMap.put(eligibleDataHeader.get(0),fibfiaRequirements);
+        eligibleHashMap.put(eligibleDataHeader.get(1),fisRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(2),fisOtherRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(3),fisOtherRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(4),fisOtherRequirements);

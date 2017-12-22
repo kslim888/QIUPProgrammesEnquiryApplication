@@ -372,6 +372,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         new BIS(),
                         new BCS()
                 );
+                //new ElectronicsCommunicationsEngineering()
 
                 // create a rules engine and fire rules on known facts
                 RulesEngine rulesEngine = new DefaultRulesEngine();
@@ -748,12 +749,14 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
             case R.id.spmOLevelSpinner:
             {
-                ArrayAdapter<String> spmOLevelGradesAdapter;
+                ArrayAdapter<String> spmOLevelGradesAdapter, spmOLevelAddMathGradesAdapter;
+                String [] addMathGradeList;
                 switch(position)
                 {
                     case 1: // spm
                     {
                         gradesList = getResources().getStringArray(R.array.spm_grades);
+                        addMathGradeList = getResources().getStringArray(R.array.add_math_spm_grades);
                         //grade list
                         spmOLevelGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, gradesList)
                         {
@@ -773,16 +776,36 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                                 return v;
                             }
                         };
+                        spmOLevelAddMathGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, addMathGradeList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
                         spmOLevelGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spmOLevelAddMathGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         mathematicsSpinner.setAdapter(spmOLevelGradesAdapter);
                         englishSpinner.setAdapter(spmOLevelGradesAdapter);
-                        addMathSpinner.setAdapter(spmOLevelGradesAdapter);
+                        addMathSpinner.setAdapter(spmOLevelAddMathGradesAdapter);
                     }
                     break;
 
                     case 2: // o-level
                     {
                         gradesList = getResources().getStringArray(R.array.oLevel_grades);
+                        addMathGradeList = getResources().getStringArray(R.array.add_math_oLevel_grades);
                         //grade list
                         spmOLevelGradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
                         {
@@ -802,10 +825,29 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                                 return v;
                             }
                         };
+                        spmOLevelAddMathGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, addMathGradeList)
+                        {
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            {
+                                View v;
+                                if (position == 0) {
+                                    TextView tv = new TextView(getContext());
+                                    tv.setHeight(0);
+                                    tv.setVisibility(View.GONE);
+                                    v = tv;
+                                }
+                                else {
+                                    v = super.getDropDownView(position, null, parent);
+                                }
+                                return v;
+                            }
+                        };
                         spmOLevelGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spmOLevelAddMathGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         mathematicsSpinner.setAdapter(spmOLevelGradesAdapter);
                         englishSpinner.setAdapter(spmOLevelGradesAdapter);
-                        addMathSpinner.setAdapter(spmOLevelGradesAdapter);
+                        addMathSpinner.setAdapter(spmOLevelAddMathGradesAdapter);
                     }
                     break;
                 }
