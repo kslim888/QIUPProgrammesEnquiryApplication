@@ -74,7 +74,7 @@ public class BCE
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            //TODO minimum CGPA of 2.00 out of 4.00
+            //TODO minimum CGPA of 2.00 out of 4.00, English Proficiency Test
             //FIXME Foundation / Matriculation
             // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
         }

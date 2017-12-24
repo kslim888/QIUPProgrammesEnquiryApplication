@@ -29,11 +29,17 @@ import java.util.Objects;
 import entryRules.BAC;
 import entryRules.BBA;
 import entryRules.BBA_HospitalityTourismManagement;
+import entryRules.BBS;
 import entryRules.BCE;
 import entryRules.BCS;
+import entryRules.BEM;
 import entryRules.BFI;
 import entryRules.BIS;
+import entryRules.BIT;
+import entryRules.BS_ActuarialSciences;
+import entryRules.Biotech;
 import entryRules.CorporateComm;
+import entryRules.ElectronicsCommunicationsEngineering;
 import entryRules.FIBFIA;
 import entryRules.FIS;
 import entryRules.FIS_MedicineDentistryPharmacy;
@@ -370,9 +376,16 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         new MassCommJournalism(),
                         new BCE(),
                         new BIS(),
-                        new BCS()
+                        new BCS(),
+                        new ElectronicsCommunicationsEngineering(),
+                        new Biotech(),
+                        new BEM(),
+                        new BIT(),
+                        new BS_ActuarialSciences(),
+                        new BBS()
                 );
-                //new ElectronicsCommunicationsEngineering()
+                //TODO new BS_Chemistry()
+                //TODO new BET()
 
                 // create a rules engine and fire rules on known facts
                 RulesEngine rulesEngine = new DefaultRulesEngine();

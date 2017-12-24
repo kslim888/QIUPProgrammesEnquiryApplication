@@ -13,7 +13,7 @@ public class CustomAdapter extends ArrayAdapter<String>
     private String [] subject ={};
     private String [] grade ={};
 
-    private CustomAdapter(Context context, String[] subject, String[] grade)
+    public CustomAdapter(Context context, String[] subject, String[] grade)
     {
         super(context, R.layout.dialog_list_view, subject);
         this.subject = subject;

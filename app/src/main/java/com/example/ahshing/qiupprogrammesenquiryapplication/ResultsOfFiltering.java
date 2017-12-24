@@ -363,8 +363,8 @@ public class ResultsOfFiltering extends AppCompatActivity
         fisOtherRequirements.add("10");
 
         // added description only can scroll
-       eligibleHashMap.put(eligibleDataHeader.get(0),fibfiaRequirements);
-        eligibleHashMap.put(eligibleDataHeader.get(1),fisRequirements);
+//       eligibleHashMap.put(eligibleDataHeader.get(0),fibfiaRequirements);
+ //       eligibleHashMap.put(eligibleDataHeader.get(1),fisRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(2),fisOtherRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(3),fisOtherRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(4),fisOtherRequirements);

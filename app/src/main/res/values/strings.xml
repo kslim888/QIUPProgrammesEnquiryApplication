@@ -98,7 +98,7 @@
         <item> B </item>
         <item> B- </item>
         <item> C+ </item>
-        <item> C </item> <!-- credit -->
+        <item> C </item> <!-- credit/full passes -->
         <item> C- </item>
         <item> D+ </item>
         <item> D </item>
@@ -241,7 +241,7 @@
         <item> A </item>
         <item> B </item>
         <item> C </item> <!-- credit -->
-        <item> D </item>
+        <item> D </item> <!-- full pass -->
         <item> E </item> <!-- pass -->
         <item> F </item> <!-- fail -->
     </string-array>

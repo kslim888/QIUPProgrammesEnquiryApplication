@@ -92,8 +92,7 @@ public class BCS
             // for all students subject check got above at least C+ or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "C")
-                        && !Objects.equals(studentGrades[i], "C-")
+                if(!Objects.equals(studentGrades[i], "C-")
                         && !Objects.equals(studentGrades[i], "D+")
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
@@ -197,7 +196,7 @@ public class BCS
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            // TODO minimum CGPA
+            // TODO minimum CGPA, English Proficiency Test
             // FIXME Foundation / Matriculation, Diploma
             // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
         }
