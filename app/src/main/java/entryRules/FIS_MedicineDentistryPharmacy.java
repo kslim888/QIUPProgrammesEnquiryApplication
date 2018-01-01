@@ -25,7 +25,9 @@ public class FIS_MedicineDentistryPharmacy
 
     // when
     @Condition
-    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel, @Fact("Student's Subjects")String[] studentSubjects, @Fact("Student's Grades")String[] studentGrades)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
+                               @Fact("Student's Subjects")String[] studentSubjects,
+                               @Fact("Student's Grades")String[] studentGrades)
     {
         // here spm only
         // first, check basic requirement fulfill or not
@@ -50,7 +52,9 @@ public class FIS_MedicineDentistryPharmacy
             for(int i = 0; i < studentSubjects.length; i++) // for all the student results
             {
                 // if biology or chemi or physics at least not B, straight away return false
-                if ((Objects.equals(studentSubjects[i], "Biology")) || (Objects.equals(studentSubjects[i], "Physics")) || (Objects.equals(studentSubjects[i], "Chemistry")))
+                if ((Objects.equals(studentSubjects[i], "Biology"))
+                        || (Objects.equals(studentSubjects[i], "Physics"))
+                        || (Objects.equals(studentSubjects[i], "Chemistry")))
                 {
                     if(Objects.equals(studentGrades[i], "C+")
                             || Objects.equals(studentGrades[i], "C")
@@ -80,20 +84,16 @@ public class FIS_MedicineDentistryPharmacy
                 // if add maths at least got B, math no, or opposite, continue...
                 if(gotAddMaths)
                 {
-                    Log.d("maths", "1");
                     if(addMathFail)
                     {
-                        Log.d("maths", "2");
                         if ((Objects.equals(studentSubjects[i], "Mathematics")))
                         {
-                            Log.d("maths", "3");
                             if(Objects.equals(studentGrades[i], "C+")
                                     || Objects.equals(studentGrades[i], "C")
                                     || Objects.equals(studentGrades[i], "D")
                                     || Objects.equals(studentGrades[i], "E")
                                     || Objects.equals(studentGrades[i], "G"))
                             {
-                                Log.d("maths", "4");
                                 return false;
                             }
                         }
@@ -141,7 +141,9 @@ public class FIS_MedicineDentistryPharmacy
                 }
 
                 //Check either physics, add maths or maths 1 of them is at least B4 or not.
-                if ((Objects.equals(studentSubjects[i], "Physics")) || (Objects.equals(studentSubjects[i], "Mathematics")) || (Objects.equals(studentSubjects[i], "Additional Mathematics")))
+                if ((Objects.equals(studentSubjects[i], "Physics"))
+                        || (Objects.equals(studentSubjects[i], "Mathematics"))
+                        || (Objects.equals(studentSubjects[i], "Additional Mathematics")))
                 {
                     // if all of the 3 at least is not B4, straight away return false.
                     // if 1 of them is B4, continue...Got 3 chance.
@@ -186,8 +188,6 @@ public class FIS_MedicineDentistryPharmacy
             }
         }
 
-        Log.d("FIS_other credits", "" + FIS_MedicineDentistryPharmacy.getCountCredits());
-
         if(Objects.equals(qualificationLevel, "UEC"))
         {
             if(FIS_MedicineDentistryPharmacy.getCountRequiredSubject() < 3)
@@ -207,7 +207,7 @@ public class FIS_MedicineDentistryPharmacy
     {
         // if rule is statisfied (return true), this action will be executed
         FIS_MedicineDentistryPharmacy.setJoinProgramme(true);
-        Log.d("FIS_other joinProgramme", "Joined");
+        Log.d("FIS_other", "Joined");
     }
 
     public static boolean isJoinProgramme()

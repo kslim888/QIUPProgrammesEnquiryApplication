@@ -21,12 +21,22 @@ import java.util.Objects;
 import entryRules.BAC;
 import entryRules.BBA;
 import entryRules.BBA_HospitalityTourismManagement;
+import entryRules.BBS;
 import entryRules.BCE;
+import entryRules.BCS;
+import entryRules.BEM;
 import entryRules.BFI;
+import entryRules.BIS;
+import entryRules.BIT;
+import entryRules.BSNE;
+import entryRules.BS_ActuarialSciences;
+import entryRules.Biotech;
 import entryRules.CorporateComm;
+import entryRules.ElectronicsCommunicationsEngineering;
 import entryRules.FIBFIA;
 import entryRules.FIS;
 import entryRules.FIS_MedicineDentistryPharmacy;
+import entryRules.MBBS;
 import entryRules.MassCommAdvertising;
 import entryRules.MassCommJournalism;
 import entryRules.TESL;
@@ -50,6 +60,10 @@ public class ResultsOfFiltering extends AppCompatActivity
         ineligibleListView = findViewById(R.id.ineligibleProgrammes);
         extras = getIntent().getExtras();
         resultType = extras.getString("QUALIFICATION_LEVEL");
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         initData();
 
         eligibleListAdapter = new ExpandableListAdapter(this, eligibleDataHeader, eligibleHashMap);
@@ -62,6 +76,19 @@ public class ResultsOfFiltering extends AppCompatActivity
             }
         });
 
+        eligibleListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener()
+        {
+            int previousGroup = -1;
+            @Override
+            public void onGroupExpand(int i)
+            {
+                if(i != previousGroup)
+                    eligibleListView.collapseGroup(previousGroup);
+
+                previousGroup = i;
+            }
+        });
+
         ineligibleListAdapter = new ExpandableListAdapter(this, ineligibleDataHeader, ineligibleHashMap);
         ineligibleListView.setAdapter(ineligibleListAdapter);
         ineligibleListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
@@ -71,6 +98,7 @@ public class ResultsOfFiltering extends AppCompatActivity
                 return false;
             }
         });
+
     }
 
     @Override
@@ -83,75 +111,83 @@ public class ResultsOfFiltering extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        MaterialDialog materialDialog = new MaterialDialog.Builder(ResultsOfFiltering.this)
-                .title("Student's Academic Qualification Info")
-                .customView(R.layout.dialog_list_view, false)
-                .positiveText("OK")
-                .build();
-        View view = materialDialog.getCustomView();
-
-        //get student's academic data
-        String[] subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
-        String[] gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
-
-        //reference to list view in dialog
-        ListView listView = view.findViewById(R.id.dialogListView);
-        CustomAdapter customAdapter = new CustomAdapter(this, subjectsStringArray, gradesStringArray);
-        listView.setAdapter(customAdapter);
-
-        //reference to the qualification level and set text
-        TextView resultTypeText = view.findViewById(R.id.resultTypeDialog);
-        resultTypeText.setText(resultType);
-
-        //reference to the vertical bar
-        View topbar = view.findViewById(R.id.topBar);
-        View bottomBar = view.findViewById(R.id.bottomBar);
-
-        //reference to the second qualification level and set text
-        TextView secondQualificationLevelText = view.findViewById(R.id.secondQualificationLevelText);
-        TextView secondQualificationLevel = view.findViewById(R.id.secondQualificationLevel);
-        TextView secondMathText = view.findViewById(R.id.secondMathText);
-        TextView secondMathGrade = view.findViewById(R.id.mathGrade);
-        TextView secondEngText = view.findViewById(R.id.secondEngText);
-        TextView secondEngGrade = view.findViewById(R.id.englishGrade);
-        TextView secondAddMathText = view.findViewById(R.id.secondAddMathText);
-        TextView secondAddMathGrade = view.findViewById(R.id.addMathGrade);
-        if(Objects.equals(resultType, "SPM") || Objects.equals(resultType, "O-Level"))
+        if(item.getItemId() == android.R.id.home)
         {
-            //textView
-            secondQualificationLevelText.setVisibility(View.GONE);
-            secondMathText.setVisibility(View.GONE);
-            secondEngText.setVisibility(View.GONE);
-            secondAddMathText.setVisibility(View.GONE);
-            //grade
-            secondQualificationLevel.setVisibility(View.GONE);
-            secondMathGrade.setVisibility(View.GONE);
-            secondEngGrade.setVisibility(View.GONE);
-            secondAddMathGrade.setVisibility(View.GONE);
-            topbar.setVisibility(View.GONE);
-            bottomBar.setVisibility(View.GONE);
-            //set the list view height
-            ViewGroup.LayoutParams param = listView.getLayoutParams();
-            param.height = 800;
-            listView.setLayoutParams(param);
-            listView.requestLayout();
+            this.finish();
         }
-        else
+        else if(item.getItemId() == R.id.studentsAcademicQualification)
         {
-            // get the secondary qualification data
-            String secondaryQualificationLevel  = extras.getString("STUDENT_SECONDARY_QUALIFICATION");
-            String secondaryMathGrade = extras.getString("STUDENT_SECONDARY_MATH");
-            String secondaryEngGrade  = extras.getString("STUDENT_SECONDARY_ENG");
-            String secondaryAddMathGrade = extras.getString("STUDENT_SECONDARY_ADDMATH");
-            secondQualificationLevel.setText(secondaryQualificationLevel);
-            secondMathGrade.setText(secondaryMathGrade);
-            secondEngGrade.setText(secondaryEngGrade);
-            secondAddMathGrade.setText(secondaryAddMathGrade);
-        }
+            MaterialDialog materialDialog = new MaterialDialog.Builder(ResultsOfFiltering.this)
+                    .title("Student's Academic Qualification Info")
+                    .customView(R.layout.dialog_list_view, false)
+                    .positiveText("OK")
+                    .build();
+            View view = materialDialog.getCustomView();
 
-        materialDialog.show();
-        materialDialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-        materialDialog.getWindow().setLayout(1000, 1100);
+            //get student's academic data
+            String[] subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
+            String[] gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
+
+            //reference to list view in dialog
+            ListView listView = view.findViewById(R.id.dialogListView);
+            CustomAdapter customAdapter = new CustomAdapter(this, subjectsStringArray, gradesStringArray);
+            listView.setAdapter(customAdapter);
+
+            //reference to the qualification level and set text
+            TextView resultTypeText = view.findViewById(R.id.resultTypeDialog);
+            resultTypeText.setText(resultType);
+
+            //reference to the vertical bar
+            View topbar = view.findViewById(R.id.topBar);
+            View bottomBar = view.findViewById(R.id.bottomBar);
+
+            //reference to the second qualification level and set text
+            TextView secondQualificationLevelText = view.findViewById(R.id.secondQualificationLevelText);
+            TextView secondQualificationLevel = view.findViewById(R.id.secondQualificationLevel);
+            TextView secondMathText = view.findViewById(R.id.secondMathText);
+            TextView secondMathGrade = view.findViewById(R.id.mathGrade);
+            TextView secondEngText = view.findViewById(R.id.secondEngText);
+            TextView secondEngGrade = view.findViewById(R.id.englishGrade);
+            TextView secondAddMathText = view.findViewById(R.id.secondAddMathText);
+            TextView secondAddMathGrade = view.findViewById(R.id.addMathGrade);
+            if(Objects.equals(resultType, "STPM") || Objects.equals(resultType, "A-Level") || Objects.equals(resultType, "STAM"))
+            {
+                // get the secondary qualification data
+                String secondaryQualificationLevel  = extras.getString("STUDENT_SECONDARY_QUALIFICATION");
+                String secondaryMathGrade = extras.getString("STUDENT_SECONDARY_MATH");
+                String secondaryEngGrade  = extras.getString("STUDENT_SECONDARY_ENG");
+                String secondaryAddMathGrade = extras.getString("STUDENT_SECONDARY_ADDMATH");
+                secondQualificationLevel.setText(secondaryQualificationLevel);
+                secondMathGrade.setText(secondaryMathGrade);
+                secondEngGrade.setText(secondaryEngGrade);
+                secondAddMathGrade.setText(secondaryAddMathGrade);
+                materialDialog.getWindow().setLayout(1000, 1100);
+            }
+            else
+            {
+                //textView
+                secondQualificationLevelText.setVisibility(View.GONE);
+                secondMathText.setVisibility(View.GONE);
+                secondEngText.setVisibility(View.GONE);
+                secondAddMathText.setVisibility(View.GONE);
+                //grade
+                secondQualificationLevel.setVisibility(View.GONE);
+                secondMathGrade.setVisibility(View.GONE);
+                secondEngGrade.setVisibility(View.GONE);
+                secondAddMathGrade.setVisibility(View.GONE);
+                topbar.setVisibility(View.GONE);
+                bottomBar.setVisibility(View.GONE);
+                materialDialog.getWindow().setLayout(1000, 800);
+                //set the list view height
+                //ViewGroup.LayoutParams param = listView.getLayoutParams();
+                //param.height = 750;
+                //listView.setLayoutParams(param);
+                //listView.requestLayout();
+            }
+
+            materialDialog.show();
+            materialDialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -193,7 +229,9 @@ public class ResultsOfFiltering extends AppCompatActivity
         ineligibleHashMap = new HashMap<>();
 
         //Foundation
-        if(Objects.equals(resultType, "SPM") || Objects.equals(resultType, "O-Level"))
+        if(Objects.equals(resultType, "SPM")
+                || Objects.equals(resultType, "O-Level")
+                || Objects.equals(resultType, "UEC"))
         {
             if(FIS.isJoinProgramme())
             {
@@ -222,7 +260,8 @@ public class ResultsOfFiltering extends AppCompatActivity
                 ineligibleDataHeader.add("Foundation in Sciences\n(to pursue degree programme in Medicine, Dentistry or Pharmacy)");
             }
         }
-        else
+        if(!Objects.equals(resultType, "SPM")
+            && !Objects.equals(resultType, "O-Level")) // include UEC
         {
             //Faculty of Business, management & Social Sciences
             if(BBA.isJoinProgramme())
@@ -305,10 +344,103 @@ public class ResultsOfFiltering extends AppCompatActivity
             {
                 ineligibleDataHeader.add("Bachelor of Early Childhood Education (Hons)");
             }
+            if(BSNE.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Special Needs Education (Hons)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Special Needs Education (Hons)");
+            }
 
-           // eligibleDataHeader.add("Bachelor of Special Needs Education (Hons)");
+            //Faculty of Integrative Sciences & Technology
+            if(BCS.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Computer Science (Hons)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Computer Science (Hons)");
+            }
+
+            if(BIT.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Information Technology (Hons)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Information Technology (Hons)");
+            }
+
+            if(BIS.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Business Information System (Hons)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Business Information System (Hons)");
+            }
+
+            if(ElectronicsCommunicationsEngineering.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Engineering (Hons) Electronics & Communications Engineering");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Engineering (Hons) Electronics & Communications Engineering");
+            }
+
+            if(BEM.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Engineering (Hons) in Mechatronics");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Engineering (Hons) in Mechatronics");
+            }
+
+            if(Biotech.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Science (Hons) in Biotechnology");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Science (Hons) in Biotechnology");
+            }
+
+            if(BS_ActuarialSciences.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Science (Hons) Actuarial Sciences");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Science (Hons) Actuarial Sciences");
+            }
+
+
+            //Faculty of Medicine
+            if(MBBS.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Medicine & Bachelor of Surgery (MBBS)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Medicine & Bachelor of Surgery (MBBS)");
+            }
+
+            if(BBS.isJoinProgramme())
+            {
+                eligibleDataHeader.add("Bachelor of Biomedical Sciences (Hons)");
+            }
+            else
+            {
+                ineligibleDataHeader.add("Bachelor of Biomedical Sciences (Hons)");
+            }
+
+
+
+
         }
-
 
     /*
         eligibleDataHeader.add("Master of Business Administration (MBA)");
@@ -317,28 +449,16 @@ public class ResultsOfFiltering extends AppCompatActivity
         eligibleDataHeader.add("Diploma of Accountancy");
         eligibleDataHeader.add("Diploma in Early Childhood Education");
 
-        //Faculty of Integrative Sciences & Technology
-        eligibleDataHeader.add("Bachelor of Computer Science (Hons)");
-        eligibleDataHeader.add("Bachelor of Information Technology (Hons)");
-        eligibleDataHeader.add("Bachelor of Business Information System (Hons)");
         eligibleDataHeader.add("Diploma in Information Technology");
         eligibleDataHeader.add("Diploma in Business Information System");
-
-        eligibleDataHeader.add("Bachelor of Engineering (Hons) Electronics & Communications Engineering");
-        eligibleDataHeader.add("Bachelor of Engineering (Hons) in Mechatronics");
         eligibleDataHeader.add("Diploma in Mechatronics Engineering");
-        eligibleDataHeader.add("Bachelor of Science (Hons) in Biotechnology");
+        eligibleDataHeader.add("Diploma in Environmental Technology");
+
         eligibleDataHeader.add("Bachelor of Science (Hons) in Chemistry");
         eligibleDataHeader.add("Bachelor of Environmental Technology (Hons)");
-        eligibleDataHeader.add("Bachelor of Science (Hons) Actuarial Sciences");
-        eligibleDataHeader.add("Diploma in Environmental Technology");
 
         //Faculty of Pharmacy
         eligibleDataHeader.add("Bachelor of Pharmacy (Hons)");
-
-        //Faculty of Medicine
-        eligibleDataHeader.add("Bachelor of Medicine & Bachelor of Surgery (MBBS)");
-        eligibleDataHeader.add("Bachelor of Biomedical Sciences (Hons)");
 
         //Centre for Graduate Studies and Research
         eligibleDataHeader.add("Master of Business Administration");
@@ -363,8 +483,8 @@ public class ResultsOfFiltering extends AppCompatActivity
         fisOtherRequirements.add("10");
 
         // added description only can scroll
-//       eligibleHashMap.put(eligibleDataHeader.get(0),fibfiaRequirements);
- //       eligibleHashMap.put(eligibleDataHeader.get(1),fisRequirements);
+//      eligibleHashMap.put(eligibleDataHeader.get(0),fibfiaRequirements);
+//      eligibleHashMap.put(eligibleDataHeader.get(1),fisRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(2),fisOtherRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(3),fisOtherRequirements);
 //        eligibleHashMap.put(eligibleDataHeader.get(4),fisOtherRequirements);

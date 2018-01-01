@@ -27,7 +27,7 @@ public class Biotech
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
                         || !Objects.equals(studentGrades[i], "D+")
@@ -40,11 +40,11 @@ public class Biotech
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "F"))
+                        && !Objects.equals(studentGrades[i], "U"))
                 {
                     bioTechRuleAttribute.incrementCountALevel(1);
                 }
@@ -53,7 +53,7 @@ public class Biotech
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
             // for all subject check got at least minimum grade B or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {

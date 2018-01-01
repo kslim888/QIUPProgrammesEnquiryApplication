@@ -8,7 +8,7 @@
     <item
         android:id="@+id/studentsAcademicQualification"
         android:title="Student's Academic Qualification"
-        android:icon="@drawable/ic_assignment_black_24dp"
+        android:icon="@drawable/ic_description_white_24dp"
         app:showAsAction="always"
         />
 

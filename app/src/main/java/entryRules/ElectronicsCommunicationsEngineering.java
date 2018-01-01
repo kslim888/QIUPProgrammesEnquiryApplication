@@ -123,21 +123,21 @@ public class ElectronicsCommunicationsEngineering
             {
                 if(Objects.equals(studentSubjects[i], "Mathematics"))
                 {
-                    if(!Objects.equals(studentGrades[i], "F"))
+                    if(!Objects.equals(studentGrades[i], "U"))
                     {
                         gotMathSubjectAndCredit = true;
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "Further Mathematics"))
                 {
-                    if(!Objects.equals(studentGrades[i], "F"))
+                    if(!Objects.equals(studentGrades[i], "U"))
                     {
                         gotMathSubjectAndCredit = true;
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    if(!Objects.equals(studentGrades[i], "F"))
+                    if(!Objects.equals(studentGrades[i], "U"))
                     {
                         gotPhysicsSubjectAndCredit = true;
                     }
@@ -189,7 +189,7 @@ public class ElectronicsCommunicationsEngineering
             }
 
             // for all subject check got at least minimum grade B or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {

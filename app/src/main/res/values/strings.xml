@@ -13,7 +13,7 @@
         <item> SPM </item>
         <item> O-Level </item>
     </string-array>
-    
+
     <string-array name="qualification_type">
         <item> Qualification Level </item>
         <item> SPM </item>
@@ -33,20 +33,76 @@
         <item> </item>
         <item> Bahasa Malaysia </item>
         <item> Bahasa Inggeris </item>
-        <item> Bahasa Cina </item>
-        <item> Bahasa Tamil </item>
         <item> Sejarah </item>
+        <item> Science </item>
+        <item> Pendidikan Moral </item>
+        <item> Pendidikan Islam </item>
+        <!--Science and Mathematics-->
         <item> Additional Mathematics </item>
         <item> Mathematics </item>
         <item> Physics </item>
         <item> Chemistry </item>
         <item> Biology </item>
-        <item> Science </item>
-        <item> Pendidikan Moral </item>
-        <item> Pendidikan Islam </item>
+        <item> Information and Communication Technology </item>
+        <!--Social Sciences & Religion-->
+        <item> Geografi </item>
         <item> Prinsip Perakaunan </item>
         <item> Ekonomi Asas </item>
         <item> Perdagangan </item>
+        <item> Pengajian Keusahawanan </item>
+        <item> Tasawwur Islam </item>
+        <item> Pendidikan Al-Quran dan As-Sunnah </item>
+        <item> Pendidikan Syariah Islamiah </item>
+        <item> Bible Knowledge </item>
+        <!--Arts and Health-->
+        <item> Pendidikan Seni Visual </item>
+        <item> Pendidikan Muzik </item>
+        <item> Pengetahuan Sains Sukan </item>
+        <!-- Languages and Literature -->
+        <item> English for Science and Technology </item>
+        <item> Literature in English </item>
+        <item> Kesusasteraan Melayu </item>
+        <item> Bahasa Arab </item>
+        <item> Bahasa Iban </item>
+        <item> Bahasa Kadazandusun </item>
+        <item> Kesusasteraan Cina </item>
+        <item> Kesusasteraan Tamil </item>
+        <item> Bahasa Perancis </item>
+        <item> Bahasa Punjabi </item>
+        <item> Bahasa Cina </item>
+        <item> Bahasa Tamil </item>
+        <!--Technical and Vocational-->
+        <item> Sains Pertanian </item>
+        <item> Ekonomi Rumah Tangga </item>
+        <item> Lukisan Kejuruteraan </item>
+        <item> Pengajian Kejuruteraan Mekanikal </item>
+        <item> Pengajian Kejuruteraan Awam </item>
+        <item> Pengajian Kejuruteraan Elektrik dan Elektronik </item>
+        <item> Reka Cipta </item>
+        <item> Teknologi Kejuruteraan </item>
+        <item> Grafik Komunikasi Teknikal </item>
+        <item> Pembinaan Domestik </item>
+        <item> Membuat Perabot </item>
+        <item> Kerja Paip Domestik </item>
+        <item> Pendawaian Domestik </item>
+        <item> Kimpalan Arka dan Gas </item>
+        <item> Menservis Automobil </item>
+        <item> Menservis Motosikal </item>
+        <item> Menservis Peralatan Penyejukan dan Penyamanan Udara </item>
+        <item> Menservis Peralatan Elektrik Domestik </item>
+        <item> Rekaan dan Jahitan Pakaian </item>
+        <item> Katering dan Penyajian </item>
+        <item> Pemprosesan Makanan </item>
+        <item> Penjagaan Muka dan Dandanan Rambut </item>
+        <item> Asuhan dan Pendidikan Awal Kanak-Kanak </item>
+        <item> Gerontologi Asas dan Perkhidmatan Geriatrik </item>
+        <item> Landskap dan Nurseri </item>
+        <item> Akuakultur dan Haiwan Rekreasi </item>
+        <item> Tanaman Makanan </item>
+        <item> Seni Reka Tanda </item>
+        <item> Hiasan Dalaman Asas </item>
+        <item> Produksi Multimedia </item>
+        <item> Grafik Berkomputer </item>
     </string-array>
     <string-array name="spm_grades">
         <item>  </item>
@@ -98,7 +154,7 @@
         <item> B </item>
         <item> B- </item>
         <item> C+ </item>
-        <item> C </item> <!-- credit/full passes -->
+        <item> C </item> <!-- credit/full passes/2.33gpa -->
         <item> C- </item>
         <item> D+ </item>
         <item> D </item>
@@ -125,10 +181,13 @@
         <item> Principal Electronic </item>
         <item> Fundamentals of Electrical Engineering </item>
         <item> Economics </item>
-        <item> Basic Circuit Theory </item>
         <item> Commercial Studies </item>
         <item> Digital Logic </item>
         <item> Basic Circuit Theory </item>
+        <item> Industrial English </item>
+        <item> Car Repairing </item>
+        <item> Industrial Arts </item>
+
     </string-array>
     <string-array name="uec_grades">
         <item>  </item> <!-- SPM equivalent -->
@@ -238,12 +297,13 @@
     </string-array>
     <string-array name="aLevel_grades">
         <item>  </item>
+        <item> A* </item>
         <item> A </item>
         <item> B </item>
-        <item> C </item> <!-- credit -->
-        <item> D </item> <!-- full pass -->
+        <item> C </item> <!-- credit / full passes -->
+        <item> D </item> <!--  pass -->
         <item> E </item> <!-- pass -->
-        <item> F </item> <!-- fail -->
+        <item> U </item> <!-- unclassified (Failed) -->
     </string-array>
 
     <!-- STAM -->
@@ -269,6 +329,38 @@
         <item>Maqbul</item> <!-- Lulus -->
         <item>Rasib</item> <!-- Gagal -->
     </string-array>
+
+    <!-- Matrikulasi / Matriculation  -->
+    <string-array name="matriculation_subjects">
+        <item>  </item>
+        <item> Kimia </item> <!-- Chemistry-->
+        <item> Fizik </item> <!-- Physics-->
+        <item> Biologi </item> <!-- Biology-->
+       	<item> Matematik Sains </item> <!-- Mathematics -->
+       	<item> Sains Komputer </item> <!-- Computer Science -->
+       	<item> Perakaunan </item> <!-- Accounting -->
+       	<item> Pengurusan Perniagaan  </item> <!-- Business Studies-->
+       	<item> Ekonomi </item> <!-- Economics -->
+       	<item> Kimia Kejuruteraan </item> <!-- Engineering Chemistry-->
+       	<item> Fizik Kejuruteraan </item> <!-- Engineering Physics-->
+       	<item> Pengajian Kejuruteraan </item>  <!-- Engineering Studies-->
+    </string-array>
+    <string-array name="matriculation_grades">
+        <item>  </item>
+        <item> A </item>
+        <item> A- </item>
+        <item> B+ </item>
+        <item> B </item>
+        <item> B- </item>
+        <item> C+ </item>
+        <item> C </item> <!-- credit/full passes/2.33gpa -->
+        <item> C- </item>
+        <item> D+ </item>
+        <item> D </item>
+        <item> F </item>
+    </string-array>
+    <!--PNGS = GPA -->
+    <!--PNGK = CGPA -->
 
     <!-- for add math grade -->
     <string-array name="add_math_spm_grades">

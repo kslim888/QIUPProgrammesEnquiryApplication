@@ -14,12 +14,11 @@ public class TESL
 {
     // advanced math is additional maths
     private static RuleAttribute teslRuleAttribute;
-    private boolean englishPass, gotEnglishSubject, gotEnglishSubjectAndPass;
+    private boolean gotEnglishSubject, gotEnglishSubjectAndPass;
 
     public TESL() {
         teslRuleAttribute = new RuleAttribute();
         gotEnglishSubjectAndPass = false;
-        englishPass = false;
     }
 
     // when
@@ -80,7 +79,7 @@ public class TESL
             }
 
             // for all students subject check got above at least C or not. At least C only increment
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
                         && !Objects.equals(studentGrades[i], "D+")
@@ -111,7 +110,7 @@ public class TESL
             }
 
             // minimum grade of Jayyid, only increment
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
                 {
@@ -138,7 +137,7 @@ public class TESL
                 {
                     if(Objects.equals(studentSubjects[i], "Literature in English"))
                     {
-                        if(!Objects.equals(studentGrades[i], "F"))
+                        if(!Objects.equals(studentGrades[i], "U"))
                         {
                             gotEnglishSubjectAndPass = true;
                         }
@@ -169,9 +168,11 @@ public class TESL
             }
 
             // for all student subject, check got minimum grade C. At least C only increment
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "D") && !Objects.equals(studentGrades[i], "E") && !Objects.equals(studentGrades[i], "F"))
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "U"))
                 {
                     teslRuleAttribute.incrementCountALevel(1);
                 }
@@ -190,14 +191,14 @@ public class TESL
                     }
                     else if(Objects.equals(studentGrades[i], "C7") || Objects.equals(studentGrades[i], "C8") )
                     {
-                        englishPass = true;
+                        gotEnglishSubjectAndPass = true;
                     }
                     break;
                 }
             }
 
             // for all subject check got at least minimum grade B or not. At least B only increment
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {
@@ -214,7 +215,7 @@ public class TESL
 
         if(teslRuleAttribute.getCountUEC() >= 4)
         {
-            if(englishPass)
+            if(gotEnglishSubjectAndPass)
             {
                 return true;
             }

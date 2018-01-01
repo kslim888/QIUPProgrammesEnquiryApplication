@@ -9,13 +9,14 @@ import org.jeasy.rules.annotation.Rule;
 
 import java.util.Objects;
 
-@Rule(name = "BCE", description = "Entry rule to join Bachelor of Early Childhood Education")
-public class BCE
+@Rule(name = "BSNE", description = "Entry rule to join Bachelor of Special Needs Education")
+public class BSNE
 {
-    private static RuleAttribute bceRuleAttribute;
-    public BCE()
-    {
-        bceRuleAttribute = new RuleAttribute();
+    // advanced math is additional maths
+    private static RuleAttribute bsneRuleAttribute;
+
+    public BSNE() {
+        bsneRuleAttribute = new RuleAttribute();
     }
 
     // when
@@ -34,7 +35,7 @@ public class BCE
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    bceRuleAttribute.incrementCountSTPM(1);
+                    bsneRuleAttribute.incrementCountSTPM(1);
                 }
             }
         }
@@ -45,7 +46,7 @@ public class BCE
             {
                 if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    bceRuleAttribute.incrementCountSTAM(1);
+                    bsneRuleAttribute.incrementCountSTAM(1);
                 }
             }
         }
@@ -55,9 +56,11 @@ public class BCE
             // At least C(full passes) only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "F"))
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "U"))
                 {
-                    bceRuleAttribute.incrementCountALevel(1);
+                    bsneRuleAttribute.incrementCountALevel(1);
                 }
             }
         }
@@ -66,9 +69,11 @@ public class BCE
             // for all subject check got at least minimum grade B or not. At least B only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
+                if(!Objects.equals(studentGrades[i], "C7")
+                        && !Objects.equals(studentGrades[i], "C8")
+                        && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    bceRuleAttribute.incrementCountUEC(1);
+                    bsneRuleAttribute.incrementCountUEC(1);
                 }
             }
         }
@@ -79,10 +84,10 @@ public class BCE
             // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
         }
 
-        if(bceRuleAttribute.getCountUEC() >= 5
-                || bceRuleAttribute.getCountALevel() >= 2
-                || bceRuleAttribute.getCountSTAM() >= 1
-                || bceRuleAttribute.getCountSTPM() >= 2)
+        if(bsneRuleAttribute.getCountUEC() >= 5
+                || bsneRuleAttribute.getCountALevel() >= 2
+                || bsneRuleAttribute.getCountSTAM() >= 1
+                || bsneRuleAttribute.getCountSTPM() >= 2)
         {
             return true;
         }
@@ -95,12 +100,12 @@ public class BCE
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        bceRuleAttribute.setJoinProgramme(true);
-        Log.d("EarlyChildhoodEdu", "Joined");
+        bsneRuleAttribute.setJoinProgramme(true);
+        Log.d("SpecialNeedsEdu", "Joined");
     }
 
     public static boolean isJoinProgramme()
     {
-        return bceRuleAttribute.isJoinProgramme();
+        return bsneRuleAttribute.isJoinProgramme();
     }
 }

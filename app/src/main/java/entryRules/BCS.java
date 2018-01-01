@@ -29,7 +29,6 @@ public class BCS
                                @Fact("Student's Subjects")String[] studentSubjects,
                                @Fact("Student's Grades")String[] studentGrades,
                                @Fact("Student's SPM or O-Level") String studentSPMOLevel,
-                               @Fact("Student's Mathematics") String studentMathematicsGrade,
                                @Fact("Student's Additional Mathematics") String studentAddMathGrade)
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
@@ -90,7 +89,7 @@ public class BCS
             }
 
             // for all students subject check got above at least C+ or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
                         && !Objects.equals(studentGrades[i], "D+")
@@ -121,7 +120,7 @@ public class BCS
                     {
                         if(!Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "F"))
+                                && !Objects.equals(studentGrades[i], "U"))
                         {
                             gotMathSubjectAndCredit = true;
                         }
@@ -142,7 +141,9 @@ public class BCS
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
                     // if maths no credit, straightaway return false
-                    if(Objects.equals(studentMathematicsGrade, "D") || Objects.equals(studentMathematicsGrade, "E") || Objects.equals(studentMathematicsGrade, "G"))
+                    if(Objects.equals(studentAddMathGrade, "D")
+                            || Objects.equals(studentAddMathGrade, "E")
+                            || Objects.equals(studentAddMathGrade, "G"))
                     {
                         return false;
                     }
@@ -150,17 +151,22 @@ public class BCS
                 else // if is o-level
                 {
                     // if math no credit return false
-                    if(Objects.equals(studentMathematicsGrade, "D7") || Objects.equals(studentMathematicsGrade, "E8") || Objects.equals(studentMathematicsGrade, "F9") || Objects.equals(studentMathematicsGrade, "U"))
+                    if(Objects.equals(studentAddMathGrade, "D7")
+                            || Objects.equals(studentAddMathGrade, "E8")
+                            || Objects.equals(studentAddMathGrade, "F9")
+                            || Objects.equals(studentAddMathGrade, "U"))
                     {
                         return false;
                     }
                 }
             }
 
-            // for all student subject, check got minimum grade D
-            for(int i = 0; i < studentSubjects.length; i++)
+            // for all student subject, check got minimum grade C
+            for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "E") && !Objects.equals(studentGrades[i], "F"))
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "U"))
                 {
                     bcsRuleAttribute.incrementCountALevel(1);
                 }
@@ -186,7 +192,7 @@ public class BCS
             }
 
             // for all subject check got at least minimum grade B or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {

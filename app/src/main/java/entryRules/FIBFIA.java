@@ -23,7 +23,7 @@ public class FIBFIA
     {
         if(Objects.equals(qualificationLevel, "SPM"))
         {
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D") && !Objects.equals(studentGrades[i], "E") && !Objects.equals(studentGrades[i], "G"))
                     fibfiaRuleAttribute.incrementCountCredit(1);
@@ -31,7 +31,7 @@ public class FIBFIA
         }
         else if(Objects.equals(qualificationLevel, "O-Level"))
         {
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D7") && !Objects.equals(studentGrades[i], "E8") && !Objects.equals(studentGrades[i], "F9") && !Objects.equals(studentGrades[i], "U"))
                     fibfiaRuleAttribute.incrementCountCredit(1);
@@ -39,7 +39,7 @@ public class FIBFIA
         }
         else if(Objects.equals(qualificationLevel, "UEC"))// is UEC
         {
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                     fibfiaRuleAttribute.incrementCountCredit(1);
@@ -57,7 +57,6 @@ public class FIBFIA
                 return false;
         }
 
-        Log.d("FIA number of creits", "" + fibfiaRuleAttribute.getCountCredits());
         return true;
     }
 

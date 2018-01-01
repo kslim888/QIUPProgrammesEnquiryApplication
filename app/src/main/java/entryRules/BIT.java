@@ -148,7 +148,7 @@ public class BIT
                     {
                         if(!Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "F"))
+                                && !Objects.equals(studentGrades[i], "U"))
                         {
                             gotMathSubjectAndCredit = true;
                         }
@@ -157,7 +157,7 @@ public class BIT
                     {
                         if(!Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "F"))
+                                && !Objects.equals(studentGrades[i], "U"))
                         {
                             gotMathSubjectAndCredit = true;
                         }
@@ -214,9 +214,12 @@ public class BIT
                 }
             }
 
+            //only full passes (C) then increment
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "F"))
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "U"))
                 {
                     bitTechRuleAttribute.incrementCountALevel(1);
                 }

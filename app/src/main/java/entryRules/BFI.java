@@ -158,7 +158,7 @@ public class BFI
             }
 
             // minimum C+ only increment
-            for (int i = 0; i < studentSubjects.length; i++)
+            for (int i = 0; i < studentGrades.length; i++)
             {
                 if (!Objects.equals(studentGrades[i], "C")
                         && !Objects.equals(studentGrades[i], "C-")
@@ -224,7 +224,7 @@ public class BFI
                 }
             }
             // minimum Jayyid only increment
-            for (int i = 0; i < studentSubjects.length; i++)
+            for (int i = 0; i < studentGrades.length; i++)
             {
                 if (!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
                 {
@@ -260,7 +260,7 @@ public class BFI
                     {
                         if(!Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "F"))
+                                && !Objects.equals(studentGrades[i], "U"))
                         {
                             gotMathSubjectAndCredit = true;
                         }
@@ -269,7 +269,7 @@ public class BFI
                     {
                         if(!Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "F"))
+                                && !Objects.equals(studentGrades[i], "U"))
                         {
                             gotMathSubjectAndCredit = true;
                         }
@@ -283,7 +283,7 @@ public class BFI
                 {
                     if(Objects.equals(studentSubjects[i], "Literature in English"))
                     {
-                        if(!Objects.equals(studentGrades[i], "F"))
+                        if(!Objects.equals(studentGrades[i], "U"))
                         {
                             gotEnglishSubjectAndPass = true;
                         }
@@ -355,9 +355,9 @@ public class BFI
             }
 
             //at least grade D only increment
-            for (int i = 0; i < studentSubjects.length; i++)
+            for (int i = 0; i < studentGrades.length; i++)
             {
-                if (!Objects.equals(studentGrades[i], "D") && !Objects.equals(studentGrades[i], "F"))
+                if (!Objects.equals(studentGrades[i], "E") && !Objects.equals(studentGrades[i], "U"))
                 {
                     bfiRuleAttribute.incrementCountALevel(1);
                 }
@@ -415,7 +415,7 @@ public class BFI
             }
 
             // for all subject check got at least minimum grade B or not. At least B only increment
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {

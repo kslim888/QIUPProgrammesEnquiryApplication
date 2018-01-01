@@ -89,7 +89,8 @@ public class BEM
                 }
             }
 
-            for(int i = 0; i < studentSubjects.length; i++)
+            // for all student subject, check got at least C or not. Only C increment
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
                         && !Objects.equals(studentGrades[i], "D+")
@@ -129,21 +130,21 @@ public class BEM
             {
                 if(Objects.equals(studentSubjects[i], "Mathematics"))
                 {
-                    if(!Objects.equals(studentGrades[i], "F"))
+                    if(!Objects.equals(studentGrades[i], "U"))
                     {
                         gotMathSubjectAndCredit = true;
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "Further Mathematics"))
                 {
-                    if(!Objects.equals(studentGrades[i], "F"))
+                    if(!Objects.equals(studentGrades[i], "U"))
                     {
                         gotMathSubjectAndCredit = true;
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    if(!Objects.equals(studentGrades[i], "F"))
+                    if(!Objects.equals(studentGrades[i], "U"))
                     {
                         gotPhysicsSubjectAndCredit = true;
                     }
@@ -151,9 +152,9 @@ public class BEM
             }
 
             // for all students subject, check if it is pass or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "F"))
+                if(!Objects.equals(studentGrades[i], "U"))
                 {
                     bemRuleAttribute.incrementCountALevel(1);
                 }
@@ -200,7 +201,7 @@ public class BEM
             }
 
             // for all subject check got at least minimum grade B or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {

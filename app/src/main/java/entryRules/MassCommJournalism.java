@@ -90,7 +90,7 @@ public class MassCommJournalism
             }
 
             // for all students subject check at least C or not. At least C only increment
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
                         && !Objects.equals(studentGrades[i], "D+")
@@ -127,7 +127,7 @@ public class MassCommJournalism
             }
 
             // minimum grade of Jayyid, only increment
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
                 {
@@ -154,7 +154,7 @@ public class MassCommJournalism
                 {
                     if(Objects.equals(studentSubjects[i], "Literature in English"))
                     {
-                        if(!Objects.equals(studentGrades[i], "F"))
+                        if(!Objects.equals(studentGrades[i], "U"))
                         {
                             gotEnglishSubjectAndPass = true;
                         }
@@ -178,7 +178,9 @@ public class MassCommJournalism
                 else // is o-level
                 {
                     // if fail, return false
-                    if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
+                    if(Objects.equals(studentEnglishGrade, "E8")
+                            || Objects.equals(studentEnglishGrade, "F9")
+                            || Objects.equals(studentEnglishGrade, "U"))
                     {
                         return false;
                     }
@@ -186,9 +188,11 @@ public class MassCommJournalism
             }
 
             // for all student subject, check got minimum grade C. At least C only increment
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "D") && !Objects.equals(studentGrades[i], "E") && !Objects.equals(studentGrades[i], "F"))
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "U"))
                 {
                     journalismRuleAttribute.incrementCountALevel(1);
                 }
@@ -214,7 +218,7 @@ public class MassCommJournalism
             }
 
             // for all subject check got at least minimum grade B or not. At least B only increment
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {
@@ -237,7 +241,9 @@ public class MassCommJournalism
             }
         }
 
-        if(journalismRuleAttribute.getCountALevel() >= 2 || journalismRuleAttribute.getCountSTAM() >= 1 || journalismRuleAttribute.getCountSTPM() >= 2)
+        if(journalismRuleAttribute.getCountALevel() >= 2
+                || journalismRuleAttribute.getCountSTAM() >= 1
+                || journalismRuleAttribute.getCountSTPM() >= 2)
         {
             return true;
         }

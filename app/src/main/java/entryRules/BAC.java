@@ -126,7 +126,7 @@ public class BAC
             }
 
             // for all students subject check got above at least C+ or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C")
                         && !Objects.equals(studentGrades[i], "C-")
@@ -189,7 +189,7 @@ public class BAC
             }
 
             // minimum grade of Jayyid, only increment
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
                 {
@@ -217,7 +217,7 @@ public class BAC
                     {
                         if(!Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "F"))
+                                && !Objects.equals(studentGrades[i], "U"))
                         {
                             gotMathSubjectAndCredit = true;
                         }
@@ -226,7 +226,7 @@ public class BAC
                     {
                         if(!Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "F"))
+                                && !Objects.equals(studentGrades[i], "U"))
                         {
                             gotMathSubjectAndCredit = true;
                         }
@@ -287,9 +287,11 @@ public class BAC
             }
 
             // for all student subject, check got minimum grade D
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "E") && !Objects.equals(studentGrades[i], "F"))
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "U"))
                 {
                     bacRuleAttribute.incrementCountALevel(1);
                 }
@@ -352,7 +354,7 @@ public class BAC
             }
 
             // for all subject check got at least minimum grade B or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {
