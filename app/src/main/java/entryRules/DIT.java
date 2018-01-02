@@ -13,11 +13,12 @@ import java.util.Objects;
 public class DIT
 {
     private static RuleAttribute ditRuleAttribute;
-    private boolean gotMathSubjectAndCredit;
+    private boolean gotMathSubjectAndCredit, gotEnglishSubjectAndPass;
 
     public DIT() {
         ditRuleAttribute = new RuleAttribute();
         gotMathSubjectAndCredit = false;
+        gotEnglishSubjectAndPass = false;
     }
 
     // when
@@ -27,30 +28,20 @@ public class DIT
                                @Fact("Student's Grades")String[] studentGrades,
                                @Fact("Student's SPM or O-Level") String studentSPMOLevel,
                                @Fact("Student's Mathematics") String studentMathematicsGrade,
-                               @Fact("Student's Additional Mathematics") String studentAddMathGrade)
+                               @Fact("Student's Additional Mathematics") String studentAddMathGrade,
+                               @Fact("Student's English") String studentEnglishGrade)
     {
-        if(Objects.equals(qualificationLevel, "SPM")) // if is STPM qualification
+        if(Objects.equals(qualificationLevel, "SPM")) // if is SPM qualification
         {
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics"))
                 {
                     if(!Objects.equals(studentGrades[i], "D")
                             && !Objects.equals(studentGrades[i], "E")
                             && !Objects.equals(studentGrades[i], "G"))
                     {
                         gotMathSubjectAndCredit = true;
-                        break;
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "E")
-                            && !Objects.equals(studentGrades[i], "G"))
-                    {
-                        gotMathSubjectAndCredit = true;
-                        break;
                     }
                 }
             }
@@ -65,11 +56,11 @@ public class DIT
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "O-Level")) // if is STPM qualification
+        else if(Objects.equals(qualificationLevel, "O-Level")) // if is O Level qualification
         {
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics"))
                 {
                     if(!Objects.equals(studentGrades[i], "D7")
                             && !Objects.equals(studentGrades[i], "E8")
@@ -77,18 +68,6 @@ public class DIT
                             && !Objects.equals(studentGrades[i], "U"))
                     {
                         gotMathSubjectAndCredit = true;
-                        break;
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "D7")
-                            && !Objects.equals(studentGrades[i], "E8")
-                            && !Objects.equals(studentGrades[i], "F9")
-                            && !Objects.equals(studentGrades[i], "U"))
-                    {
-                        gotMathSubjectAndCredit = true;
-                        break;
                     }
                 }
             }
@@ -106,6 +85,62 @@ public class DIT
         }
         else if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
+            // check whether got credit in Mathematics and English pass at SPM / O-level
+            if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
+            {
+                //check math
+                if(!Objects.equals(studentMathematicsGrade, "D")
+                        && !Objects.equals(studentMathematicsGrade, "E")
+                        && !Objects.equals(studentMathematicsGrade, "G"))
+                {
+                    gotMathSubjectAndCredit = true;
+                }
+
+                //check add math
+                if(!Objects.equals(studentAddMathGrade, "None")
+                        && !Objects.equals(studentAddMathGrade, "D")
+                        && !Objects.equals(studentAddMathGrade, "E")
+                        && !Objects.equals(studentAddMathGrade, "G"))
+                {
+                    gotMathSubjectAndCredit = true;
+                }
+
+                //check english
+                if(!Objects.equals(studentEnglishGrade, "G"))
+                {
+                    gotEnglishSubjectAndPass = true;
+                }
+            }
+            else if(Objects.equals(studentSPMOLevel, "O-Level")) // if is O-Level
+            {
+                //check math
+                if(!Objects.equals(studentMathematicsGrade, "D7")
+                        && !Objects.equals(studentMathematicsGrade, "E8")
+                        && !Objects.equals(studentMathematicsGrade, "F9")
+                        && !Objects.equals(studentMathematicsGrade, "U"))
+                {
+                    gotMathSubjectAndCredit = true;
+                }
+
+                //check add math
+                if(!Objects.equals(studentAddMathGrade, "None")
+                        && !Objects.equals(studentAddMathGrade, "D7")
+                        && !Objects.equals(studentAddMathGrade, "E8")
+                        && !Objects.equals(studentAddMathGrade, "F9")
+                        && !Objects.equals(studentAddMathGrade, "U"))
+                {
+                    gotMathSubjectAndCredit = true;
+                }
+
+                //check english
+                if(!Objects.equals(studentAddMathGrade, "E8")
+                        && !Objects.equals(studentAddMathGrade, "F9")
+                        && !Objects.equals(studentAddMathGrade, "U"))
+                {
+                    gotEnglishSubjectAndPass = true;
+                }
+            }
+
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -117,8 +152,64 @@ public class DIT
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "A-Level")) // if is STPM qualification
+        else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
+            // check whether got credit in Mathematics and English pass at spm / o level
+            if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
+            {
+                //check math
+                if(!Objects.equals(studentMathematicsGrade, "D")
+                        && !Objects.equals(studentMathematicsGrade, "E")
+                        && !Objects.equals(studentMathematicsGrade, "G"))
+                {
+                    gotMathSubjectAndCredit = true;
+                }
+
+                //check add math
+                if(!Objects.equals(studentAddMathGrade, "None")
+                        && !Objects.equals(studentAddMathGrade, "D")
+                        && !Objects.equals(studentAddMathGrade, "E")
+                        && !Objects.equals(studentAddMathGrade, "G"))
+                {
+                    gotMathSubjectAndCredit = true;
+                }
+
+                //check english
+                if(!Objects.equals(studentEnglishGrade, "G"))
+                {
+                    gotEnglishSubjectAndPass = true;
+                }
+            }
+            else if(Objects.equals(studentSPMOLevel, "O-Level")) // if is O-Level
+            {
+                //check math
+                if(!Objects.equals(studentMathematicsGrade, "D7")
+                        && !Objects.equals(studentMathematicsGrade, "E8")
+                        && !Objects.equals(studentMathematicsGrade, "F9")
+                        && !Objects.equals(studentMathematicsGrade, "U"))
+                {
+                    gotMathSubjectAndCredit = true;
+                }
+
+                //check add math
+                if(!Objects.equals(studentAddMathGrade, "None")
+                        && !Objects.equals(studentAddMathGrade, "D7")
+                        && !Objects.equals(studentAddMathGrade, "E8")
+                        && !Objects.equals(studentAddMathGrade, "F9")
+                        && !Objects.equals(studentAddMathGrade, "U"))
+                {
+                    gotMathSubjectAndCredit = true;
+                }
+
+                //check english
+                if(!Objects.equals(studentAddMathGrade, "E8")
+                        && !Objects.equals(studentAddMathGrade, "F9")
+                        && !Objects.equals(studentAddMathGrade, "U"))
+                {
+                    gotEnglishSubjectAndPass = true;
+                }
+            }
+
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
@@ -131,25 +222,30 @@ public class DIT
         }
         else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
         {
-            // check whether got credit in Mathematics
+            // check whether got credit in Mathematics at SPM / O Level
             if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
+                //check math
                 if(!Objects.equals(studentMathematicsGrade, "D")
                         && !Objects.equals(studentMathematicsGrade, "E")
                         && !Objects.equals(studentMathematicsGrade, "G"))
                 {
                     gotMathSubjectAndCredit = true;
                 }
-                if(!Objects.equals(studentAddMathGrade, "D")
+
+                //check add math
+                if(!Objects.equals(studentAddMathGrade, "None")
+                        && !Objects.equals(studentAddMathGrade, "D")
                         && !Objects.equals(studentAddMathGrade, "E")
                         && !Objects.equals(studentAddMathGrade, "G"))
+
                 {
                     gotMathSubjectAndCredit = true;
                 }
             }
             else if(Objects.equals(studentSPMOLevel, "O-Level")) // if is O-Level
             {
-                //check maths
+                //check math
                 if(!Objects.equals(studentMathematicsGrade, "D7")
                         && !Objects.equals(studentMathematicsGrade, "E8")
                         && !Objects.equals(studentMathematicsGrade, "F9")
@@ -157,10 +253,13 @@ public class DIT
                 {
                     gotMathSubjectAndCredit = true;
                 }
-                if(!Objects.equals(studentMathematicsGrade, "D7")
-                        && !Objects.equals(studentMathematicsGrade, "E8")
-                        && !Objects.equals(studentMathematicsGrade, "F9")
-                        && !Objects.equals(studentMathematicsGrade, "U"))
+
+                //check add math
+                if(!Objects.equals(studentAddMathGrade, "None")
+                        && !Objects.equals(studentAddMathGrade, "D7")
+                        && !Objects.equals(studentAddMathGrade, "E8")
+                        && !Objects.equals(studentAddMathGrade, "F9")
+                        && !Objects.equals(studentAddMathGrade, "U"))
                 {
                     gotMathSubjectAndCredit = true;
                 }
@@ -177,6 +276,19 @@ public class DIT
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
+            for(int i = 0; i < studentSubjects.length; i++)
+            {
+                if(Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Additional Mathematics"))
+                {
+                    if(!Objects.equals(studentGrades[i], "C7")
+                            && !Objects.equals(studentGrades[i], "C8")
+                            && !Objects.equals(studentGrades[i], "F9"))
+                    {
+                        gotMathSubjectAndCredit = true;
+                    }
+                }
+            }
+
             // for all subject check got at least minimum grade B or not
             for(int i = 0; i < studentGrades.length; i++)
             {
@@ -193,21 +305,22 @@ public class DIT
             // TODO SKM level 3
         }
 
+        if(ditRuleAttribute.getCountSTPM() >= 2 || ditRuleAttribute.getCountALevel() >= 2)
+        {
+            if(gotMathSubjectAndCredit && gotEnglishSubjectAndPass)
+            {
+                return true;
+            }
+        }
         if(ditRuleAttribute.getCountSPM() >= 3
                 || ditRuleAttribute.getCountOLevel() >= 3
-                || ditRuleAttribute.getCountSTAM() >= 1)
+                || ditRuleAttribute.getCountSTAM() >= 1
+                || ditRuleAttribute.getCountUEC() >= 3)
         {
             if(gotMathSubjectAndCredit)
             {
                 return true;
             }
-        }
-
-        //TODO STPM
-
-        if(ditRuleAttribute.getCountUEC() >= 5 || ditRuleAttribute.getCountALevel() >= 2 )
-        {
-            return true;
         }
         return false;
     }

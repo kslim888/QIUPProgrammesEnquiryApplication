@@ -78,7 +78,7 @@ public class DBM
             // minimum grade of Maqbul, only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if( !Objects.equals(studentGrades[i], "Rasib"))
+                if(!Objects.equals(studentGrades[i], "Rasib"))
                 {
                     dbmRuleAttribute.incrementCountSTAM(1);
                 }
@@ -102,8 +102,8 @@ public class DBM
             // TODO SKM level 3
         }
 
-
         if(dbmRuleAttribute.getCountSPM() >= 3
+                || dbmRuleAttribute.getCountOLevel() >= 3
                 || dbmRuleAttribute.getCountUEC() >= 3
                 || dbmRuleAttribute.getCountSTAM() >= 1
                 || dbmRuleAttribute.getCountSTPM() >= 1

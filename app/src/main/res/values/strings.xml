@@ -187,7 +187,6 @@
         <item> Industrial English </item>
         <item> Car Repairing </item>
         <item> Industrial Arts </item>
-
     </string-array>
     <string-array name="uec_grades">
         <item>  </item> <!-- SPM equivalent -->
@@ -309,25 +308,25 @@
     <!-- STAM -->
     <string-array name="STAM_subjects">
         <item> </item>
-        <item>Hifz Al-Quran dan Tajwid</item>
-        <item>Fiqh</item>
-        <item>Tafsir dan Ulumuhu</item>
-        <item>Hadith dan Mustolah</item>
-        <item>Arud dan Qafiyah</item>
-        <item>Balaghah</item>
-        <item>Adab dan Nusus</item>
-        <item>Tauhid dan Mantiq</item>
-        <item>Nahu dan Sarf</item>
-        <item>Insya' dan Mutalaah</item>
-        <item>Arudh dan Qafiyah</item>
+        <item> Hifz Al-Quran dan Tajwid </item>
+        <item> Fiqh </item>
+        <item> Tafsir dan Ulumuhu </item>
+        <item> Hadith dan Mustolah </item>
+        <item> Arud dan Qafiyah </item>
+        <item> Balaghah </item>
+        <item> Adab dan Nusus </item>
+        <item> Tauhid dan Mantiq </item>
+        <item> Nahu dan Sarf </item>
+        <item> Insya' dan Mutalaah </item>
+        <item> Arudh dan Qafiyah </item>
     </string-array>
     <string-array name="STAM_grades">
         <item> </item>
-        <item>Mumtaz</item> <!-- Cemerlang -->
-        <item>Jayyid Jiddan</item> <!-- Sangat Baik -->
-        <item>Jayyid</item> <!-- Baik -->
-        <item>Maqbul</item> <!-- Lulus -->
-        <item>Rasib</item> <!-- Gagal -->
+        <item> Mumtaz </item> <!-- Cemerlang -->
+        <item> Jayyid Jiddan </item> <!-- Sangat Baik -->
+        <item> Jayyid </item> <!-- Baik -->
+        <item> Maqbul </item> <!-- Lulus -->
+        <item> Rasib </item> <!-- Gagal -->
     </string-array>
 
     <!-- Matrikulasi / Matriculation  -->
@@ -392,14 +391,17 @@
         <item> U </item> <!-- fail -->
     </string-array>
 
-    <string-array name="english_test_proficiency">
+    <string-array name="english_proficiency_test">
         <item> </item>
         <item> MUET </item>
         <item> IELTS </item>
-        <item> TOEFL </item>
+        <item> TOEFL (Paper-Based Test) </item>
+        <item> TOEFL (Internet-Based Test) </item>
     </string-array>
 
     <string-array name="muet_band">
+        <item> </item>
+        <item> None </item>
         <item> Band 6 </item>
         <item> Band 5 </item>
         <item> Band 4 </item>
@@ -409,6 +411,7 @@
     </string-array>
 
     <string-array name="IELTS_overall_band_score">
+        <item> </item>
         <item> 9   </item>
         <item> 8.5 </item>
         <item> 8   </item>
@@ -424,6 +427,44 @@
         <item> 3   </item>
         <item> 2.5 </item>
     </string-array>
-    <!-- English Proficiency -->
+
     <!--paper test toefl 310 to 677, internet based 0 to 120 -->
+
+    <string-array name="list_of_programmes">
+        <item> </item>
+        <item> Foundation in Arts </item>
+        <item> Foundation in Business </item>
+        <item> Foundation in Sciences </item>
+        <item> Bachelor of Business Administration (Hons) </item>
+        <item> Bachelor of Business Administration (Hons) in Hospitality &amp; Tourism Management </item>
+        <item> Bachelor of Accountancy (Hons) </item>
+        <item> Bachelor of Finance (Hons) </item>
+        <item> Diploma in Business Management </item>
+        <item> Diploma in Hotel Management </item>
+        <item> Diploma of Accountancy </item>
+        <item> Bachelor of Arts (Hons) TESL </item>
+        <item> Bachelor of Corporate Communication (Hons) </item>
+        <item> Bachelor of Mass Communication (Hons) Journalism </item>
+        <item> Bachelor of Mass Communication (Hons) Advertising </item>
+        <item> Bachelor of Early Childhood Education (Hons) </item>
+        <item> Bachelor of Special Needs Education (Hons) </item>
+        <item> Diploma in Early Childhood Education </item>
+        <item> Bachelor of Computer Science (Hons) </item>
+        <item> Bachelor of Information Technology (Hons) </item>
+        <item> Bachelor of Business Information System (Hons) </item>
+        <item> Diploma in Information Technology </item>
+        <item> Diploma in Business Information System </item>
+        <item> Bachelor of Engineering (Hons) Electronics &amp; Communications Engineering </item>
+        <item> Bachelor of Engineering (Hons) in Mechatronics </item>
+        <item> Diploma in Mechatronics Engineering </item>
+        <item> Bachelor of Science (Hons) in Biotechnology </item>
+        <item> Bachelor of Environmental Technology (Hons) </item>
+        <item> Bachelor of Science (Hons) Actuarial Sciences </item>
+        <item> Diploma in Environmental Technology </item>
+        <item> Bachelor of Pharmacy </item>
+        <item> Bachelor of Biomedical Sciences </item>
+        <item> Bachelor of Medicine &amp; Bachelor of Surgery </item>
+        <item> Other </item>
+    </string-array>
+
 </resources>

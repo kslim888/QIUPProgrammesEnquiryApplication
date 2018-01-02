@@ -102,8 +102,8 @@ public class DHM
             // TODO SKM level 3
         }
 
-
         if(dhmRuleAttribute.getCountSPM() >= 3
+                || dhmRuleAttribute.getCountOLevel() >= 3
                 || dhmRuleAttribute.getCountUEC() >= 3
                 || dhmRuleAttribute.getCountSTAM() >= 1
                 || dhmRuleAttribute.getCountSTPM() >= 1

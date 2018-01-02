@@ -47,8 +47,11 @@ import entryRules.CorporateComm;
 import entryRules.DAC;
 import entryRules.DBM;
 import entryRules.DCE;
+import entryRules.DET;
 import entryRules.DHM;
 import entryRules.DIS;
+import entryRules.DIT;
+import entryRules.DME;
 import entryRules.ElectronicsCommunicationsEngineering;
 import entryRules.FIBFIA;
 import entryRules.FIS;
@@ -89,7 +92,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         parentLinearLayout = findViewById(R.id.parent_layout);
         filterButton = findViewById(R.id.filterButton);
         deleteFieldText = findViewById(R.id.deleteFieldText);
-        addNewField = findViewById(R.id.addNewSpinnerField);
+        addNewField = findViewById(R.id.addNewSpinnerText);
         subjectsText = findViewById(R.id.subjectsText);
         gradesText  = findViewById(R.id.gradesText);
         englishText = findViewById(R.id.englishText);
@@ -481,11 +484,12 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         new DBM(),
                         new DAC(),
                         new DCE(),
-                        new DIS()
+                        new DIS(),
+                        new DET(),
+                        new DME(),
+                        new DIT()
                 );
-                //TODO new BS_Chemistry()
                 //TODO new BET()
-                //TODO new DIT()
 
                 // create a rules engine and fire rules on known facts
                 RulesEngine rulesEngine = new DefaultRulesEngine();
@@ -501,8 +505,12 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 extras.putString("STUDENT_SECONDARY_ENG", englishGrade);
                 extras.putString("STUDENT_SECONDARY_ADDMATH", addMathGrade);
 
-                Intent resultsOfFiltering = new Intent(FilterProgrammes.this, ResultsOfFiltering.class);
-                resultsOfFiltering.putExtras(extras);
+                //Intent resultsOfFiltering = new Intent(FilterProgrammes.this, ResultsOfFiltering.class);
+                //resultsOfFiltering.putExtras(extras);
+                //startActivity(resultsOfFiltering);
+
+                Intent resultsOfFiltering = new Intent(FilterProgrammes.this, PreferProgrammeAndEnglishProficiency.class);
+                //resultsOfFiltering.putExtras(extras);
                 startActivity(resultsOfFiltering);
 
                 //reset back to default
@@ -562,7 +570,6 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 Toast.makeText(FilterProgrammes.this, "Please choose SPM or O-Level Qualification", Toast.LENGTH_LONG).show();
                 ((TextView)spmOLevelSpinner.getSelectedView()).setError("Error");
                 spmOLevelSpinner.setEnableErrorLabel(true);
-                //spmOLevelSpinner.setMultiline(true);
                 return true;
             }
             if(Objects.equals(secondBahasaMalaysia, ""))

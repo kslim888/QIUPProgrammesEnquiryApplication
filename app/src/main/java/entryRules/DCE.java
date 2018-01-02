@@ -102,8 +102,8 @@ public class DCE
             // TODO SKM level 3
         }
 
-
         if(dceRuleAttribute.getCountSPM() >= 3
+                || dceRuleAttribute.getCountOLevel() >= 3
                 || dceRuleAttribute.getCountUEC() >= 3
                 || dceRuleAttribute.getCountSTAM() >= 1
                 || dceRuleAttribute.getCountSTPM() >= 1
