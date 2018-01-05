@@ -19,48 +19,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.jeasy.rules.api.Facts;
-import org.jeasy.rules.api.Rules;
-import org.jeasy.rules.api.RulesEngine;
-import org.jeasy.rules.core.DefaultRulesEngine;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import entryRules.BAC;
-import entryRules.BBA;
-import entryRules.BBA_HospitalityTourismManagement;
-import entryRules.BBS;
-import entryRules.BCE;
-import entryRules.BCS;
-import entryRules.BEM;
-import entryRules.BFI;
-import entryRules.BIS;
-import entryRules.BIT;
-import entryRules.BSNE;
-import entryRules.BS_ActuarialSciences;
-import entryRules.Biotech;
-import entryRules.CorporateComm;
-import entryRules.DAC;
-import entryRules.DBM;
-import entryRules.DCE;
-import entryRules.DET;
-import entryRules.DHM;
-import entryRules.DIS;
-import entryRules.DIT;
-import entryRules.DME;
-import entryRules.ElectronicsCommunicationsEngineering;
-import entryRules.FIBFIA;
-import entryRules.FIS;
-import entryRules.FIS_MedicineDentistryPharmacy;
-import entryRules.MBBS;
-import entryRules.MassCommAdvertising;
-import entryRules.MassCommJournalism;
-import entryRules.Pharmacy;
-import entryRules.TESL;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class FilterProgrammes extends AppCompatActivity implements AdapterView.OnItemSelectedListener
@@ -267,6 +231,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 {
                     deleteFieldText.setEnabled(false);
                     deleteFieldText.setTextColor(Color.GRAY);
+                    flagForNewField = false;
                 }
             }
         });
@@ -385,65 +350,39 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     }
                 }
 
-                // create facts
-                Facts facts = new Facts();
-                facts.put("Qualification Level", selectedItem);
-                facts.put("Student's Subjects", arrayStringSubjects);
-                facts.put("Student's Grades",arrayStringGrades);
                 //spm or o-level
                 if(spmOLevelSpinner.getSelectedView() != null)
                 {
                     TextView spmOLevelText = (TextView)spmOLevelSpinner.getSelectedView();
                     spmOLevelString = spmOLevelText.getText().toString();
-                    facts.put("Student's SPM or O-Level", spmOLevelString);
                 }
-                else
-                {
-                    facts.put("Student's SPM or O-Level", " ");
-                }
+
                 //bahasa malaysia
                 if(bahasaMalaysiaSpinner.getSelectedView() != null)
                 {
                     TextView bahasaMalaysiaText = (TextView)bahasaMalaysiaSpinner.getSelectedView();
                     bahasaMalaysiaGrade = bahasaMalaysiaText.getText().toString();
-                    facts.put("Student's Bahasa Malaysia", bahasaMalaysiaGrade);
                 }
-                else
-                {
-                    facts.put("Student's Bahasa Malaysia", " ");
-                }
+
                 //maths
                 if(mathematicsSpinner.getSelectedView() != null)
                 {
                     TextView mathematicsText = (TextView)mathematicsSpinner.getSelectedView();
                     mathematicsGrade = mathematicsText.getText().toString();
-                    facts.put("Student's Mathematics", mathematicsGrade);
                 }
-                else
-                {
-                    facts.put("Student's Mathematics", " ");
-                }
+
                 //english
                 if(englishSpinner.getSelectedView() != null)
                 {
                     TextView englishText = (TextView)englishSpinner.getSelectedView();
                     englishGrade = englishText.getText().toString();
-                    facts.put("Student's English", englishGrade);
                 }
-                else
-                {
-                    facts.put("Student's English", " ");
-                }
+
                 //add math
                 if(addMathSpinner.getSelectedView() != null)
                 {
                     TextView addMathText = (TextView)addMathSpinner.getSelectedView();
                     addMathGrade = addMathText.getText().toString();
-                    facts.put("Student's Additional Mathematics", addMathGrade);
-                }
-                else
-                {
-                    facts.put("Student's Additional Mathematics", " ");
                 }
 
                 //check second qualification grades error if the qualification is STPM, STAM or A-Level
@@ -451,49 +390,6 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 {
                     return; // if error is true, dont do anything
                 }
-
-                //TODO @Fact("Student's English Test") String studentEnglishTest
-                //TODO facts.put("Student's English Test", " ");
-
-                // create and define rules
-                Rules rules = new Rules(
-                        new FIS(),
-                        new FIBFIA(),
-                        new FIS_MedicineDentistryPharmacy(),
-                        new BBA(),
-                        new BBA_HospitalityTourismManagement(),
-                        new BFI(),
-                        new BAC(),
-                        new TESL(),
-                        new CorporateComm(),
-                        new MassCommAdvertising(),
-                        new MassCommJournalism(),
-                        new BCE(),
-                        new BSNE(),
-                        new BIS(),
-                        new BCS(),
-                        new ElectronicsCommunicationsEngineering(),
-                        new Biotech(),
-                        new BEM(),
-                        new BIT(),
-                        new BS_ActuarialSciences(),
-                        new BBS(),
-                        new MBBS(),
-                        new Pharmacy(),
-                        new DHM(),
-                        new DBM(),
-                        new DAC(),
-                        new DCE(),
-                        new DIS(),
-                        new DET(),
-                        new DME(),
-                        new DIT()
-                );
-                //TODO new BET()
-
-                // create a rules engine and fire rules on known facts
-                RulesEngine rulesEngine = new DefaultRulesEngine();
-                rulesEngine.fire(rules, facts);
 
                 // send to next activity
                 Bundle extras = new Bundle();
@@ -504,14 +400,11 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 extras.putString("STUDENT_SECONDARY_MATH", mathematicsGrade);
                 extras.putString("STUDENT_SECONDARY_ENG", englishGrade);
                 extras.putString("STUDENT_SECONDARY_ADDMATH", addMathGrade);
+                extras.putString("STUDENT_SECONDARY_BM", bahasaMalaysiaGrade);
 
-                //Intent resultsOfFiltering = new Intent(FilterProgrammes.this, ResultsOfFiltering.class);
-                //resultsOfFiltering.putExtras(extras);
-                //startActivity(resultsOfFiltering);
-
-                Intent resultsOfFiltering = new Intent(FilterProgrammes.this, PreferProgrammeAndEnglishProficiency.class);
-                //resultsOfFiltering.putExtras(extras);
-                startActivity(resultsOfFiltering);
+                Intent nextActivity = new Intent(FilterProgrammes.this, PreferProgrammeAndEnglishProficiency.class);
+                nextActivity.putExtras(extras);
+                startActivity(nextActivity);
 
                 //reset back to default
                 /*

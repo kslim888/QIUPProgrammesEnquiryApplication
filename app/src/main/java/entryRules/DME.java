@@ -186,7 +186,7 @@ public class DME
         {
             // check math and eng got pass or not
             if(Objects.equals(studentSPMOLevel, "SPM"))
-                {
+            {
                 if(!Objects.equals(studentEnglishGrade, "G"))
                 {
                     gotEnglishSubjectAndPass = true;

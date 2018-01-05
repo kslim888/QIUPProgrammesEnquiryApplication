@@ -26,8 +26,8 @@ import retrofit2.Retrofit;
 
 public class CaptureData extends AppCompatActivity
 {
-    private EditText editName,editIC,editContactNumber,editEmail,editRemark;
-    private TextInputLayout inputLayoutName, inputLayoutIC, inputLayoutContactNumber, inputLayoutEmail;
+    private EditText editName,editIC,editContactNumber,editEmail,editRemark, editSchool;
+    private TextInputLayout inputLayoutName, inputLayoutIC, inputLayoutContactNumber, inputLayoutEmail, inputLayoutSchool;
     boolean valid; // for form validation
 
     @Override
@@ -106,11 +106,13 @@ public class CaptureData extends AppCompatActivity
         editContactNumber = findViewById(R.id.editContactNumber);
         editEmail = findViewById(R.id.editEmail);
         editRemark = findViewById(R.id.editRemark);
+        editSchool = findViewById(R.id.editSchool);
 
         inputLayoutName = findViewById(R.id.inputLayoutName);
         inputLayoutEmail = findViewById(R.id.inputLayoutEmail);
         inputLayoutContactNumber = findViewById(R.id.inputLayoutContactNumber);
         inputLayoutIC = findViewById(R.id.inputLayoutIC);
+        inputLayoutSchool = findViewById(R.id.inputLayoutSchool);
     }
 
     //validate name

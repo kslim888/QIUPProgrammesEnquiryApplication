@@ -12,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/preferAndEnglishParentLayout"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         tools:context="com.example.ahshing.qiupprogrammesenquiryapplication.PreferProgrammeAndEnglishProficiency">
 
         <TextView
@@ -27,7 +29,7 @@
             app:ms_baseColor="@color/colorAccent"
             />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -37,41 +39,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Proficiency Level : "
-                android:layout_marginTop="25dp"
-                android:layout_weight="1.5"/>
+                android:layout_marginTop="25dp" />
 
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/proficiencyLevel"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                app:ms_baseColor="@color/colorAccent"
-                android:layout_weight="1"/>
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                app:ms_baseColor="@color/colorAccent" />
 
             <EditText
                 android:id="@+id/editTOEFL_PBT"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:layout_weight="1"
+                android:layout_alignBaseline="@+id/textView2"
+                android:layout_alignBottom="@+id/textView2"
+                android:layout_alignParentEnd="true"
                 android:ems="10"
                 android:hint="Enter TOELF"
                 android:inputType="number"
-                android:textSize="14dp"
+                android:textSize="14sp"
                 android:visibility="gone" />
 
             <EditText
                 android:id="@+id/editTOEFL_IBT"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:layout_weight="1"
+                android:layout_alignBaseline="@+id/textView2"
+                android:layout_alignBottom="@+id/textView2"
+                android:layout_alignParentEnd="true"
                 android:ems="10"
                 android:hint="Enter TOELF"
                 android:inputType="number"
-                android:textSize="14dp"
-                android:visibility="gone" />
+                android:textSize="14sp"
+                android:visibility="gone"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/textView3"
@@ -86,6 +90,22 @@
             android:layout_width="match_parent"
             app:ms_baseColor="@color/colorAccent"
             />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:hint="If other programme, please specify...">
+
+            <EditText
+                android:id="@+id/editOtherProgramme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text|textCapWords|textCapSentences|textMultiLine"
+                android:textSize="14dp"  />
+        </android.support.design.widget.TextInputLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"
