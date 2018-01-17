@@ -6,6 +6,13 @@
     tools:context="com.example.ahshing.qiupprogrammesenquiryapplication.ResultsOfFiltering">
 
     <item
+        android:id="@+id/switchEligibility"
+        android:title="Switch Eligibility"
+        android:icon="@drawable/ic_library_books_white_24dp"
+        app:showAsAction="always"
+        />
+
+    <item
         android:id="@+id/studentsAcademicQualification"
         android:title="Student's Academic Qualification"
         android:icon="@drawable/ic_description_white_24dp"

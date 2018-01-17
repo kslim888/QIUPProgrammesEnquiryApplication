@@ -10,10 +10,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:id="@+id/parent_layout">
+        android:id="@+id/parent_layout"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <fr.ganfra.materialspinner.MaterialSpinner
-            android:id="@+id/resultsSpinner"
+            android:id="@+id/qualificationSpinner"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             app:ms_baseColor="@color/colorAccent"
@@ -43,30 +45,35 @@
                 android:id="@+id/gradesText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2.5"
+                android:layout_weight="1.9"
                 android:paddingStart="5dp"
                 android:paddingEnd="10dp"
                 android:text="Grades"
                 android:textColor="@color/colorAccent" />
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <fr.ganfra.materialspinner.MaterialSpinner
-                android:id="@+id/subjectsSpinner"
-                android:layout_width="match_parent"
+            <AutoCompleteTextView
+                android:id="@+id/subjectsAutoCompleteTextView"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="10dp"/>
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="20dp"
+                android:textSize="14sp"
+                android:dropDownHeight= "130dp"
+                android:completionThreshold="0"/>
+
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/gradesSpinner"
-                android:layout_width="match_parent"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2.5" />
-        </LinearLayout>
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -122,6 +129,35 @@
                 android:layout_marginEnd="10dp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_marginTop="12dp"
+                android:layout_width="222dp"
+                android:layout_height="wrap_content"
+                android:hint="Any Science/Technical/Vocational subject"
+                app:hintTextAppearance="@style/TextLabel">
+                <AutoCompleteTextView
+                    android:id="@+id/scienceTechnicalVocationalAutoCompleteTextView"
+                    android:layout_width="222dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="20dp"
+                    android:textSize="12sp"
+                    android:completionThreshold="0"
+                    android:dropDownHeight="130dp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/scienceTechnicalVocationalGrade"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="2.5"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -216,11 +252,10 @@
 
             <Button
                 android:id="@+id/filterButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="127dp"
                 android:text="Next" />
         </RelativeLayout>
     </LinearLayout>

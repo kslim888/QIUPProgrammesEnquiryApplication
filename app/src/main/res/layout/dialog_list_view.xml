@@ -21,7 +21,7 @@
             android:paddingEnd="3dp"
             android:paddingStart="23dp"
             android:text="Qualification Level : "
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <TextView
@@ -31,7 +31,61 @@
             android:paddingEnd="3dp"
             android:paddingStart="3dp"
             android:text="abc"
-            android:textSize="16sp"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/englishProficiencyTestText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="3dp"
+            android:paddingStart="23dp"
+            android:text="English Proficiency Test : "
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dialogEnglishProficiencyTestName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="3dp"
+            android:paddingStart="3dp"
+            android:text="abc"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/proficiencyLevelText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="3dp"
+            android:paddingStart="23dp"
+            android:text="Proficiency Level : "
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dialogProficiencyLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="3dp"
+            android:paddingStart="3dp"
+            android:text="abc"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -70,7 +124,7 @@
             android:paddingEnd="3dp"
             android:paddingStart="23dp"
             android:text="Second Qualification Level : "
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <TextView
@@ -80,7 +134,7 @@
             android:paddingEnd="3dp"
             android:paddingStart="3dp"
             android:text="abc"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -98,16 +152,16 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/secondMathText"
+            android:id="@+id/bahasaMalaysiaText"
             android:layout_width="203dp"
             android:layout_height="wrap_content"
             android:paddingEnd="20dp"
             android:paddingStart="25dp"
-            android:text="Mathematics "
+            android:text="Bahasa Malaysia "
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/mathGrade"
+            android:id="@+id/bahasaMalaysiaGrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="20dp"
@@ -132,6 +186,30 @@
 
         <TextView
             android:id="@+id/englishGrade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="20dp"
+            android:paddingStart="10dp"
+            android:text="abc"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/secondMathText"
+            android:layout_width="203dp"
+            android:layout_height="wrap_content"
+            android:paddingEnd="20dp"
+            android:paddingStart="25dp"
+            android:text="Mathematics "
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/mathGrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="20dp"

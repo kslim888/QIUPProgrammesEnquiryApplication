@@ -41,10 +41,40 @@ public class Pharmacy
                                @Fact("Student's Grades")String[] studentGrades,
                                @Fact("Student's SPM or O-Level") String studentSPMOLevel,
                                @Fact("Student's English") String studentEnglishGrade,
-                               @Fact("Student's Bahasa Malaysia") String studentBahasaMalaysiaGrade)
+                               @Fact("Student's Bahasa Malaysia") String studentBahasaMalaysiaGrade
+                               //@Fact("Student's English Proficiency Test Name") String studentEnglishProficiencyTestName,
+                               /*@Fact("Student's English Proficiency Level") String studentEnglishProficiencyLevel*/)
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
+            //check got bio chemi math or not
+            for(int i = 0; i < studentSubjects.length; i++)
+            {
+                if(Objects.equals(studentSubjects[i], "Matematik (M)") || Objects.equals(studentSubjects[i], "Matematik (T)"))
+                {
+                    gotMathSubject = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Fizik"))
+                {
+                    gotPhysics = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Kimia"))
+                {
+                    gotChemi = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Biology"))
+                {
+                    gotBio = true;
+                }
+            }
+
+            // if no chemi and bio, straight return false
+            // if no Physics and Mathematics, return false
+            if(!gotChemi || !gotBio || (!gotMathSubject && !gotPhysics))
+            {
+                return false;
+            }
+
             // for all students subject check math, Bio, Chemi, physics / math
             // Grades BBB, ABC or AAC
             for(int i = 0; i < studentSubjects.length; i++)
@@ -101,6 +131,7 @@ public class Pharmacy
                 }
             }
 
+            // if got enough credit, check SPM / o level BM and english got at least credit or not
             if(gotBioAndCredit && gotChemiAndCredit
                     && (gotPhysicsAndCredit || gotAddMathSubjectAndCredit || gotMathSubjectAndCredit))
             {
@@ -114,7 +145,11 @@ public class Pharmacy
                                 && !Objects.equals(studentEnglishGrade, "E")
                                 && !Objects.equals(studentEnglishGrade, "G"))
                         {
-                            return true;
+                            // SPM BM and english got at least credit, check english proficiency level
+                           // if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
+                            //{
+                                return true;
+                            //}
                         }
                     }
                 }
@@ -130,7 +165,11 @@ public class Pharmacy
                                 && !Objects.equals(studentEnglishGrade, "F9")
                                 && !Objects.equals(studentEnglishGrade, "U"))
                         {
-                            return true;
+                            // o level BM and english got at least credit, check english proficiency level
+                            //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
+                            //{
+                                return true;
+                            //}
                         }
                     }
                 }
@@ -138,6 +177,34 @@ public class Pharmacy
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
+            // check got bio chemi math or not
+            for(int i = 0; i < studentSubjects.length; i++)
+            {
+                if(Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                {
+                    gotMathSubject = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Physics"))
+                {
+                    gotPhysics = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Chemistry"))
+                {
+                    gotChemi = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Biology"))
+                {
+                    gotBio = true;
+                }
+            }
+
+            // if no chemi and bio, straight return false
+            // if no Physics and Mathematics, return false
+            if(!gotChemi || !gotBio || (!gotMathSubject && !gotPhysics))
+            {
+                return false;
+            }
+
             // for all students subject check math, Bio, Chemi, physics / math
             // Grades BBB, ABC or AAC
             for(int i = 0; i < studentSubjects.length; i++)
@@ -179,6 +246,7 @@ public class Pharmacy
                 }
             }
 
+            // if got enough credit, check SPM / o level BM and english got at least credit or not
             if(gotBioAndCredit && gotChemiAndCredit
                     && (gotPhysicsAndCredit || gotAddMathSubjectAndCredit || gotMathSubjectAndCredit))
             {
@@ -192,7 +260,11 @@ public class Pharmacy
                                 && !Objects.equals(studentEnglishGrade, "E")
                                 && !Objects.equals(studentEnglishGrade, "G"))
                         {
-                            return true;
+                            // SPM BM and english got at least credit, check english proficiency level
+                           // if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
+                            //{
+                                return true;
+                           // }
                         }
                     }
                 }
@@ -208,7 +280,11 @@ public class Pharmacy
                                 && !Objects.equals(studentEnglishGrade, "F9")
                                 && !Objects.equals(studentEnglishGrade, "U"))
                         {
-                            return true;
+                            // o level BM and english got at least credit, check english proficiency level
+                           // if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
+                           // {
+                                return true;
+                           // }
                         }
                     }
                 }
@@ -309,7 +385,7 @@ public class Pharmacy
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            // TODO minimum CGPA, English Proficiency Test
+            // TODO minimum CGPA
             // FIXME Foundation / Matriculation, Diploma
             // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
         }
@@ -329,5 +405,44 @@ public class Pharmacy
     public static boolean isJoinProgramme()
     {
         return pharmacyRuleAttribute.isJoinProgramme();
+    }
+
+    private boolean isEnglishProficiencyPass(String studentEnglishProficiencyTestName, String studentEnglishProficiencyLevel)
+    {
+        double proficiencyNumber;
+        if(Objects.equals(studentEnglishProficiencyTestName, "MUET"))
+        {
+            // at least band 3
+            if(!Objects.equals(studentEnglishProficiencyLevel, "Band 2")
+                    && !Objects.equals(studentEnglishProficiencyLevel, "Band 1"))
+            {
+                return true;
+            }
+        }
+        else if(Objects.equals(studentEnglishProficiencyTestName, "IELTS"))
+        {
+            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
+            if(proficiencyNumber >= 6.0 )
+            {
+                return true;
+            }
+        }
+        else if(Objects.equals(studentEnglishProficiencyTestName, "TOEFL (Paper-Based Test)"))
+        {
+            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
+            if(proficiencyNumber >= 550)
+            {
+                return true;
+            }
+        }
+        else if(Objects.equals(studentEnglishProficiencyTestName, "TOEFL (Internet-Based Test)"))
+        {
+            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
+            if(proficiencyNumber >= 79)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

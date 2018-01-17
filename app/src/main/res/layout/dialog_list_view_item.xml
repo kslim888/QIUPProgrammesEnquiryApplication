@@ -12,7 +12,7 @@
         android:paddingEnd="10dp"
         android:paddingStart="20dp"
         android:text="Subjects"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:layout_weight="1.6"/>
 
     <TextView
@@ -22,7 +22,7 @@
         android:paddingEnd="20dp"
         android:paddingStart="10dp"
         android:text="Grades"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:layout_weight="1"/>
 
 </LinearLayout>

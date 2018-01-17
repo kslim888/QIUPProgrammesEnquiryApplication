@@ -7,6 +7,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity
 {
+    Long queueID;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {

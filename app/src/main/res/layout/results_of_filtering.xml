@@ -1,43 +1,40 @@
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/expandable_scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/eligibleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_margin="10dp"
+        android:text="Eligible"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Eligible"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+    <ExpandableListView
+        android:id="@+id/eligibleProgrammes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ExpandableListView>
 
-        <ExpandableListView
-            android:id="@+id/eligibleProgrammes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </ExpandableListView>
+    <TextView
+        android:id="@+id/notEligibleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Not eligible"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Not eligible"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+    <ExpandableListView
+        android:id="@+id/notEligibleProgrammes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+    </ExpandableListView>
 
-        <ExpandableListView
-            android:id="@+id/ineligibleProgrammes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </ExpandableListView>
+</LinearLayout>
 
-    </LinearLayout>
-
-</ScrollView>

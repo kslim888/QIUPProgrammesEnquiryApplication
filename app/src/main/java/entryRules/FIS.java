@@ -166,6 +166,10 @@ public class FIS
                     fisRuleAttribute.incrementCountCredit(1);
             }
         }
+        else if(Objects.equals(qualificationLevel, "UEC")) // if qualification level is UEC
+        {
+            //TODO UEC FIS
+        }
 
         // if the students have less than 3 subjects for the required subjects to join FIS
         // or if the students is science stream, but credit less than 5

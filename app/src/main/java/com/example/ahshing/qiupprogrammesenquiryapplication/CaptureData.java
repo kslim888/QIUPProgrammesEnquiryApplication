@@ -122,7 +122,7 @@ public class CaptureData extends AppCompatActivity
 
         if (editName.getText().toString().trim().isEmpty() || !editNameInput.matches("[a-zA-Z][a-zA-Z ]*"))
         {
-            inputLayoutName.setError(getString(R.string.err_msg_name));
+            editName.setError(getString(R.string.err_msg_name));
             requestFocus(editName);
             valid = false;
         }
@@ -138,7 +138,7 @@ public class CaptureData extends AppCompatActivity
     {
         if (editIC.getText().toString().trim().isEmpty() || editIC.getText().length() != 14)
         {
-            inputLayoutIC.setError(getString(R.string.err_IC));
+            editIC.setError(getString(R.string.err_IC));
             requestFocus(editIC);
             valid = false;
         }
@@ -152,9 +152,11 @@ public class CaptureData extends AppCompatActivity
     //validate contact number
     private void validateContactNumber()
     {
-        if (editContactNumber.getText().toString().trim().isEmpty() ||  editContactNumber.getText().length() > 11)
+        if (editContactNumber.getText().toString().trim().isEmpty()
+                || editContactNumber.getText().length() > 11
+                || editContactNumber.getText().length() < 10)
         {
-            inputLayoutContactNumber.setError(getString(R.string.err_contact_number));
+            editContactNumber.setError(getString(R.string.err_contact_number));
             requestFocus(editContactNumber);
             valid = false;
         }
@@ -172,7 +174,7 @@ public class CaptureData extends AppCompatActivity
 
         if (email.isEmpty() || !isValidEmail(email))
         {
-            inputLayoutEmail.setError(getString(R.string.err_msg_email));
+            editEmail.setError(getString(R.string.err_msg_email));
             requestFocus(editEmail);
             valid = false;
         }
@@ -189,6 +191,21 @@ public class CaptureData extends AppCompatActivity
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    private void validateSchoolName()
+    {
+        if (editSchool.getText().toString().trim().isEmpty() || editSchool.getText().length() < 12)
+        {
+            editSchool.setError(getString(R.string.err_school_name));
+            requestFocus(editSchool);
+            valid = false;
+        }
+        else
+        {
+            inputLayoutSchool.setErrorEnabled(false);
+            valid = true;
+        }
+    }
+
     //request focus on android
     private void requestFocus(View view)
     {
@@ -198,14 +215,32 @@ public class CaptureData extends AppCompatActivity
         }
     }
 
+    private boolean getValid()
+    {
+        return valid;
+    }
+
     //button submit post to google spreadsheets
     public void submitData(View view)
     {
         validateName();
+        if (!getValid())
+            return;
+
         validateEmail() ;
+        if (!getValid())
+            return;
+
         validateContactNumber();
+        if (!getValid())
+            return;
+
         validateIC();
-        if (!valid)
+        if (!getValid())
+            return;
+
+        validateSchoolName();
+        if (!getValid())
             return;
 
         //get the input text
@@ -235,6 +270,7 @@ public class CaptureData extends AppCompatActivity
                 editContactNumber.setText("");
                 editEmail.setText("");
                 editRemark.setText("");
+                editSchool.setText("");
             }
 
             @Override
@@ -314,6 +350,11 @@ public class CaptureData extends AppCompatActivity
                 case R.id.editEmail:
                 {
                     inputLayoutEmail.setErrorEnabled(false);
+                }
+                break;
+                case R.id.editSchool:
+                {
+                    inputLayoutSchool.setErrorEnabled(false);
                 }
                 break;
             }

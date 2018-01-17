@@ -14,15 +14,8 @@ public class DAC
 {
     // advanced math is additional maths
     private static RuleAttribute dacRuleAttribute;
-    private boolean gotEnglishSubject, gotMathSubject, gotMathSubjectAndCredit, gotEnglishSubjectAndPass;
 
-    public DAC() {
-        dacRuleAttribute = new RuleAttribute();
-        gotMathSubject = false;
-        gotEnglishSubject = false;
-        gotMathSubjectAndCredit = false;
-        gotEnglishSubjectAndPass = false;
-    }
+    public DAC() { dacRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -34,28 +27,32 @@ public class DAC
                                @Fact("Student's Additional Mathematics") String studentAddMathGrade,
                                @Fact("Student's English") String studentEnglishGrade)
     {
-        if(Objects.equals(qualificationLevel, "SPM")) // if is STPM qualification
+        if(Objects.equals(qualificationLevel, "SPM")) // if is SPM qualification
         {
+            // Check maths got credit and english pass or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
+                        || Objects.equals(studentSubjects[i], "Mathematics"))
                 {
                     if(!Objects.equals(studentGrades[i], "D")
                             && !Objects.equals(studentGrades[i], "E")
                             && !Objects.equals(studentGrades[i], "G"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        dacRuleAttribute.setGotMathSubjectAndCredit();
                     }
                     if(Objects.equals(studentSubjects[i], "English"))
                     {
                         if(!Objects.equals(studentGrades[i], "G"))
                         {
-                            gotEnglishSubjectAndPass = true;
+                            dacRuleAttribute.setGotEnglishSubjectAndPass();
                         }
                     }
                 }
             }
 
+            // For all student's subject, check got C (credit) or not
+            // Only C and above then increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
@@ -68,35 +65,41 @@ public class DAC
         }
         else if(Objects.equals(qualificationLevel, "O-Level")) // if is O Level qualification
         {
+            // Check maths got credit and english pass or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Mathematics - Additional")
+                        || Objects.equals(studentSubjects[i], "Mathematics")
+                        || Objects.equals(studentSubjects[i], "Mathematics D")
+                        || Objects.equals(studentSubjects[i], "International Mathematics"))
                 {
-                    if(!Objects.equals(studentGrades[i], "D7")
-                            && !Objects.equals(studentGrades[i], "E8")
-                            && !Objects.equals(studentGrades[i], "F9")
+                    if(!Objects.equals(studentGrades[i], "D")
+                            && !Objects.equals(studentGrades[i], "E")
+                            && !Objects.equals(studentGrades[i], "F")
+                            && !Objects.equals(studentGrades[i], "G")
                             && !Objects.equals(studentGrades[i], "U"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        dacRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "English Language")
-                        || Objects.equals(studentSubjects[i], "Literature in English"))
+                        || Objects.equals(studentSubjects[i], "English - First Language"))
                 {
-                    if(!Objects.equals(studentGrades[i], "E8")
-                            && !Objects.equals(studentGrades[i], "F9")
-                            && !Objects.equals(studentGrades[i], "U"))
+                    if(!Objects.equals(studentGrades[i], "U"))
                     {
-                        gotEnglishSubjectAndPass = true;
+                        dacRuleAttribute.setGotEnglishSubjectAndPass();
                     }
                 }
             }
 
+            // For all student's subject, check got C (credit) or not
+            // Only C and above then increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "D7")
-                        && !Objects.equals(studentGrades[i], "E8")
-                        && !Objects.equals(studentGrades[i], "F9")
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "F")
+                        && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
                     dacRuleAttribute.incrementCountOLevel(1);
@@ -113,7 +116,7 @@ public class DAC
                         && !Objects.equals(studentMathematicsGrade, "E")
                         && !Objects.equals(studentMathematicsGrade, "G"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 // check add math
@@ -122,45 +125,47 @@ public class DAC
                         && !Objects.equals(studentAddMathGrade, "E")
                         && !Objects.equals(studentAddMathGrade, "G"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 // check english
                 if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    gotEnglishSubjectAndPass = true;
+                    dacRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
             else if(Objects.equals(studentSPMOLevel, "O-Level"))
             {
                 // check math
-                if(!Objects.equals(studentMathematicsGrade, "D7")
-                        && !Objects.equals(studentMathematicsGrade, "E8")
-                        && !Objects.equals(studentMathematicsGrade, "F9")
+                if(!Objects.equals(studentMathematicsGrade, "D")
+                        && !Objects.equals(studentMathematicsGrade, "E")
+                        && !Objects.equals(studentMathematicsGrade, "F")
+                        && !Objects.equals(studentMathematicsGrade, "G")
                         && !Objects.equals(studentMathematicsGrade, "U"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 //check add math
                 if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D7")
-                        && !Objects.equals(studentAddMathGrade, "E8")
-                        && !Objects.equals(studentAddMathGrade, "F9")
+                        && !Objects.equals(studentAddMathGrade, "D")
+                        && !Objects.equals(studentAddMathGrade, "E")
+                        && !Objects.equals(studentAddMathGrade, "F")
+                        && !Objects.equals(studentAddMathGrade, "G")
                         && !Objects.equals(studentAddMathGrade, "U"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 //check english
-                if(!Objects.equals(studentEnglishGrade, "E8")
-                        && !Objects.equals(studentEnglishGrade, "F9")
-                        && !Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    gotEnglishSubjectAndPass = true;
+                    dacRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
 
+            // For all student's subject, check got grade C or not
+            // Only C and above then increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -182,7 +187,7 @@ public class DAC
                         && !Objects.equals(studentMathematicsGrade, "E")
                         && !Objects.equals(studentMathematicsGrade, "G"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 //check add math
@@ -192,45 +197,47 @@ public class DAC
                         && !Objects.equals(studentAddMathGrade, "G"))
 
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 //check english
                 if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    gotEnglishSubjectAndPass = true;
+                    dacRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
             else if(Objects.equals(studentSPMOLevel, "O-Level"))
             {
-                //check math
-                if(!Objects.equals(studentMathematicsGrade, "D7")
-                        && !Objects.equals(studentMathematicsGrade, "E8")
-                        && !Objects.equals(studentMathematicsGrade, "F9")
+                // check math
+                if(!Objects.equals(studentMathematicsGrade, "D")
+                        && !Objects.equals(studentMathematicsGrade, "E")
+                        && !Objects.equals(studentMathematicsGrade, "F")
+                        && !Objects.equals(studentMathematicsGrade, "G")
                         && !Objects.equals(studentMathematicsGrade, "U"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 //check add math
                 if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D7")
-                        && !Objects.equals(studentAddMathGrade, "E8")
-                        && !Objects.equals(studentAddMathGrade, "F9")
+                        && !Objects.equals(studentAddMathGrade, "D")
+                        && !Objects.equals(studentAddMathGrade, "E")
+                        && !Objects.equals(studentAddMathGrade, "F")
+                        && !Objects.equals(studentAddMathGrade, "G")
                         && !Objects.equals(studentAddMathGrade, "U"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 //check english
-                if(!Objects.equals(studentEnglishGrade, "E8")
-                        && !Objects.equals(studentEnglishGrade, "F9")
-                        && !Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    gotEnglishSubjectAndPass = true;
+                    dacRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
 
+            // For all student's subjects, check got minimum grade C or not
+            // Minimum grade C only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
@@ -251,7 +258,7 @@ public class DAC
                         && !Objects.equals(studentMathematicsGrade, "E")
                         && !Objects.equals(studentMathematicsGrade, "G"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 //check add math
@@ -260,42 +267,42 @@ public class DAC
                         && !Objects.equals(studentAddMathGrade, "E")
                         && !Objects.equals(studentAddMathGrade, "G"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 //check english
                 if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    gotEnglishSubjectAndPass = true;
+                    dacRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
             else if(Objects.equals(studentSPMOLevel, "O-Level")) // if is O-Level
             {
-                //check maths
-                if(!Objects.equals(studentMathematicsGrade, "D7")
-                        && !Objects.equals(studentMathematicsGrade, "E8")
-                        && !Objects.equals(studentMathematicsGrade, "F9")
+                // check math
+                if(!Objects.equals(studentMathematicsGrade, "D")
+                        && !Objects.equals(studentMathematicsGrade, "E")
+                        && !Objects.equals(studentMathematicsGrade, "F")
+                        && !Objects.equals(studentMathematicsGrade, "G")
                         && !Objects.equals(studentMathematicsGrade, "U"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 //check add math
                 if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D7")
-                        && !Objects.equals(studentAddMathGrade, "E8")
-                        && !Objects.equals(studentAddMathGrade, "F9")
+                        && !Objects.equals(studentAddMathGrade, "D")
+                        && !Objects.equals(studentAddMathGrade, "E")
+                        && !Objects.equals(studentAddMathGrade, "F")
+                        && !Objects.equals(studentAddMathGrade, "G")
                         && !Objects.equals(studentAddMathGrade, "U"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dacRuleAttribute.setGotMathSubjectAndCredit();
                 }
 
                 //check english
-                if(!Objects.equals(studentEnglishGrade, "E8")
-                        && !Objects.equals(studentEnglishGrade, "F9")
-                        && !Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    gotEnglishSubjectAndPass = true;
+                    dacRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
 
@@ -310,26 +317,28 @@ public class DAC
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
-            //check got math subject or not
+            //check got math and english subject or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics") )
                 {
-                    gotMathSubject = true;
+                    dacRuleAttribute.setGotMathSubject();
                 }
                 if(Objects.equals(studentSubjects[i], "English") )
                 {
-                    gotEnglishSubject = true;
+                    dacRuleAttribute.setGotEnglishSubject();
                 }
             }
 
-            if(!gotMathSubject || !gotEnglishSubject)
+            // If either 1 not exist, return false
+            if(!dacRuleAttribute.isGotMathSubject() || !dacRuleAttribute.isGotEnglishSubject())
             {
                 //TODO say error
                 return false;
             }
 
-            // for all student subjects, check the mathematics is got credit or not
+            // For all student subjects, check mathematics is credit
+            // and english is pass or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics"))
@@ -338,7 +347,7 @@ public class DAC
                             && !Objects.equals(studentGrades[i], "C8")
                             && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        dacRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 if( Objects.equals(studentSubjects[i], "English"))
@@ -347,12 +356,13 @@ public class DAC
                             && !Objects.equals(studentGrades[i], "C8")
                             && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        gotEnglishSubjectAndPass = true; // here pass means credit(at least B6 and above)
+                        // Here pass means credit(at least B6 and above)
+                        dacRuleAttribute.setGotEnglishSubjectAndPass();
                     }
                 }
             }
 
-            // for all subject check got at least minimum grade B or not
+            // For all subject check got at least minimum grade B or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7")
@@ -368,6 +378,9 @@ public class DAC
             // TODO SKM level 3
         }
 
+        // For all the qualification, check got more than the credit or not
+        // If more than, then check english is pass and math is credit or not
+        // If both true, return true for all requirements is statisfied
         if(dacRuleAttribute.getCountSPM() >= 3
                 || dacRuleAttribute.getCountSTAM() >= 1
                 || dacRuleAttribute.getCountSTPM() >= 1
@@ -375,11 +388,12 @@ public class DAC
                 || dacRuleAttribute.getCountOLevel() >= 3
                 || dacRuleAttribute.getCountUEC() >= 3)
         {
-            if(gotEnglishSubjectAndPass && gotMathSubjectAndCredit)
+            if(dacRuleAttribute.isGotEnglishSubjectAndPass() && dacRuleAttribute.isGotMathSubjectAndCredit())
             {
                 return true;
             }
         }
+        // If requirements not satisfy, retuen false
         return false;
     }
 
@@ -387,7 +401,7 @@ public class DAC
     @Action
     public void joinProgramme() throws Exception
     {
-        // if rule is statisfied (return true), this action will be executed
+        // If requirements is statisfied (return true), this action will be executed
         dacRuleAttribute.setJoinProgramme(true);
         Log.d("DiplomaInAccountancy", "Joined");
     }

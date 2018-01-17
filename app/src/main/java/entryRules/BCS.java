@@ -12,16 +12,10 @@ import java.util.Objects;
 @Rule(name = "BCS", description = "Entry rule to join Bachelor of Computer Sciences")
 public class BCS
 {
-    // advanced math is additional maths
+    // Advanced math is additional maths
     private static RuleAttribute bcsRuleAttribute;
-    private boolean advancedMathCredit, gotMathSubject, gotMathSubjectAndCredit;
 
-    public BCS() {
-        bcsRuleAttribute = new RuleAttribute();
-        advancedMathCredit = false;
-        gotMathSubject = false;
-        gotMathSubjectAndCredit = false;
-    }
+    public BCS() { bcsRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -38,12 +32,13 @@ public class BCS
             {
                 if(Objects.equals(studentSubjects[i], "Matematik (T)"))
                 {
-                    gotMathSubject = true;
+                    bcsRuleAttribute.setGotMathSubject();
                     break;
                 }
             }
 
-            if(gotMathSubject)
+            // If STPM got add maths, check it is credit or not
+            if(bcsRuleAttribute.isGotMathSubject())
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
@@ -54,41 +49,41 @@ public class BCS
                                 && !Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "F"))
                         {
-                            gotMathSubjectAndCredit = true;
+                            bcsRuleAttribute.setGotMathSubjectAndCredit();
                         }
                     }
                 }
             }
 
-            // if stpm got add math subject but not credit, or no add math subject at STPM
-            if(!gotMathSubjectAndCredit)
+            // if STPM got add math subject but not credit, or no add math subject at STPM
+            // Check SPM / O-Level got maths subject is credit or not
+            if(bcsRuleAttribute.isGotMathSubjectAndCredit())
             {
-                // if the student din take add maths, straight return false
-                if(Objects.equals(studentAddMathGrade, "None"))
-                {
-                    return false;
-                }
-
-                // if the student got take add maths, check is credit or not
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
-                    // if maths no credit, straightaway return false
-                    if(Objects.equals(studentAddMathGrade, "D") || Objects.equals(studentAddMathGrade, "E") || Objects.equals(studentAddMathGrade, "G"))
+                    if(!Objects.equals(studentAddMathGrade, "None")
+                            && !Objects.equals(studentAddMathGrade, "D")
+                            && Objects.equals(studentAddMathGrade, "E")
+                            && Objects.equals(studentAddMathGrade, "G"))
                     {
-                        return false;
+                        bcsRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 else // if is o-level
                 {
-                    // check maths got credit or not. if no credit return false
-                    if(Objects.equals(studentAddMathGrade, "D7") || Objects.equals(studentAddMathGrade, "E8") || Objects.equals(studentAddMathGrade, "F9") || Objects.equals(studentAddMathGrade, "U"))
+                    if(!Objects.equals(studentAddMathGrade, "None")
+                            && !Objects.equals(studentAddMathGrade, "D")
+                            && !Objects.equals(studentAddMathGrade, "E")
+                            && !Objects.equals(studentAddMathGrade, "F")
+                            && !Objects.equals(studentAddMathGrade, "G")
+                            && !Objects.equals(studentAddMathGrade, "U"))
                     {
-                        return false;
+                        bcsRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
             }
 
-            // for all students subject check got above at least C+ or not
+            // For all students subject check got above at least C+ or not
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -102,17 +97,18 @@ public class BCS
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            // for all students subject check got add mathematics subject or not
+            // For all students subject check got further mathematics or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "Further Mathematics"))
                 {
-                    gotMathSubject = true;
+                    bcsRuleAttribute.setGotMathSubject();
                     break;
                 }
             }
 
-            if(gotMathSubject)
+            // If A-Level got further maths, check it is credit or not
+            if(bcsRuleAttribute.isGotMathSubject())
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
@@ -122,46 +118,41 @@ public class BCS
                                 && !Objects.equals(studentGrades[i], "E")
                                 && !Objects.equals(studentGrades[i], "U"))
                         {
-                            gotMathSubjectAndCredit = true;
+                            bcsRuleAttribute.setGotMathSubjectAndCredit();
                         }
                     }
                 }
             }
 
             // if A-level got add math subject but not credit, or no add math subject at A-level
-            if(!gotMathSubjectAndCredit)
+            // Check SPM / O-Level got maths subject is credit or not
+            if(!bcsRuleAttribute.isGotMathSubjectAndCredit())
             {
-                // if the student din take add maths, straight return false
-                if(Objects.equals(studentAddMathGrade, "None"))
-                {
-                    return false;
-                }
-
-                // check maths and english at spm or o-level
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
-                    // if maths no credit, straightaway return false
-                    if(Objects.equals(studentAddMathGrade, "D")
-                            || Objects.equals(studentAddMathGrade, "E")
-                            || Objects.equals(studentAddMathGrade, "G"))
+                    if(!Objects.equals(studentAddMathGrade, "None")
+                            && !Objects.equals(studentAddMathGrade, "D")
+                            && !Objects.equals(studentAddMathGrade, "E")
+                            && !Objects.equals(studentAddMathGrade, "G"))
                     {
-                        return false;
+                        bcsRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 else // if is o-level
                 {
-                    // if math no credit return false
-                    if(Objects.equals(studentAddMathGrade, "D7")
-                            || Objects.equals(studentAddMathGrade, "E8")
-                            || Objects.equals(studentAddMathGrade, "F9")
-                            || Objects.equals(studentAddMathGrade, "U"))
+                    if(!Objects.equals(studentAddMathGrade, "None")
+                            && !Objects.equals(studentAddMathGrade, "D")
+                            && !Objects.equals(studentAddMathGrade, "E")
+                            && !Objects.equals(studentAddMathGrade, "F")
+                            && !Objects.equals(studentAddMathGrade, "G")
+                            && !Objects.equals(studentAddMathGrade, "U"))
                     {
-                        return false;
+                        bcsRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
             }
 
-            // for all student subject, check got minimum grade C
+            // For all student subject, check got minimum grade C
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
@@ -174,27 +165,27 @@ public class BCS
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
-            // check got advanced maths and is fail or not
+            // Check got advanced maths and is minimum grade B or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
                 {
-                    if(Objects.equals(studentGrades[i], "C7") || Objects.equals(studentGrades[i], "C8") || Objects.equals(studentGrades[i], "F9"))
+                    if(!Objects.equals(studentGrades[i], "C7")
+                            && !Objects.equals(studentGrades[i], "C8")
+                            && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        return false;
-                    }
-                    else
-                    {
-                        advancedMathCredit = true;
+                        bcsRuleAttribute.setGotMathSubjectAndCredit();
                     }
                     break;
                 }
             }
 
-            // for all subject check got at least minimum grade B or not
+            // For all subject check got at least minimum grade B or not
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
+                if(!Objects.equals(studentGrades[i], "C7")
+                        && !Objects.equals(studentGrades[i], "C8")
+                        && !Objects.equals(studentGrades[i], "F9"))
                 {
                     bcsRuleAttribute.incrementCountUEC(1);
                 }
@@ -202,22 +193,16 @@ public class BCS
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            // TODO minimum CGPA, English Proficiency Test
-            // FIXME Foundation / Matriculation, Diploma
-            // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
+            // TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
         }
 
-        if(bcsRuleAttribute.getCountUEC() >= 4)
+        if(bcsRuleAttribute.getCountALevel() >= 2
+                || bcsRuleAttribute.getCountSTPM() >= 2 || bcsRuleAttribute.getCountUEC() >= 5)
         {
-            if(advancedMathCredit)
+            if(bcsRuleAttribute.isGotMathSubjectAndCredit())
             {
                 return true;
             }
-        }
-
-        if(bcsRuleAttribute.getCountALevel() >= 2 || bcsRuleAttribute.getCountSTPM() >= 2)
-        {
-            return true;
         }
         return false;
     }

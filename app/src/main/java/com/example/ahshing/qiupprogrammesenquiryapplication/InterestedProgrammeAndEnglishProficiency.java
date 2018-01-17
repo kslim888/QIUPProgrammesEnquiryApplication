@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rules;
@@ -27,6 +29,8 @@ import org.jeasy.rules.core.DefaultRulesEngine;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Objects;
 
 import entryRules.BAC;
 import entryRules.BBA;
@@ -53,7 +57,6 @@ import entryRules.DME;
 import entryRules.ElectronicsCommunicationsEngineering;
 import entryRules.FIBFIA;
 import entryRules.FIS;
-import entryRules.FIS_MedicineDentistryPharmacy;
 import entryRules.MBBS;
 import entryRules.MassCommAdvertising;
 import entryRules.MassCommJournalism;
@@ -61,32 +64,34 @@ import entryRules.Pharmacy;
 import entryRules.TESL;
 import fr.ganfra.materialspinner.MaterialSpinner;
 
-public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class InterestedProgrammeAndEnglishProficiency extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    TextView addPreferProgramme, deletePreferProgramme;
-    MaterialSpinner englishProficiencyTestSpinner, proficiencyLevelSpinner, preferProgrammeSpinner, newPreferProgrammeSpinner;
+    TextView addInterestedProgramme, deleteInterestedProgramme;
+    MaterialSpinner englishProficiencyTestSpinner,
+            proficiencyLevelSpinner, interestedProgrammeSpinner, newInterestedProgrammeSpinner;
     Button generateButton;
     EditText editTOEFL_PBT, editTOEFL_IBT, editOtherProgramme;
-    LinearLayout preferAndEnglishParentLayout;
-    ArrayAdapter<String> preferProgrammesAdapter;
+    LinearLayout interestedAndEnglishParentLayout;
+    ArrayAdapter<String> interestedProgrammesAdapter;
     Bundle extras;
     boolean flagForNewField;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prefer_programme_and_english_proficiency);
+        setContentView(R.layout.activity_interested_programme_and_english_proficiency);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         extras = getIntent().getExtras();
-        addPreferProgramme = findViewById(R.id.addPreferProgrammeText);
-        deletePreferProgramme = findViewById(R.id.deletePreferProgrammeText);
+        addInterestedProgramme = findViewById(R.id.addInterestedProgrammeText);
+        deleteInterestedProgramme = findViewById(R.id.deleteInterestedProgrammeText);
         englishProficiencyTestSpinner = findViewById(R.id.englishProficiencyTest);
         proficiencyLevelSpinner = findViewById(R.id.proficiencyLevel);
-        preferProgrammeSpinner = findViewById(R.id.preferProgrammeSpinner);
+        interestedProgrammeSpinner = findViewById(R.id.interestedProgrammeSpinner);
         generateButton = findViewById(R.id.generateResultButton);
-        preferAndEnglishParentLayout = findViewById(R.id.preferAndEnglishParentLayout);
+        interestedAndEnglishParentLayout = findViewById(R.id.interestedAndEnglishParentLayout);
         editTOEFL_PBT = findViewById(R.id.editTOEFL_PBT);
         editTOEFL_IBT = findViewById(R.id.editTOEFL_IBT);
         editOtherProgramme = findViewById(R.id.editOtherProgramme);
@@ -115,8 +120,8 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
         };
 
         // setting the list of programmes proficiency array adapter
-        String[] arrayOfProgrammes = getResources().getStringArray(R.array.list_of_programmes);
-        preferProgrammesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, arrayOfProgrammes)
+        String[] arrayOfProgrammes = getResources().getStringArray(R.array.programme_list); // FIXME list of programme with none
+        interestedProgrammesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, arrayOfProgrammes)
         {
             // If is position 0(the initial dummy entry), make it hidden
             // else, pass convertView as null to prevent reuse of special case views
@@ -137,52 +142,52 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
             }
         };
 
-        addPreferProgramme.setOnClickListener(new View.OnClickListener()
+        addInterestedProgramme.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View rowView = inflater.inflate(R.layout.new_prefer_programme_field, null);
+                View rowView = inflater.inflate(R.layout.new_interest_programme_field, null);
 
                 // Add the new row before the add field button.
-                preferAndEnglishParentLayout.addView(rowView, preferAndEnglishParentLayout.getChildCount() - 3);
-                newPreferProgrammeSpinner = rowView.findViewById(R.id.newPreferProgrammeSpinner);
-                if(preferAndEnglishParentLayout.getChildCount() != 8) // if added new field, make the delete field text enable
+                interestedAndEnglishParentLayout.addView(rowView, interestedAndEnglishParentLayout.getChildCount() - 3);
+                newInterestedProgrammeSpinner = rowView.findViewById(R.id.newInterestedProgrammeAutoComplete);
+                if(interestedAndEnglishParentLayout.getChildCount() != 8) // if added new field, make the delete field text enable
                 {
-                    deletePreferProgramme.setEnabled(true);
-                    deletePreferProgramme.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+                    deleteInterestedProgramme.setEnabled(true);
+                    deleteInterestedProgramme.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 }
 
-                if(preferAndEnglishParentLayout.getChildCount() == 10) // max 3 prefer programmes // if got Other = 10
+                if(interestedAndEnglishParentLayout.getChildCount() == 10) // max 3 interested programmes // if got Other = 10
                 {
-                    addPreferProgramme.setEnabled(false);
-                    addPreferProgramme.setTextColor(Color.GRAY);
+                    addInterestedProgramme.setEnabled(false);
+                    addInterestedProgramme.setTextColor(Color.GRAY);
                 }
 
                 try {
-                    loadSpinnerData(newPreferProgrammeSpinner);
+                    loadSpinnerData(newInterestedProgrammeSpinner);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        deletePreferProgramme.setOnClickListener(new View.OnClickListener()
+        deleteInterestedProgramme.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                if(preferAndEnglishParentLayout.getChildCount() != 8) // if added new field
+                if(interestedAndEnglishParentLayout.getChildCount() != 8) // if added new field
                 {
-                    preferAndEnglishParentLayout.removeViewAt(preferAndEnglishParentLayout.getChildCount() - 4);
-                    addPreferProgramme.setEnabled(true);
-                    addPreferProgramme.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+                    interestedAndEnglishParentLayout.removeViewAt(interestedAndEnglishParentLayout.getChildCount() - 4);
+                    addInterestedProgramme.setEnabled(true);
+                    addInterestedProgramme.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 }
-                if(preferAndEnglishParentLayout.getChildCount() == 8) // if deleted and back to original layout // if Other 8
+                if(interestedAndEnglishParentLayout.getChildCount() == 8) // if deleted and back to original layout // if Other 8
                 {
-                    deletePreferProgramme.setEnabled(false);
-                    deletePreferProgramme.setTextColor(Color.GRAY);
+                    deleteInterestedProgramme.setEnabled(false);
+                    deleteInterestedProgramme.setTextColor(Color.GRAY);
                     flagForNewField = false;
                 }
             }
@@ -193,7 +198,11 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
             public void onFocusChange(View view, boolean hasFocus)
             {
                 if (hasFocus)
+                {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(editOtherProgramme, InputMethodManager.SHOW_IMPLICIT);
                     editOtherProgramme.setHint("Leave blank if none");
+                }
                 else
                     editOtherProgramme.setHint("");
             }
@@ -204,15 +213,119 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
             @Override
             public void onClick(View view)
             {
+                String englishProficiencyTestName, englishProficiencyTestLevel = "", interestProgramme;
+                ArrayList<TextView> interestedProgrammeList = new ArrayList<>();
+                int proficiencyNumberTOEFL;
+                TextView proficiencyLevel = (TextView)proficiencyLevelSpinner.getSelectedView();
+
                 //validation
+                // first position no need as englishProficiencyTestLevel initialized as ""
+                if(englishProficiencyTestSpinner.getSelectedItemPosition() == 2
+                        || englishProficiencyTestSpinner.getSelectedItemPosition() == 3) // if is MUET or IELTS
+                {
+                    if(proficiencyLevelSpinner.getSelectedItemPosition() == 0)
+                    {
+                        Toast.makeText(InterestedProgrammeAndEnglishProficiency.this, "Please select proficiency level", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    else
+                    {
+                        englishProficiencyTestLevel = proficiencyLevel.getText().toString();
+                    }
+                }
+                else if(englishProficiencyTestSpinner.getSelectedItemPosition() == 4) // if is TOEFL PBT
+                {
+                    //convert the string number into integer number
+                    proficiencyNumberTOEFL = Integer.parseInt(editTOEFL_PBT.getText().toString());
 
-                //proficiencyLevelSpinner
-                //preferProgrammeSpinner
-                //newPreferProgrammeSpinner
-                //editTOEFL_PBT
-                //editTOEFL_IBT
-                //editOtherProgramme
+                    if(editTOEFL_PBT.getText().toString().trim().isEmpty()) // if editTOEFL_PBT is empty
+                    {
+                        editTOEFL_PBT.setError("Please specify your level");
+                        requestFocus(editTOEFL_PBT);
+                        return;
+                    }
+                    else if(proficiencyNumberTOEFL < 310 || proficiencyNumberTOEFL > 677)
+                    {
+                        editTOEFL_PBT.setError("Please input valid level");
+                        requestFocus(editTOEFL_PBT);
+                        return;
+                    }
+                }
+                else if(englishProficiencyTestSpinner.getSelectedItemPosition() == 5) // if is TOEFL IBT
+                {
+                    //convert the string number into integer number
+                    proficiencyNumberTOEFL = Integer.parseInt(editTOEFL_IBT.getText().toString());
 
+                    if (editTOEFL_IBT.getText().toString().trim().isEmpty()) // if editTOEFL_IBT is empty
+                    {
+                        editTOEFL_IBT.setError("Please specify your level");
+                        requestFocus(editTOEFL_IBT);
+                        return;
+                    }
+                    else if(proficiencyNumberTOEFL > 120)
+                    {
+                        editTOEFL_IBT.setError("Please input valid level");
+                        requestFocus(editTOEFL_IBT);
+                        return;
+                    }
+                }
+
+                // if interested programme does not selected
+                if(interestedProgrammeSpinner.getSelectedItemPosition() == 0)
+                {
+                    Toast.makeText(InterestedProgrammeAndEnglishProficiency.this, "Please select interest pragramme", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                // get all the new added interest programme view value and add to a List
+                for (int i = 0; i < interestedAndEnglishParentLayout.getChildCount(); i++)
+                {
+                    view = interestedAndEnglishParentLayout.getChildAt(i);
+                    if(view instanceof LinearLayout)
+                    {
+                        if(view.getId() == R.id.newProgrammes)
+                        {
+                            newInterestedProgrammeSpinner = (MaterialSpinner) ((LinearLayout) view).getChildAt(0);
+                            interestedProgrammeList.add((TextView)newInterestedProgrammeSpinner.getSelectedView());
+                        }
+                    }
+                }
+
+                //set the english proficiency name
+                proficiencyLevel = (TextView)englishProficiencyTestSpinner.getSelectedView();
+                englishProficiencyTestName = proficiencyLevel.getText().toString();
+
+                //set the first interested programme spinner
+                proficiencyLevel = (TextView)interestedProgrammeSpinner.getSelectedView();
+                interestProgramme = proficiencyLevel.getText().toString();
+
+                //initialize the array and set first index as interest programme spinner
+                String[] interestedProgrammeArray = new String[interestedProgrammeList.size() + 1];
+                interestedProgrammeArray[0] = interestProgramme;
+
+                //if added new field of interest programme
+                if(interestedAndEnglishParentLayout.getChildCount() == 9) // only added 1
+                {
+                    interestedProgrammeArray[1] = interestedProgrammeList.get(0).getText().toString();
+                }
+                else if (interestedAndEnglishParentLayout.getChildCount() == 10) // added 2
+                {
+                    interestedProgrammeArray[1] = interestedProgrammeList.get(0).getText().toString();
+                    interestedProgrammeArray[2] = interestedProgrammeList.get(1).getText().toString();
+                }
+
+                // if there are duplicated interest programme, return
+                for(int i = 0; i < interestedProgrammeArray.length; i++)
+                {
+                    for(int j = i + 1; j < interestedProgrammeArray.length; j++)
+                    {
+                        if(Objects.equals(interestedProgrammeArray[i], interestedProgrammeArray[j]))
+                        {
+                            Toast.makeText(InterestedProgrammeAndEnglishProficiency.this, "There is a duplicate interest programme", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+                }
 
                 // create facts
                 Facts facts = new Facts();
@@ -224,15 +337,30 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
                 facts.put("Student's Mathematics", extras.getString("STUDENT_SECONDARY_MATH"));
                 facts.put("Student's English", extras.getString("STUDENT_SECONDARY_ENG"));
                 facts.put("Student's Additional Mathematics", extras.getString("STUDENT_SECONDARY_ADDMATH"));
+                facts.put("Student's English Proficiency Test Name", englishProficiencyTestName);
 
-                //TODO @Fact("Student's English Test") String studentEnglishTest
-                //TODO facts.put("Student's English Test", " ");
+                //put fact of proficiency level
+                if(Objects.equals(englishProficiencyTestName, "None"))
+                {
+                    facts.put("Student's English Proficiency Level", englishProficiencyTestLevel);
+                }
+                else if(Objects.equals(englishProficiencyTestName, "MUET") || Objects.equals(englishProficiencyTestName, "IELTS"))
+                {
+                    facts.put("Student's English Proficiency Level", englishProficiencyTestLevel);
+                }
+                else if(Objects.equals(englishProficiencyTestName, "TOEFL (Paper-Based Test)"))
+                {
+                    facts.put("Student's English Proficiency Level", editTOEFL_PBT.getText().toString());
+                }
+                else if(Objects.equals(englishProficiencyTestName, "TOEFL (Internet-Based Test)"))
+                {
+                    facts.put("Student's English Proficiency Level", editTOEFL_IBT.getText().toString());
+                }
 
                 // create and define rules
                 Rules rules = new Rules(
                         new FIS(),
                         new FIBFIA(),
-                        new FIS_MedicineDentistryPharmacy(),
                         new BBA(),
                         new BBA_HospitalityTourismManagement(),
                         new BFI(),
@@ -262,28 +390,36 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
                         new DME(),
                         new DIT()
                 );
-                //TODO new BET()
 
                 // create a rules engine and fire rules on known facts
                 RulesEngine rulesEngine = new DefaultRulesEngine();
                 rulesEngine.fire(rules, facts);
 
-                Intent resultsOfFiltering = new Intent(PreferProgrammeAndEnglishProficiency.this, ResultsOfFiltering.class);
+                // put intent of string and array of english proficiency and interest programme
+                // pass to next activity
+                extras.putString("STUDENT_ENGLISH_PROFICIENCY_TEST_NAME",englishProficiencyTestName);
+                extras.putString("STUDENT_ENGLISH_PROFICIENCY_LEVEL", englishProficiencyTestLevel);
+                extras.putString("STUDENT_OTHER_INTERESTED_PROGRAMME", editOtherProgramme.getText().toString().trim());
+                extras.putStringArray("STUDENT_INTERESTED_PROGRAMME_LIST", interestedProgrammeArray);
+
+                Intent resultsOfFiltering = new Intent(InterestedProgrammeAndEnglishProficiency.this, ResultsOfFiltering.class);
                 resultsOfFiltering.putExtras(extras);
                 startActivity(resultsOfFiltering);
+
+                //here reset back to default
             }
         });
 
-        preferProgrammesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        interestedProgrammesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         englishProficiencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         englishProficiencyTestSpinner.setAdapter(englishProficiencyAdapter);
-        preferProgrammeSpinner.setAdapter(preferProgrammesAdapter);
+        interestedProgrammeSpinner.setAdapter(interestedProgrammesAdapter);
 
         proficiencyLevelSpinner.setEnabled(false);
-        preferProgrammeSpinner.setEnabled(false);
-        addPreferProgramme.setEnabled(false);
-        deletePreferProgramme.setEnabled(false);
+        interestedProgrammeSpinner.setEnabled(false);
+        addInterestedProgramme.setEnabled(false);
+        deleteInterestedProgramme.setEnabled(false);
         generateButton.setEnabled(false);
         editOtherProgramme.setEnabled(false);
         flagForNewField = false;
@@ -294,11 +430,21 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
 
     private void loadSpinnerData(MaterialSpinner s) throws IOException
     {
-        s.setAdapter(preferProgrammesAdapter);
+        s.setAdapter(interestedProgrammesAdapter);
         flagForNewField = true; // to only set spinner scrollbar for newly added field
         setSpinnerScrollbar();
     }
 
+    //request focus on android
+    private void requestFocus(View view)
+    {
+        if (view.requestFocus())
+        {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+
+    // for back arrow button
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -312,26 +458,27 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
         return super.onOptionsItemSelected(item);
     }
 
+    //set the spinners scrollbar and height
     public void setSpinnerScrollbar() {
         try {
             Field popup = Spinner.class.getDeclaredField("mPopup");
             popup.setAccessible(true);
 
             if(flagForNewField) {
-                android.widget.ListPopupWindow newPreferProgrammeWindow = (android.widget.ListPopupWindow) popup.get(newPreferProgrammeSpinner);
-                newPreferProgrammeWindow.setHeight(500);
+                android.widget.ListPopupWindow newInterestedProgrammeWindow = (android.widget.ListPopupWindow) popup.get(newInterestedProgrammeSpinner);
+                newInterestedProgrammeWindow.setHeight(500);
                 return;
             }
 
             // Get private mPopup member variable and try cast to ListPopupWindow
             android.widget.ListPopupWindow englishProficiencyTestWindow = (android.widget.ListPopupWindow) popup.get(englishProficiencyTestSpinner);
             android.widget.ListPopupWindow proficiencyLevelWindow = (android.widget.ListPopupWindow) popup.get(proficiencyLevelSpinner);
-            android.widget.ListPopupWindow preferProgrammeSpinnerWindow = (android.widget.ListPopupWindow) popup.get(preferProgrammeSpinner);
+            android.widget.ListPopupWindow interestedProgrammeSpinnerWindow = (android.widget.ListPopupWindow) popup.get(interestedProgrammeSpinner);
 
             // Set popupWindow height to 500px
             englishProficiencyTestWindow.setHeight(500);
             proficiencyLevelWindow.setHeight(500);
-            preferProgrammeSpinnerWindow.setHeight(500);
+            interestedProgrammeSpinnerWindow.setHeight(500);
         }
         catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
@@ -347,7 +494,21 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
 
         switch(position)
         {
-            case 1: // muet chosen
+            case 1: // none chosen
+            {
+                //set back proficiency level selection, make it disable and reappear again
+                proficiencyLevelSpinner.setSelection(0);
+                proficiencyLevelSpinner.setEnabled(false);
+                proficiencyLevelSpinner.setVisibility(View.VISIBLE);
+
+                // make TOELF edit text hidden
+                editTOEFL_PBT.setVisibility(View.GONE);
+                imm.hideSoftInputFromWindow(editTOEFL_PBT.getWindowToken(), 0);
+                editTOEFL_IBT.setVisibility(View.GONE);
+                imm.hideSoftInputFromWindow(editTOEFL_IBT.getWindowToken(), 0);
+            }
+            break;
+            case 2: // muet chosen
             {
                 // appear back the proficiency spinner if is hidden before
                 proficiencyLevelSpinner.setVisibility(View.VISIBLE);
@@ -384,7 +545,7 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
                 proficiencyLevelSpinner.setAdapter(proficiencyAdapter);
             }
             break;
-            case 2: // IELTS chosen
+            case 3: // IELTS chosen
             {
                 // appear back the proficiency spinner if is hidden before
                 proficiencyLevelSpinner.setVisibility(View.VISIBLE);
@@ -421,30 +582,42 @@ public class PreferProgrammeAndEnglishProficiency extends AppCompatActivity impl
                 proficiencyLevelSpinner.setAdapter(proficiencyAdapter);
             }
             break;
-            case 3: // TOELF PBT chosen
+            case 4: // TOELF PBT chosen
             {
                 editTOEFL_IBT.setVisibility(View.GONE); // hide the TOELF IBT edit text
                 proficiencyLevelSpinner.setVisibility(View.GONE); // hide the proficiency spinner
                 editTOEFL_PBT.setVisibility(View.VISIBLE);
+                // close the keyboard
+                imm.hideSoftInputFromWindow(editTOEFL_PBT.getWindowToken(), 0);
             }
             break;
-            case 4: // TOELF IBT chosen
+            case 5: // TOELF IBT chosen
             {
                 editTOEFL_PBT.setVisibility(View.GONE); // hide the TOELF PBT edit text
                 proficiencyLevelSpinner.setVisibility(View.GONE); // hide the proficiency spinner
                 editTOEFL_IBT.setVisibility(View.VISIBLE);
+                // close the keyboard
+                imm.hideSoftInputFromWindow(editTOEFL_IBT.getWindowToken(), 0);
             }
             break;
         }
 
-        if(position != 0)
+        if(position == 1)
         {
-            addPreferProgramme.setEnabled(true);
             generateButton.setEnabled(true);
-            proficiencyLevelSpinner.setEnabled(true);
-            preferProgrammeSpinner.setEnabled(true);
+            interestedProgrammeSpinner.setEnabled(true);
             editOtherProgramme.setEnabled(true);
-            addPreferProgramme.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+            addInterestedProgramme.setEnabled(true);
+            addInterestedProgramme.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+        }
+        else if(position != 0) // if position is not 0, 2, 3, 4, 5
+        {
+            generateButton.setEnabled(true);
+            interestedProgrammeSpinner.setEnabled(true);
+            editOtherProgramme.setEnabled(true);
+            addInterestedProgramme.setEnabled(true);
+            proficiencyLevelSpinner.setEnabled(true);
+            addInterestedProgramme.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
         }
     }
 

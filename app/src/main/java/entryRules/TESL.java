@@ -31,50 +31,21 @@ public class TESL
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            // for all students subject check got english subject or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            //check english
+            if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                if(Objects.equals(studentSubjects[i], "Kesusasteraan Inggeris"))
+                // if fail, return false
+                if(Objects.equals(studentEnglishGrade, "G"))
                 {
-                    gotEnglishSubject = true;
-                    break;
+                    return false;
                 }
             }
-
-            // if got eng subject, check it is at least pass or not
-            if(gotEnglishSubject)
+            else // is o-level
             {
-                for(int i = 0; i < studentSubjects.length; i++)
+                // if fail, return false
+                if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
                 {
-                    if(Objects.equals(studentSubjects[i], "Kesusasteraan Inggeris"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "F"))
-                        {
-                            gotEnglishSubjectAndPass = true;
-                        }
-                        break;
-                    }
-                }
-            }
-
-            // if stpm got english subject but not credit or pass, or no english subject at STPM
-            if(!gotEnglishSubjectAndPass)
-            {
-                if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
-                {
-                    // if fail, return false
-                    if(Objects.equals(studentEnglishGrade, "G"))
-                    {
-                        return false;
-                    }
-                }
-                else // is o-level
-                {
-                    // if fail, return false
-                    if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 
@@ -120,58 +91,28 @@ public class TESL
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            // for all students subject check english subject or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // check english
+            if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                if (Objects.equals(studentSubjects[i], "Literature in English"))
+                // if fail, return false
+                if(Objects.equals(studentEnglishGrade, "G"))
                 {
-                    gotEnglishSubject = true;
-                    break;
+                    return false;
+                }
+            }
+            else // is o-level
+            {
+                // if fail, return false
+                if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
+                {
+                    return false;
                 }
             }
 
-            // if got eng subject, check it is at least pass or not
-            if(gotEnglishSubject)
-            {
-                for(int i = 0; i < studentSubjects.length; i++)
-                {
-                    if(Objects.equals(studentSubjects[i], "Literature in English"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "U"))
-                        {
-                            gotEnglishSubjectAndPass = true;
-                        }
-                        break;
-                    }
-                }
-            }
-
-            // if a-level got english subject but not credit or pass, or no english subject at a-level
-            if(!gotEnglishSubjectAndPass)
-            {
-                if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
-                {
-                    // if fail, return false
-                    if(Objects.equals(studentEnglishGrade, "G"))
-                    {
-                        return false;
-                    }
-                }
-                else // is o-level
-                {
-                    // if fail, return false
-                    if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            // for all student subject, check got minimum grade C. At least C only increment
+            // for all student subject, check got minimum grade D. At least D only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
+                if(!Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
                     teslRuleAttribute.incrementCountALevel(1);
@@ -189,7 +130,7 @@ public class TESL
                     {
                         return false;
                     }
-                    else if(Objects.equals(studentGrades[i], "C7") || Objects.equals(studentGrades[i], "C8") )
+                    else
                     {
                         gotEnglishSubjectAndPass = true;
                     }
@@ -213,7 +154,7 @@ public class TESL
             // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
         }
 
-        if(teslRuleAttribute.getCountUEC() >= 4)
+        if(teslRuleAttribute.getCountUEC() >= 5)
         {
             if(gotEnglishSubjectAndPass)
             {

@@ -15,25 +15,31 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".FilterProgrammes"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="Programmes Enquiry"></activity>
+            android:label="Programmes Enquiry" />
+
         <activity
             android:name=".CaptureData"
-            android:label="Key-in Particulars"></activity>
+            android:label="Key-in Particulars" />
+
         <activity
             android:name=".ResultsOfFiltering"
-            android:label="Programmes Eligibility"></activity>
+            android:label="Eligibility Result" />
+
         <activity
-            android:name=".PreferProgrammeAndEnglishProficiency"
-            android:label="Programmes Enquiry"></activity>
-        <activity android:name=".SpecificProgramme"
-            android:label="Specific Programme Enquiry">
+            android:name=".InterestedProgrammeAndEnglishProficiency"
+            android:label="Programmes Enquiry" />
+
+        <activity
+            android:name=".InterestProgramme"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Programmes Enquiry">
         </activity>
     </application>
 

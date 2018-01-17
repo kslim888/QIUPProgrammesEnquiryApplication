@@ -4,14 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:id="@+id/newProgrammes"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:id="@+id/newProgrammes">
 
-    <fr.ganfra.materialspinner.MaterialSpinner
-        android:id="@+id/newPreferProgrammeSpinner"
-        android:layout_height="wrap_content"
+    <AutoCompleteTextView
+        android:id="@+id/newInterestedProgrammeAutoComplete"
         android:layout_width="match_parent"
-        app:ms_baseColor="@color/colorAccent"
-        />
+        android:layout_height="wrap_content"
+        android:dropDownHeight= "130dp"
+        android:completionThreshold="0"/>
 
 </LinearLayout>

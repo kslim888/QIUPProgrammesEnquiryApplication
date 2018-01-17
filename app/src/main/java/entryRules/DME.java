@@ -14,13 +14,8 @@ public class DME
 {
     //advanced math = additional math for UEC
     private static RuleAttribute dmeRuleAttribute;
-    private boolean gotMathSubjectAndCredit, gotEnglishSubjectAndPass, scienceTechnicalVocationalSubjectsCredit;
-    public DME() {
-        dmeRuleAttribute = new RuleAttribute();
-        gotMathSubjectAndCredit = false;
-        gotEnglishSubjectAndPass = false;
-        scienceTechnicalVocationalSubjectsCredit = false;
-    }
+
+    public DME() { dmeRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -30,7 +25,9 @@ public class DME
                                @Fact("Student's SPM or O-Level") String studentSPMOLevel,
                                @Fact("Student's Mathematics") String studentMathematicsGrade,
                                @Fact("Student's Additional Mathematics") String studentAddMathGrade,
-                               @Fact("Student's English") String studentEnglishGrade)
+                               @Fact("Student's English") String studentEnglishGrade,
+                               @Fact("Student's Science/Technical/Vocational Subject") String studentScienceTechnicalVocationalSubject,
+                               @Fact("Student's Science/Technical/Vocational Grade") String studentScienceTechnicalVocationalGrade)
     {
         if(Objects.equals(qualificationLevel, "SPM")) // if is SPM qualification
         {
@@ -42,28 +39,20 @@ public class DME
                             && !Objects.equals(studentGrades[i], "E")
                             && !Objects.equals(studentGrades[i], "G"))
                     {
-                        gotMathSubjectAndCredit = true;
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "E")
-                            && !Objects.equals(studentGrades[i], "G"))
-                    {
-                        gotMathSubjectAndCredit = true;
+                        dmeRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "English"))
                 {
                     if(!Objects.equals(studentGrades[i], "G"))
                     {
-                        gotEnglishSubjectAndPass = true;
+                        dmeRuleAttribute.setGotEnglishSubjectAndPass();
                     }
                 }
 
                 //check Science/Technical/Vocational subject got pass or not
-                if( Objects.equals(studentSubjects[i], "Physics")
+                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
+                        || Objects.equals(studentSubjects[i], "Physics")
                         || Objects.equals(studentSubjects[i], "Chemistry")
                         || Objects.equals(studentSubjects[i], "Biology")
                         || Objects.equals(studentSubjects[i], "Sains Pertanian")
@@ -102,7 +91,7 @@ public class DME
                             && !Objects.equals(studentGrades[i], "E")
                             && !Objects.equals(studentGrades[i], "G"))
                     {
-                        scienceTechnicalVocationalSubjectsCredit = true;
+                        dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
                     }
                 }
             }
@@ -121,61 +110,68 @@ public class DME
         {
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Mathematics D"))
                 {
-                    if(!Objects.equals(studentGrades[i], "D7")
-                            && !Objects.equals(studentGrades[i], "E8")
-                            && !Objects.equals(studentGrades[i], "F9")
+                    if(!Objects.equals(studentGrades[i], "D")
+                            && !Objects.equals(studentGrades[i], "E")
+                            && !Objects.equals(studentGrades[i], "F")
+                            && !Objects.equals(studentGrades[i], "G")
                             && !Objects.equals(studentGrades[i], "U"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        dmeRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Mathematics"))
                 {
-                    if(!Objects.equals(studentGrades[i], "D7")
-                            && !Objects.equals(studentGrades[i], "E8")
-                            && !Objects.equals(studentGrades[i], "F9")
+                    if(!Objects.equals(studentGrades[i], "D")
+                            && !Objects.equals(studentGrades[i], "E")
+                            && !Objects.equals(studentGrades[i], "F")
+                            && !Objects.equals(studentGrades[i], "G")
                             && !Objects.equals(studentGrades[i], "U"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        dmeRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "English Language")
-                        || Objects.equals(studentSubjects[i], "Literature in English") )
+                        || Objects.equals(studentSubjects[i], "English - First Language") )
                 {
-                    if(!Objects.equals(studentGrades[i], "E8")
-                            && !Objects.equals(studentGrades[i], "F9")
-                            && !Objects.equals(studentGrades[i], "U"))
+                    if(!Objects.equals(studentGrades[i], "U"))
                     {
-                        gotEnglishSubjectAndPass = true;
+                        dmeRuleAttribute.setGotEnglishSubjectAndPass();
                     }
                 }
 
                 //check Science/Technical/Vocational subject got pass or not
-                if(Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Biology")
-                        || Objects.equals(studentSubjects[i], "Physics")
-                        || Objects.equals(studentSubjects[i], "Combined Science")
-                        || Objects.equals(studentSubjects[i], "Marine Science")
+                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
                         || Objects.equals(studentSubjects[i], "Agriculture")
-                        || Objects.equals(studentSubjects[i], "Environmental Management"))
+                        || Objects.equals(studentSubjects[i], "Biology")
+                        || Objects.equals(studentSubjects[i], "Chemistry")
+                        || Objects.equals(studentSubjects[i], "Environmental Management")
+                        || Objects.equals(studentSubjects[i], "Food and Nutrition")
+                        || Objects.equals(studentSubjects[i], "Marine Science")
+                        || Objects.equals(studentSubjects[i], "Physics")
+                        || Objects.equals(studentSubjects[i], "Science - Combined")
+                        || Objects.equals(studentSubjects[i], "Physical Education")
+                        || Objects.equals(studentSubjects[i], "Physics Science")
+                        || Objects.equals(studentSubjects[i], "Sciences - Co-ordinated (Double)"))
                 {
-                    if(!Objects.equals(studentGrades[i], "D7")
-                            && !Objects.equals(studentGrades[i], "E8")
-                            && !Objects.equals(studentGrades[i], "F9")
+                    if(!Objects.equals(studentGrades[i], "D")
+                            && !Objects.equals(studentGrades[i], "E")
+                            && !Objects.equals(studentGrades[i], "F")
+                            && !Objects.equals(studentGrades[i], "G")
                             && !Objects.equals(studentGrades[i], "U"))
                     {
-                        scienceTechnicalVocationalSubjectsCredit = true;
+                        dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
                     }
                 }
             }
 
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "D7")
-                        && !Objects.equals(studentGrades[i], "E8")
-                        && !Objects.equals(studentGrades[i], "F9")
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "F")
+                        && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
                     dmeRuleAttribute.incrementCountOLevel(1);
@@ -189,42 +185,104 @@ public class DME
             {
                 if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    gotEnglishSubjectAndPass = true;
+                    dmeRuleAttribute.setGotEnglishSubjectAndPass();
                 }
 
-                if(!Objects.equals(studentAddMathGrade, "G") || !Objects.equals(studentMathematicsGrade, "G"))
+                if(!Objects.equals(studentMathematicsGrade, "G"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dmeRuleAttribute.setGotMathSubjectAndPass();
                 }
 
-                //check Science/Technical/Vocational subject got pass or not
-
+                // Here scienceTechnicalVocationalSubjectsCredit if is credit means pass
+                if(!Objects.equals(studentAddMathGrade, "None") && !Objects.equals(studentAddMathGrade, "G"))
+                {
+                    dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
+                }
+                else
+                {
+                    //check Science/Technical/Vocational subject got pass or not
+                    if(Objects.equals(studentScienceTechnicalVocationalSubject, "Science")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Physics")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Chemistry")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Biology")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Sains Pertanian")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Ekonomi Rumah Tangga")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Lukisan Kejuruteraan")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pengajian Kejuruteraan Mekanikal")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pengajian Kejuruteraan Awam")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pengajian Kejuruteraan Elektrik dan Elektronik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Reka Cipta")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Teknologi Kejuruteraan")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Grafik Komunikasi Teknikal")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pembinaan Domestik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Membuat Perabot")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Kerja Paip Domestik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pendawaian Domestik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Kimpalan Arka dan Gas")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Menservis Automobil")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Menservis Motosikal")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Menservis Peralatan Penyejukan dan Penyamanan Udara")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Menservis Peralatan Elektrik Domestik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Rekaan dan Jahitan Pakaian")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Katering dan Penyajian")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pemprosesan Makanan")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Penjagaan Muka dan Dandanan Rambut")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Asuhan dan Pendidikan Awal Kanak-Kanak")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Gerontologi Asas dan Perkhidmatan Geriatrik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Landskap dan Nurseri")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Akuakultur dan Haiwan Rekreasi")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Tanaman Makanan")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Seni Reka Tanda")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Hiasan Dalaman Asas")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Produksi Multimedia")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Grafik Berkomputer"))
+                    {
+                        if(!Objects.equals(studentScienceTechnicalVocationalGrade, "G"))
+                        {
+                            dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
+                        }
+                    }
+                }
             }
             else if(Objects.equals(studentSPMOLevel, "O-Level"))
             {
-                if(!Objects.equals(studentEnglishGrade, "E8")
-                        && !Objects.equals(studentEnglishGrade, "F9")
-                        && !Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    gotEnglishSubjectAndPass = true;
+                    dmeRuleAttribute.setGotEnglishSubjectAndPass();
                 }
 
-                if(!Objects.equals(studentAddMathGrade, "E8")
-                        && !Objects.equals(studentAddMathGrade, "F9")
+                if( !Objects.equals(studentMathematicsGrade, "U"))
+                {
+                    dmeRuleAttribute.setGotMathSubjectAndPass();
+                }
+
+                // Here scienceTechnicalVocationalSubjectsCredit if is credit means pass
+                if(!Objects.equals(studentAddMathGrade, "None")
                         && !Objects.equals(studentAddMathGrade, "U"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
                 }
-
-                if(!Objects.equals(studentMathematicsGrade, "E8")
-                        && !Objects.equals(studentMathematicsGrade, "F9")
-                        && !Objects.equals(studentMathematicsGrade, "U"))
+                else
                 {
-                    gotMathSubjectAndCredit = true;
+                    //check Science/Technical/Vocational subject got pass or not
+                    if(Objects.equals(studentScienceTechnicalVocationalSubject, "Agriculture")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Biology")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Chemistry")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Environmental Management")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Food and Nutrition")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Marine Science")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Physics")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Science - Combined")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Physical Education")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Physics Science")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Sciences - Co-ordinated (Double)"))
+                    {
+                        if(!Objects.equals(studentScienceTechnicalVocationalGrade, "U"))
+                        {
+                            dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
+                        }
+                    }
                 }
-
-                //check Science/Technical/Vocational subject got pass or not
-
             }
 
             for(int i = 0; i < studentGrades.length; i++)
@@ -245,42 +303,105 @@ public class DME
             {
                 if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    gotEnglishSubjectAndPass = true;
+                    dmeRuleAttribute.setGotEnglishSubjectAndPass();
                 }
 
-                if(!Objects.equals(studentAddMathGrade, "G") || !Objects.equals(studentMathematicsGrade, "G"))
+                if(!Objects.equals(studentMathematicsGrade, "G"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    // gotMathSubjectAndPass = true;
+                    dmeRuleAttribute.setGotMathSubjectAndPass();
                 }
 
-                //check Science/Technical/Vocational subject got pass or not
+                // Here scienceTechnicalVocationalSubjectsCredit if is credit means pass
+                if(!Objects.equals(studentAddMathGrade, "None") && !Objects.equals(studentAddMathGrade, "G"))
+                {
+                    dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
 
+                }
+                else
+                {
+                    //check Science/Technical/Vocational subject got pass or not
+                    if(Objects.equals(studentScienceTechnicalVocationalSubject, "Science")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Physics")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Chemistry")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Biology")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Sains Pertanian")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Ekonomi Rumah Tangga")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Lukisan Kejuruteraan")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pengajian Kejuruteraan Mekanikal")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pengajian Kejuruteraan Awam")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pengajian Kejuruteraan Elektrik dan Elektronik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Reka Cipta")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Teknologi Kejuruteraan")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Grafik Komunikasi Teknikal")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pembinaan Domestik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Membuat Perabot")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Kerja Paip Domestik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pendawaian Domestik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Kimpalan Arka dan Gas")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Menservis Automobil")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Menservis Motosikal")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Menservis Peralatan Penyejukan dan Penyamanan Udara")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Menservis Peralatan Elektrik Domestik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Rekaan dan Jahitan Pakaian")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Katering dan Penyajian")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Pemprosesan Makanan")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Penjagaan Muka dan Dandanan Rambut")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Asuhan dan Pendidikan Awal Kanak-Kanak")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Gerontologi Asas dan Perkhidmatan Geriatrik")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Landskap dan Nurseri")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Akuakultur dan Haiwan Rekreasi")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Tanaman Makanan")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Seni Reka Tanda")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Hiasan Dalaman Asas")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Produksi Multimedia")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Grafik Berkomputer"))
+                    {
+                        if(!Objects.equals(studentScienceTechnicalVocationalGrade, "G"))
+                        {
+                            dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
+                        }
+                    }
+                }
             }
             else if(Objects.equals(studentSPMOLevel, "O-Level"))
             {
-                if(!Objects.equals(studentEnglishGrade, "E8")
-                        && !Objects.equals(studentEnglishGrade, "F9")
-                        && !Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    gotEnglishSubjectAndPass = true;
+                    dmeRuleAttribute.setGotEnglishSubjectAndPass();
                 }
 
-                if(!Objects.equals(studentAddMathGrade, "E8")
-                        && !Objects.equals(studentAddMathGrade, "F9")
-                        && !Objects.equals(studentAddMathGrade, "U"))
+                if( !Objects.equals(studentMathematicsGrade, "U"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dmeRuleAttribute.setGotMathSubjectAndPass();
                 }
 
-                if(!Objects.equals(studentMathematicsGrade, "E8")
-                        && !Objects.equals(studentMathematicsGrade, "F9")
-                        && !Objects.equals(studentMathematicsGrade, "U"))
+                // Here scienceTechnicalVocationalSubjectsCredit if is credit means pass
+                if(!Objects.equals(studentAddMathGrade, "None") && !Objects.equals(studentAddMathGrade, "U"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
                 }
-
-                //check Science/Technical/Vocational subject got pass or not
-
+                else
+                {
+                    //check Science/Technical/Vocational subject got pass or not
+                    if(Objects.equals(studentScienceTechnicalVocationalSubject, "Agriculture")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Biology")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Chemistry")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Environmental Management")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Food and Nutrition")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Marine Science")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Physics")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Science - Combined")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Physical Education")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Physics Science")
+                            || Objects.equals(studentScienceTechnicalVocationalSubject, "Sciences - Co-ordinated (Double)"))
+                    {
+                        if(!Objects.equals(studentScienceTechnicalVocationalGrade, "U"))
+                        {
+                            dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
+                        }
+                    }
+                }
             }
 
             for(int i = 0; i < studentGrades.length; i++)
@@ -295,14 +416,14 @@ public class DME
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
-            // for all subject check got at least minimum grade B or not
+            // For all subject check got at least minimum grade B or not
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "English"))
                 {
                     if(!Objects.equals(studentGrades[i], "F9"))
                     {
-                        gotEnglishSubjectAndPass = true;
+                        dmeRuleAttribute.setGotEnglishSubjectAndPass();
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "Mathematics"))
@@ -311,7 +432,7 @@ public class DME
                             && !Objects.equals(studentGrades[i], "C8")
                             && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        dmeRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
@@ -320,11 +441,11 @@ public class DME
                             && !Objects.equals(studentGrades[i], "C8")
                             && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        dmeRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
 
-                //check Science/Technical/Vocational subject got at least B or not
+                // Check Science/Technical/Vocational subject got at least B or not
                 if(Objects.equals(studentSubjects[i], "Digital Logic")
                         || Objects.equals(studentSubjects[i], "Basic Circuit Theory")
                         || Objects.equals(studentSubjects[i], "Principal Electronic")
@@ -340,12 +461,12 @@ public class DME
                             && !Objects.equals(studentGrades[i], "C8")
                             && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        scienceTechnicalVocationalSubjectsCredit = true;
+                        dmeRuleAttribute.setScienceTechnicalVocationalSubjectsCredit();
                     }
                 }
             }
 
-            // for all subject check got at least minimum grade B or not
+            // For all subject check got at least minimum grade B or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7")
@@ -358,20 +479,26 @@ public class DME
         }
         else // SKM level 3
         {
-            // TODO SKM level 3
+            // TODO SKM level 3, foundation, matriculation
         }
 
+        // if enough credit, check english pass, science/technical/vocational credit
+        // math subject pass or credit or not.
+        // if all requirements satisfy, return true
         if(dmeRuleAttribute.getCountUEC() >= 3
                 || dmeRuleAttribute.getCountSPM() >= 3
                 || dmeRuleAttribute.getCountOLevel() >= 3
                 || dmeRuleAttribute.getCountSTPM() >= 1
                 || dmeRuleAttribute.getCountALevel() >= 1)
         {
-            if(gotEnglishSubjectAndPass && gotMathSubjectAndCredit && scienceTechnicalVocationalSubjectsCredit)
+            if(dmeRuleAttribute.isGotEnglishSubjectAndPass()
+                    && (dmeRuleAttribute.isGotMathSubjectAndCredit() || dmeRuleAttribute.isGotMathSubjectAndPass())
+                    && dmeRuleAttribute.isScienceTechnicalVocationalSubjectsCredit())
             {
                 return true;
             }
         }
+        //if all requirements not satisfy, return false
         return false;
     }
 

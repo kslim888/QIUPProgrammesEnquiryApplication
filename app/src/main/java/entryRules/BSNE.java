@@ -22,7 +22,6 @@ public class BSNE
     // when
     @Condition
     public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
-                               @Fact("Student's Subjects")String[] studentSubjects,
                                @Fact("Student's Grades")String[] studentGrades)
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification

@@ -5,16 +5,19 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,10 +32,11 @@ import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class FilterProgrammes extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
-    MaterialSpinner resultsSpinner, subjectsSpinner, gradesSpinner,
-            subjectsSpinner1, gradesSpinner1,
+    MaterialSpinner qualificationSpinner, gradesSpinner, gradesSpinner1,
             spmOLevelSpinner, mathematicsSpinner, englishSpinner,
-            addMathSpinner, bahasaMalaysiaSpinner;
+            addMathSpinner, bahasaMalaysiaSpinner, scienceTechnicalVocationalGradeSpinner;
+    AutoCompleteTextView subjectsAutoCompleteTextView, newSubjectsAutoCompleteTextView,
+            scienceTechnicalVocationalAutoCompleteTextView;
     ArrayAdapter<String> subjectsAdapter, gradesAdapter;
     Button filterButton;
     LinearLayout parentLinearLayout;
@@ -40,15 +44,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             gradesText, englishText, mathematicsText,
             spmOlevelText, addMathText, bahasaMalaysiaText;
     boolean flagForNewField;
-
-    //TODO set minimum subjects and grades then only can generate. if not minimum toast message
+    String [] subjectsList, scienceTechnicalVocationalSubjectArrays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filter_programme);
-
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -61,8 +63,9 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         gradesText  = findViewById(R.id.gradesText);
         englishText = findViewById(R.id.englishText);
         mathematicsText = findViewById(R.id.mathematicsText);
-        resultsSpinner = findViewById(R.id.resultsSpinner);
-        subjectsSpinner = findViewById(R.id.subjectsSpinner);
+        qualificationSpinner = findViewById(R.id.qualificationSpinner);
+        subjectsAutoCompleteTextView = findViewById(R.id.subjectsAutoCompleteTextView);
+        newSubjectsAutoCompleteTextView = findViewById(R.id.newSubjectsAutoCompleteTextView);
         gradesSpinner = findViewById(R.id.gradesSpinner);
         spmOlevelText = findViewById(R.id.spmOlevelText);
         spmOLevelSpinner = findViewById(R.id.spmOLevelSpinner);
@@ -72,29 +75,12 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         addMathSpinner = findViewById(R.id.addMathSpinner);
         bahasaMalaysiaSpinner = findViewById(R.id.bahasaMalaysiaSpinner);
         bahasaMalaysiaText = findViewById(R.id.bahasaMalaysiaText);
+        scienceTechnicalVocationalAutoCompleteTextView = findViewById(R.id.scienceTechnicalVocationalAutoCompleteTextView);
+        scienceTechnicalVocationalGradeSpinner = findViewById(R.id.scienceTechnicalVocationalGrade);
 
         // setting the results type Adapter
         String[] stringsResultsType = getResources().getStringArray(R.array.qualification_type);
-        ArrayAdapter<String> resultsArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, stringsResultsType)
-        {
-            // If is position 0(the initial dummy entry), make it hidden
-            // else, pass convertView as null to prevent reuse of special case views
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent)
-            {
-                View v;
-                if (position == 0) {
-                    CheckedTextView tv = new CheckedTextView(getContext());
-                    tv.setHeight(0);
-                    tv.setVisibility(View.GONE);
-                    v = tv;
-                }
-                else {
-                    v = super.getDropDownView(position, null, parent);
-                }
-                return v;
-            }
-        };
+        ArrayAdapter<String> resultsArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, stringsResultsType);
         resultsArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // setting the results type Adapter
@@ -128,7 +114,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         subjectsText.setTextColor(Color.GRAY);
         gradesText.setTextColor(Color.GRAY);
         flagForNewField = false;
-        subjectsSpinner.setEnabled(false);
+        subjectsAutoCompleteTextView.setEnabled(false);
         gradesSpinner.setEnabled(false);
         filterButton.setEnabled(false);
         englishText.setVisibility(View.GONE);
@@ -141,11 +127,55 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         addMathSpinner.setVisibility(View.GONE);
         bahasaMalaysiaText.setVisibility(View.GONE);
         bahasaMalaysiaSpinner.setVisibility(View.GONE);
+        scienceTechnicalVocationalAutoCompleteTextView.setVisibility(View.GONE);
+        scienceTechnicalVocationalGradeSpinner.setVisibility(View.GONE);
         spmOLevelSpinner.setAdapter(SPMOLevelArrayAdapter);
         spmOLevelSpinner.setOnItemSelectedListener(this);
-        resultsSpinner.setAdapter(resultsArrayAdapter);
-        resultsSpinner.setOnItemSelectedListener(this);
+        qualificationSpinner.setAdapter(resultsArrayAdapter);
+        qualificationSpinner.setOnItemSelectedListener(this);
         setSpinnerScrollbar(); //set spinner scrollbar for resultsSpinner, subjectsSpinner and gradesSpinner
+
+        scienceTechnicalVocationalAutoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus)
+            {
+                if (hasFocus)
+                {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(scienceTechnicalVocationalAutoCompleteTextView, InputMethodManager.SHOW_IMPLICIT);
+                    scienceTechnicalVocationalAutoCompleteTextView.setHint("Leave blank if none");
+                }
+                else
+                    scienceTechnicalVocationalAutoCompleteTextView.setHint("");
+            }
+        });
+
+        scienceTechnicalVocationalAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+                if(Objects.equals(scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim(), ""))
+                {
+                    scienceTechnicalVocationalGradeSpinner.setSelection(0);
+                    scienceTechnicalVocationalGradeSpinner.setEnabled(false);
+                }
+                else
+                {
+                    scienceTechnicalVocationalGradeSpinner.setEnabled(true);
+                }
+            }
+        });
 
         //add new dropdown field
         addNewField.setOnClickListener(new View.OnClickListener()
@@ -155,21 +185,19 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View rowView = inflater.inflate(R.layout.new_dropdown_field, null);
-
                 // Add the new row before the add field button.
-                parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 8);
-                if(parentLinearLayout.getChildCount() != 11) // if added new field, make the delete field text enable
+                parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 9);
+                if(parentLinearLayout.getChildCount() != 12) // if added new field, make the delete field text enable
                 {
                     deleteFieldText.setEnabled(true);
                     deleteFieldText.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 }
-                subjectsSpinner1 = rowView.findViewById(R.id.subjectsSpinner1);
+                newSubjectsAutoCompleteTextView = rowView.findViewById(R.id.newSubjectsAutoCompleteTextView);
                 gradesSpinner1 = rowView.findViewById(R.id.gradesSpinner1);
-
-                String selectedItem = resultsSpinner.getSelectedItem().toString();
+                String selectedItem = qualificationSpinner.getSelectedItem().toString();
                 if(Objects.equals(selectedItem, "SPM"))
                 {
-                    if(parentLinearLayout.getChildCount() == 22) // max 12
+                    if(parentLinearLayout.getChildCount() == 23) // max 12
                     {
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
@@ -177,7 +205,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
                 else if(Objects.equals(selectedItem, "O-Level")) // max 10
                 {
-                    if(parentLinearLayout.getChildCount() == 20)
+                    if(parentLinearLayout.getChildCount() == 21)
                     {
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
@@ -185,7 +213,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
                 else if(Objects.equals(selectedItem, "A-Level")) // max 5
                 {
-                    if(parentLinearLayout.getChildCount() == 15)
+                    if(parentLinearLayout.getChildCount() == 16)
                     {
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
@@ -193,7 +221,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
                 else if(Objects.equals(selectedItem, "STPM")) // max 5
                 {
-                    if(parentLinearLayout.getChildCount() == 15)
+                    if(parentLinearLayout.getChildCount() == 16)
                     {
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
@@ -201,16 +229,23 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
                 else if(Objects.equals(selectedItem, "STAM")) // max 11
                 {
+                    if(parentLinearLayout.getChildCount() == 22)
+                    {
+                        addNewField.setEnabled(false);
+                        addNewField.setTextColor(Color.GRAY);
+                    }
+                }
+                else if(Objects.equals(selectedItem, "UEC"))
+                {
                     if(parentLinearLayout.getChildCount() == 21)
                     {
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
                     }
                 }
-                //TODO UEC set maximum
 
                 try {
-                    loadSpinnerData(subjectsSpinner1, gradesSpinner1);
+                    loadSpinnerData(newSubjectsAutoCompleteTextView, gradesSpinner1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -221,13 +256,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View view)
             {
-                if(parentLinearLayout.getChildCount() != 11) // if added new field
+                if(parentLinearLayout.getChildCount() != 12) // if added new field
                 {
-                    parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 9);
+                    parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 10);
                     addNewField.setEnabled(true);
                     addNewField.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 }
-                if(parentLinearLayout.getChildCount() == 11) // if deleted and back to original layout
+                if(parentLinearLayout.getChildCount() == 12) // if deleted and back to original layout
                 {
                     deleteFieldText.setEnabled(false);
                     deleteFieldText.setTextColor(Color.GRAY);
@@ -241,21 +276,43 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View view)
             {
-                ArrayList<TextView> addedSubjectsList = new ArrayList<>();
+                ArrayList<String> addedSubjectsList = new ArrayList<>();
                 ArrayList<TextView> addedGradesList = new ArrayList<>();
-                String spmOLevelString="", mathematicsGrade="", englishGrade="", addMathGrade="", bahasaMalaysiaGrade="";
+                String spmOLevelString="", mathematicsGrade="", englishGrade="",
+                        addMathGrade="", bahasaMalaysiaGrade="", scienceTechnicalVocationalGrade = "";
 
-                // get all the new added view value and add to a List
+                // Validate Subjects First
+                // first convert all the subjects into UpperCase for case-insensitive validation
+                for(int i = 0; i  < subjectsList.length; i++)
+                {
+                    subjectsList[i] = subjectsList[i].toUpperCase();
+                }
+                // If the key-in subject is not exist in subjects list according to qualification, return
+                if(!Arrays.asList(subjectsList).contains(subjectsAutoCompleteTextView.getText().toString().toUpperCase())
+                        && !Objects.equals(subjectsAutoCompleteTextView.getText().toString(), ""))
+                {
+                    Toast.makeText(FilterProgrammes.this, "Please key-in valid subjects name", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                // Get all the new added view value and add to a List
                 for (int i = 0; i < parentLinearLayout.getChildCount(); i++)
                 {
                     view = parentLinearLayout.getChildAt(i);
-                    if(view instanceof LinearLayout)
+                    if(view instanceof RelativeLayout)
                     {
                         if(view.getId() == R.id.newField)
                         {
-                            subjectsSpinner1 = (MaterialSpinner) ((LinearLayout) view).getChildAt(0);
-                            gradesSpinner1 = (MaterialSpinner) ((LinearLayout) view).getChildAt(1);
-                            addedSubjectsList.add((TextView)subjectsSpinner1.getSelectedView());
+                            newSubjectsAutoCompleteTextView = (AutoCompleteTextView) ((RelativeLayout) view).getChildAt(0);
+                            // If the key-in subject is not exist in subjects list according to qualification, return
+                            if(!Arrays.asList(subjectsList).contains(newSubjectsAutoCompleteTextView.getText().toString().toUpperCase())
+                                    && !Objects.equals(newSubjectsAutoCompleteTextView.getText().toString(), ""))
+                            {
+                                Toast.makeText(FilterProgrammes.this, "Please key-in valid subjects name", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            gradesSpinner1 = (MaterialSpinner) ((RelativeLayout) view).getChildAt(1);
+                            addedSubjectsList.add(newSubjectsAutoCompleteTextView.getText().toString());
                             addedGradesList.add((TextView)gradesSpinner1.getSelectedView());
                         }
                     }
@@ -263,21 +320,21 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
                 // copy all subjects list to arrays
                 String[] arrayStringSubjects = new String[addedSubjectsList.size() + 1];
-                TextView selection = (TextView)subjectsSpinner.getSelectedView();
-                String selectedItem = selection.getText().toString();
+                String selectedItem = subjectsAutoCompleteTextView.getText().toString();
                 arrayStringSubjects[0] = selectedItem;
                 for(int i = 1; i < arrayStringSubjects.length; i++)
-                    arrayStringSubjects[i] = addedSubjectsList.get(i-1).getText().toString();
+                    arrayStringSubjects[i] = addedSubjectsList.get(i-1);
 
                 // copy all grades list to arrays
                 String[] arrayStringGrades = new String[addedGradesList.size() + 1];
-                selection = (TextView)gradesSpinner.getSelectedView();
+                TextView selection = (TextView)gradesSpinner.getSelectedView();
                 selectedItem = selection.getText().toString();
                 arrayStringGrades[0] = selectedItem;
                 for(int i = 1; i <  arrayStringSubjects.length; i++)
                     arrayStringGrades[i] = addedGradesList.get(i-1).getText().toString();
 
-                selectedItem = resultsSpinner.getSelectedItem().toString(); // selectedItem lastly is Qualification Level
+                // selectedItem Lastly is assigned as Qualification Level
+                selectedItem = qualificationSpinner.getSelectedItem().toString();
 
                 //check got compulsory subjects or not
                 if(Objects.equals(selectedItem, "SPM"))
@@ -299,25 +356,19 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         return;
                     }
                 }
-
-                //changing the string value to proper subject and match with Rules
-                for(int i = 0; i < arrayStringSubjects.length; i++)
+                else if(Objects.equals(selectedItem, "UEC"))
                 {
-                    if(Objects.equals(arrayStringSubjects[i], "Bahasa Inggeris") || Objects.equals(arrayStringSubjects[i], "English Language"))
+                    if(!Arrays.asList(arrayStringSubjects).contains("Bahasa Malaysia")
+                            || !Arrays.asList(arrayStringSubjects).contains("Chinese")
+                            || !Arrays.asList(arrayStringSubjects).contains("History")
+                            || !Arrays.asList(arrayStringSubjects).contains("English Language"))
                     {
-                        arrayStringSubjects[i] = "English";
-                    }
-                    if(Objects.equals(arrayStringSubjects[i], "Mathematics D")) // o-level
-                    {
-                        arrayStringSubjects[i] = "Mathematics";
-                    }
-                    if(Objects.equals(arrayStringSubjects[i], "Advanced Mathematics")) // uec
-                    {
-                        arrayStringSubjects[i] = "Additional Mathematics";
+                        Toast.makeText(FilterProgrammes.this, "Subjects must include Bahasa Malaysia, English Language, Chinese and History", Toast.LENGTH_LONG).show();
+                        return;
                     }
                 }
 
-                // if there are subjects is not selected
+                // Uf there are subjects is not key-in / selected
                 for(int i = 0; i < arrayStringSubjects.length; i++)
                 {
                     if(Objects.equals(arrayStringSubjects[i], ""))
@@ -327,7 +378,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     }
                 }
 
-                // if there are duplicated subjects
+                // If there are duplicated subjects, return
                 for(int i = 0; i < arrayStringSubjects.length; i++)
                 {
                     for(int j = i + 1; j < arrayStringSubjects.length; j++)
@@ -337,6 +388,20 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                             Toast.makeText(FilterProgrammes.this, "There is a duplicate subjects", Toast.LENGTH_LONG).show();
                             return;
                         }
+                    }
+                }
+
+                //After validation, change the string value to proper subject and match with Rules
+                for(int i = 0; i < arrayStringSubjects.length; i++)
+                {
+                    if(Objects.equals(arrayStringSubjects[i], "Bahasa Inggeris") || Objects.equals(arrayStringSubjects[i], "English Language"))
+                    {
+                        //English Language is for UEC and O-Level
+                        arrayStringSubjects[i] = "English";
+                    }
+                    if(Objects.equals(arrayStringSubjects[i], "Advanced Mathematics")) // uec
+                    {
+                        arrayStringSubjects[i] = "Additional Mathematics";
                     }
                 }
 
@@ -385,8 +450,16 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     addMathGrade = addMathText.getText().toString();
                 }
 
+                //science technical vocational grade
+                if(scienceTechnicalVocationalGradeSpinner.getSelectedView() != null)
+                {
+                    TextView scienceTechnicalVocationalGradeSelectedView = (TextView)scienceTechnicalVocationalGradeSpinner.getSelectedView();
+                    scienceTechnicalVocationalGrade = scienceTechnicalVocationalGradeSelectedView.getText().toString();
+                }
+
                 //check second qualification grades error if the qualification is STPM, STAM or A-Level
-                if(checkSpinnerError(spmOLevelString, mathematicsGrade, englishGrade, addMathGrade, bahasaMalaysiaGrade, selectedItem))
+                if(checkSecondQualificationError(spmOLevelString, mathematicsGrade, englishGrade,
+                        addMathGrade, bahasaMalaysiaGrade, scienceTechnicalVocationalGrade, selectedItem))
                 {
                     return; // if error is true, dont do anything
                 }
@@ -401,12 +474,14 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 extras.putString("STUDENT_SECONDARY_ENG", englishGrade);
                 extras.putString("STUDENT_SECONDARY_ADDMATH", addMathGrade);
                 extras.putString("STUDENT_SECONDARY_BM", bahasaMalaysiaGrade);
+                extras.putString("STUDENT_STV_SUBJECT", scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim());
+                extras.putString("STUDENT_STV_GRADE", scienceTechnicalVocationalGrade);
 
-                Intent nextActivity = new Intent(FilterProgrammes.this, PreferProgrammeAndEnglishProficiency.class);
+                Intent nextActivity = new Intent(FilterProgrammes.this, InterestProgramme.class);
                 nextActivity.putExtras(extras);
                 startActivity(nextActivity);
 
-                //reset back to default
+                //TODO reset back to default
                 /*
                 resultsSpinner.setSelection(0);
                 while ( parentLinearLayout.getChildCount() != 4)
@@ -427,33 +502,12 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.specific_programme, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if(item.getItemId() == android.R.id.home)
-        {
-            finish();
-        }
-        else if(item.getItemId() == R.id.specificProgramme)
-        {
-            Intent specificProgramme = new Intent(FilterProgrammes.this, SpecificProgramme.class);
-            startActivity(specificProgramme);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private boolean checkSpinnerError(String spmOLevelQualification,
+    private boolean checkSecondQualificationError(String spmOLevelQualification,
                                       String secondMath,
                                       String secondEng,
                                       String secondAddMath,
                                       String secondBahasaMalaysia,
+                                      String scienceTechnicalVocationalGrade,
                                       String qualificationLevel)
     {
         if(Objects.equals(qualificationLevel, "STPM") || Objects.equals(qualificationLevel, "STAM") || Objects.equals(qualificationLevel, "A-Level"))
@@ -461,10 +515,16 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             if(Objects.equals(spmOLevelQualification, ""))
             {
                 Toast.makeText(FilterProgrammes.this, "Please choose SPM or O-Level Qualification", Toast.LENGTH_LONG).show();
-                ((TextView)spmOLevelSpinner.getSelectedView()).setError("Error");
-                spmOLevelSpinner.setEnableErrorLabel(true);
                 return true;
             }
+
+            if(Objects.equals(scienceTechnicalVocationalGrade, "")
+                    && !Objects.equals(scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim(), ""))
+            {
+                Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " Science/Technical/Vocational grade", Toast.LENGTH_LONG).show();
+                return true;
+            }
+
             if(Objects.equals(secondBahasaMalaysia, ""))
             {
                 Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " Bahasa Malaysia grade", Toast.LENGTH_LONG).show();
@@ -486,14 +546,15 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " Additional Mathematics grade", Toast.LENGTH_LONG).show();
                 return true;
             }
+
         }
         return false;
     }
 
-    private void loadSpinnerData(MaterialSpinner s, MaterialSpinner g) throws IOException
+    private void loadSpinnerData(AutoCompleteTextView subject, MaterialSpinner grade) throws IOException
     {
-        s.setAdapter(subjectsAdapter);
-        g.setAdapter(gradesAdapter);
+        subject.setAdapter(subjectsAdapter);
+        grade.setAdapter(gradesAdapter);
         flagForNewField = true; // to only set spinner scrollbar for newly added field
         setSpinnerScrollbar();
     }
@@ -502,18 +563,18 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l)
     {
-        String [] subjectsList, gradesList;
+        String [] gradesList;
 
         switch(adapterView.getId())
         {
-            case R.id.resultsSpinner:
+            case R.id.qualificationSpinner:
             {
                 switch(position)
                 {
                     case -1: // if select back to hint
                     {
                         filterButton.setEnabled(false);
-                        subjectsSpinner.setEnabled(false);
+                        subjectsAutoCompleteTextView.setEnabled(false);
                         gradesSpinner.setEnabled(false);
                         addNewField.setEnabled(false);
                         addNewField.setTextColor(Color.GRAY);
@@ -522,32 +583,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     }
                     break;
 
-                    case 1: // SPM selected
+                    case 0: // SPM selected
                     {
                         subjectsList = getResources().getStringArray(R.array.spm_subjects);
                         gradesList = getResources().getStringArray(R.array.spm_grades);
 
                         //subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
-                        {
-                            // If is position 0(the initial dummy entry), make it hidden
-                            // else, pass convertView as null to prevent reuse of special case views
-                            @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
-                            {
-                                View v;
-                                if (position == 0) {
-                                    CheckedTextView tv = new CheckedTextView(getContext());
-                                    tv.setHeight(0);
-                                    tv.setVisibility(View.GONE);
-                                    v = tv;
-                                }
-                                else {
-                                    v = super.getDropDownView(position, null, parent);
-                                }
-                                return v;
-                            }
-                        };
+                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
@@ -570,35 +612,18 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         };
                         subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        subjectsAutoCompleteTextView.setAdapter(subjectsAdapter);
                         gradesSpinner.setAdapter(gradesAdapter);
                     }
                     break;
 
-                    case 2: // STPM selected
+                    case 1: // STPM selected
                     {
                         subjectsList = getResources().getStringArray(R.array.stpm_subjects);
                         gradesList = getResources().getStringArray(R.array.stpm_grades);
 
                         // subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
-                        {
-                            @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
-                            {
-                                View v;
-                                if (position == 0) {
-                                    TextView tv = new TextView(getContext());
-                                    tv.setHeight(0);
-                                    tv.setVisibility(View.GONE);
-                                    v = tv;
-                                }
-                                else {
-                                    v = super.getDropDownView(position, null, parent);
-                                }
-                                return v;
-                            }
-                        };
+                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
@@ -622,35 +647,18 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         };
                         subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        subjectsAutoCompleteTextView.setAdapter(subjectsAdapter);
                         gradesSpinner.setAdapter(gradesAdapter);
                     }
                     break;
 
-                    case 3: // UEC selected
+                    case 2: // UEC selected
                     {
                         subjectsList = getResources().getStringArray(R.array.uec_subjects);
                         gradesList = getResources().getStringArray(R.array.uec_grades);
 
                         //subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
-                        {
-                            @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
-                            {
-                                View v;
-                                if (position == 0) {
-                                    TextView tv = new TextView(getContext());
-                                    tv.setHeight(0);
-                                    tv.setVisibility(View.GONE);
-                                    v = tv;
-                                }
-                                else {
-                                    v = super.getDropDownView(position, null, parent);
-                                }
-                                return v;
-                            }
-                        };
+                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
@@ -674,35 +682,18 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         };
                         subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        subjectsAutoCompleteTextView.setAdapter(subjectsAdapter);
                         gradesSpinner.setAdapter(gradesAdapter);
                     }
                     break;
 
-                    case 4: // O-Level selected
+                    case 3: // O-Level selected
                     {
                         subjectsList = getResources().getStringArray(R.array.oLevel_subjects);
                         gradesList = getResources().getStringArray(R.array.oLevel_grades);
 
                         //subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
-                        {
-                            @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
-                            {
-                                View v;
-                                if (position == 0) {
-                                    TextView tv = new TextView(getContext());
-                                    tv.setHeight(0);
-                                    tv.setVisibility(View.GONE);
-                                    v = tv;
-                                }
-                                else {
-                                    v = super.getDropDownView(position, null, parent);
-                                }
-                                return v;
-                            }
-                        };
+                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
@@ -725,35 +716,18 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         };
                         subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        subjectsAutoCompleteTextView.setAdapter(subjectsAdapter);
                         gradesSpinner.setAdapter(gradesAdapter);
                     }
                     break;
 
-                    case 5: // A-Level selected
+                    case 4: // A-Level selected
                     {
                         subjectsList = getResources().getStringArray(R.array.aLevel_subjects);
                         gradesList = getResources().getStringArray(R.array.aLevel_grades);
 
                         //subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
-                        {
-                            @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
-                            {
-                                View v;
-                                if (position == 0) {
-                                    TextView tv = new TextView(getContext());
-                                    tv.setHeight(0);
-                                    tv.setVisibility(View.GONE);
-                                    v = tv;
-                                }
-                                else {
-                                    v = super.getDropDownView(position, null, parent);
-                                }
-                                return v;
-                            }
-                        };
+                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
@@ -777,35 +751,18 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         };
                         subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        subjectsAutoCompleteTextView.setAdapter(subjectsAdapter);
                         gradesSpinner.setAdapter(gradesAdapter);
                     }
                     break;
 
-                    case 6: // STAM selected
+                    case 5: // STAM selected
                     {
                         subjectsList = getResources().getStringArray(R.array.STAM_subjects);
                         gradesList = getResources().getStringArray(R.array.STAM_grades);
 
                         //subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, subjectsList)
-                        {
-                            @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
-                            {
-                                View v;
-                                if (position == 0) {
-                                    TextView tv = new TextView(getContext());
-                                    tv.setHeight(0);
-                                    tv.setVisibility(View.GONE);
-                                    v = tv;
-                                }
-                                else {
-                                    v = super.getDropDownView(position, null, parent);
-                                }
-                                return v;
-                            }
-                        };
+                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
@@ -828,7 +785,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         };
                         subjectsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         gradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        subjectsSpinner.setAdapter(subjectsAdapter);
+                        subjectsAutoCompleteTextView.setAdapter(subjectsAdapter);
                         gradesSpinner.setAdapter(gradesAdapter);
                     }
                     break;
@@ -838,14 +795,17 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
             case R.id.spmOLevelSpinner:
             {
-                ArrayAdapter<String> spmOLevelGradesAdapter, spmOLevelAddMathGradesAdapter;
+                ArrayAdapter<String> spmOLevelGradesAdapter, spmOLevelAddMathGradesAdapter, scienceTechnicalVocationalAdapter;
                 String [] addMathGradeList;
+
                 switch(position)
                 {
                     case 1: // spm
                     {
                         gradesList = getResources().getStringArray(R.array.spm_grades);
                         addMathGradeList = getResources().getStringArray(R.array.add_math_spm_grades);
+                        scienceTechnicalVocationalSubjectArrays = getResources().getStringArray(R.array.spm_science_technical_vocational_subject);
+
                         //grade list
                         spmOLevelGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, gradesList)
                         {
@@ -883,11 +843,15 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                                 return v;
                             }
                         };
+                        scienceTechnicalVocationalAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, scienceTechnicalVocationalSubjectArrays);
+                        scienceTechnicalVocationalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spmOLevelGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spmOLevelAddMathGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         bahasaMalaysiaSpinner.setAdapter(spmOLevelGradesAdapter);
                         mathematicsSpinner.setAdapter(spmOLevelGradesAdapter);
                         englishSpinner.setAdapter(spmOLevelGradesAdapter);
+                        scienceTechnicalVocationalGradeSpinner.setAdapter(spmOLevelGradesAdapter);
+                        scienceTechnicalVocationalAutoCompleteTextView.setAdapter(scienceTechnicalVocationalAdapter);
                         addMathSpinner.setAdapter(spmOLevelAddMathGradesAdapter);
                     }
                     break;
@@ -896,6 +860,8 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     {
                         gradesList = getResources().getStringArray(R.array.oLevel_grades);
                         addMathGradeList = getResources().getStringArray(R.array.add_math_oLevel_grades);
+                        scienceTechnicalVocationalSubjectArrays = getResources().getStringArray(R.array.oLevel_science_technical_vocational_subject);
+
                         //grade list
                         spmOLevelGradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
                         {
@@ -933,11 +899,15 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                                 return v;
                             }
                         };
+                        scienceTechnicalVocationalAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, scienceTechnicalVocationalSubjectArrays);
+                        scienceTechnicalVocationalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spmOLevelGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spmOLevelAddMathGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         bahasaMalaysiaSpinner.setAdapter(spmOLevelGradesAdapter);
                         mathematicsSpinner.setAdapter(spmOLevelGradesAdapter);
                         englishSpinner.setAdapter(spmOLevelGradesAdapter);
+                        scienceTechnicalVocationalGradeSpinner.setAdapter(spmOLevelGradesAdapter);
+                        scienceTechnicalVocationalAutoCompleteTextView.setAdapter(scienceTechnicalVocationalAdapter);
                         addMathSpinner.setAdapter(spmOLevelAddMathGradesAdapter);
                     }
                     break;
@@ -946,9 +916,9 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             break;
         }
 
-        if(adapterView.getId() == R.id.resultsSpinner)
+        if(adapterView.getId() == R.id.qualificationSpinner)
         {
-            if(position == 2 || position == 5 || position == 6)
+            if(position == 1 || position == 4 || position == 5)
             {
                 spmOlevelText.setVisibility(View.VISIBLE);
                 spmOLevelSpinner.setVisibility(View.VISIBLE);
@@ -960,10 +930,14 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 addMathSpinner.setVisibility(View.VISIBLE);
                 bahasaMalaysiaText.setVisibility(View.VISIBLE);
                 bahasaMalaysiaSpinner.setVisibility(View.VISIBLE);
+                scienceTechnicalVocationalAutoCompleteTextView.setVisibility(View.VISIBLE);
+                scienceTechnicalVocationalGradeSpinner.setVisibility(View.VISIBLE);
                 mathematicsSpinner.setEnabled(false);
                 englishSpinner.setEnabled(false);
                 addMathSpinner.setEnabled(false);
                 bahasaMalaysiaSpinner.setEnabled(false);
+                scienceTechnicalVocationalAutoCompleteTextView.setEnabled(false);
+                scienceTechnicalVocationalGradeSpinner.setEnabled(false);
             }
             else
             {
@@ -977,37 +951,47 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 spmOLevelSpinner.setVisibility(View.GONE);
                 bahasaMalaysiaText.setVisibility(View.GONE);
                 bahasaMalaysiaSpinner.setVisibility(View.GONE);
+                scienceTechnicalVocationalAutoCompleteTextView.setVisibility(View.GONE);
+                scienceTechnicalVocationalGradeSpinner.setVisibility(View.GONE);
                 mathematicsSpinner.setEnabled(false);
                 englishSpinner.setEnabled(false);
                 addMathSpinner.setEnabled(false);
                 bahasaMalaysiaSpinner.setEnabled(false);
+                scienceTechnicalVocationalAutoCompleteTextView.setEnabled(false);
+                scienceTechnicalVocationalGradeSpinner.setEnabled(false);
             }
         }
         else if(adapterView.getId() == R.id.spmOLevelSpinner)
         {
             if(position != 0)
             {
+                scienceTechnicalVocationalAutoCompleteTextView.setEnabled(true);
+                scienceTechnicalVocationalGradeSpinner.setEnabled(true);
                 mathematicsSpinner.setEnabled(true);
                 englishSpinner.setEnabled(true);
                 addMathSpinner.setEnabled(true);
                 bahasaMalaysiaSpinner.setEnabled(true);
+                scienceTechnicalVocationalAutoCompleteTextView.setText("");
+                scienceTechnicalVocationalAutoCompleteTextView.dismissDropDown();
             }
         }
 
         // after choose results type and set the adapters, make subjects and grades spinner enable
         // if both subject and grades spinner is disabled, make them both enable back
-        if(adapterView.getId() == R.id.resultsSpinner)
+        if(adapterView.getId() == R.id.qualificationSpinner)
         {
             if(position != -1)
             {
                 filterButton.setEnabled(true);
-                subjectsSpinner.setEnabled(true);
+                subjectsAutoCompleteTextView.setEnabled(true);
                 gradesSpinner.setEnabled(true);
                 addNewField.setEnabled(true);
                 addNewField.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 subjectsText.setTextColor(getResources().getColor(R.color.colorAccent));
                 gradesText.setTextColor(getResources().getColor(R.color.colorAccent));
-
+                subjectsAutoCompleteTextView.setText("");
+                scienceTechnicalVocationalAutoCompleteTextView.setText("");
+                subjectsAutoCompleteTextView.dismissDropDown();
                 spmOLevelSpinner.setSelection(0);
                 mathematicsSpinner.setSelection(0);
                 englishSpinner.setSelection(0);
@@ -1017,9 +1001,9 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 {
                     deleteFieldText.setEnabled(false);
                     deleteFieldText.setTextColor(Color.GRAY);
-                    for(int i = parentLinearLayout.getChildCount(); i != 11; i--)  // if switch result, reset back to default
+                    for(int i = parentLinearLayout.getChildCount(); i != 12; i--)  // if switch result, reset back to default
                     {
-                        parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 9);
+                        parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 10);
                     }
                 }
             }
@@ -1035,9 +1019,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             popup.setAccessible(true);
 
             if(flagForNewField) {
-                android.widget.ListPopupWindow newSubjectsListPopupWindow = (android.widget.ListPopupWindow) popup.get(subjectsSpinner1);
                 android.widget.ListPopupWindow newGradesListPopupWindow = (android.widget.ListPopupWindow) popup.get(gradesSpinner1);
-                newSubjectsListPopupWindow.setHeight(500);
                 newGradesListPopupWindow.setHeight(500);
                 return;
             }
@@ -1047,8 +1029,8 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             android.widget.ListPopupWindow addMathPopupWindow = (android.widget.ListPopupWindow) popup.get(addMathSpinner);
             android.widget.ListPopupWindow mathematicsPopupWindow = (android.widget.ListPopupWindow) popup.get(mathematicsSpinner);
             android.widget.ListPopupWindow englishPopupWindow = (android.widget.ListPopupWindow) popup.get(englishSpinner);
-            android.widget.ListPopupWindow qualificationTypePopupWindow = (android.widget.ListPopupWindow) popup.get(resultsSpinner);
-            android.widget.ListPopupWindow subjectsListPopupWindow = (android.widget.ListPopupWindow) popup.get(subjectsSpinner);
+            android.widget.ListPopupWindow scienceTechnicalVocationaPopupWindow = (android.widget.ListPopupWindow) popup.get(scienceTechnicalVocationalGradeSpinner);
+            android.widget.ListPopupWindow qualificationTypePopupWindow = (android.widget.ListPopupWindow) popup.get(qualificationSpinner);
             android.widget.ListPopupWindow gradesListPopupWindow = (android.widget.ListPopupWindow) popup.get(gradesSpinner);
 
             // Set popupWindow height to 500px
@@ -1056,9 +1038,9 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             addMathPopupWindow.setHeight(500);
             mathematicsPopupWindow.setHeight(500);
             englishPopupWindow.setHeight(500);
-            subjectsListPopupWindow.setHeight(500);
             gradesListPopupWindow.setHeight(500);
             qualificationTypePopupWindow.setHeight(500);
+            scienceTechnicalVocationaPopupWindow.setHeight(500);
         }
         catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

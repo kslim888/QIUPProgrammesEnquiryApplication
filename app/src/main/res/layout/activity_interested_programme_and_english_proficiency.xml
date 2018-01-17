@@ -11,10 +11,10 @@
         android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/preferAndEnglishParentLayout"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        tools:context="com.example.ahshing.qiupprogrammesenquiryapplication.PreferProgrammeAndEnglishProficiency">
+        android:id="@+id/interestedAndEnglishParentLayout"
+        tools:context="com.example.ahshing.qiupprogrammesenquiryapplication.InterestedProgrammeAndEnglishProficiency">
 
         <TextView
             android:id="@+id/textView"
@@ -78,14 +78,31 @@
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/specificProgrammeText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingEnd="10dp"
+            android:paddingStart="7dp"
+            android:text="Specific Programme"
+            android:textColor="@color/colorAccent" />
+
+        <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/specificProgrammeSpinner"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:ms_baseColor="@color/colorAccent"
+            />
+
+        <TextView
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Choose Prefer Programmes (Max 3)"
+            android:text="Choose Interested Programmes (Max 3)"
             android:layout_marginTop="25dp"/>
 
         <fr.ganfra.materialspinner.MaterialSpinner
-            android:id="@+id/preferProgrammeSpinner"
+            android:id="@+id/interestedProgrammeSpinner"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             app:ms_baseColor="@color/colorAccent"
@@ -94,8 +111,6 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
             android:hint="If other programme, please specify...">
 
             <EditText
@@ -103,8 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="text|textCapWords|textCapSentences|textMultiLine"
-                android:textSize="14dp"  />
+                android:inputType="text|textCapSentences|textMultiLine" />
         </android.support.design.widget.TextInputLayout>
 
         <RelativeLayout
@@ -112,7 +126,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/addPreferProgrammeText"
+                android:id="@+id/addInterestedProgrammeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -122,11 +136,11 @@
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/deletePreferProgrammeText"
+                android:id="@+id/deleteInterestedProgrammeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/addPreferProgrammeText"
-                android:layout_below="@+id/addPreferProgrammeText"
+                android:layout_alignEnd="@+id/addInterestedProgrammeText"
+                android:layout_below="@+id/addInterestedProgrammeText"
                 android:text="Delete programme"
                 android:textAlignment="center"
                 android:textSize="12sp" />

@@ -2,10 +2,12 @@ package com.example.ahshing.qiupprogrammesenquiryapplication;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -17,7 +19,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
     private List<String> listDataHeader;
     private HashMap<String,List<String>> listHashMap;
 
-    public ExpandableListAdapter(Context context, List<String> listDataHeader, HashMap<String, List<String>> listHashMap) {
+    public ExpandableListAdapter(Context context,
+                                 List<String> listDataHeader,
+                                 HashMap<String, List<String>> listHashMap)
+    {
         this.context = context;
         this.listDataHeader = listDataHeader;
         this.listHashMap = listHashMap;
@@ -40,8 +45,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 
     // i = Group Item , i1 = ChildItem
     @Override
-    public Object getChild(int i, int i1) {
-        return listHashMap.get(listDataHeader.get(i)).get(i1);
+    public Object getChild(int groupItem, int childItem) {
+        return listHashMap.get(listDataHeader.get(groupItem)).get(childItem);
     }
 
     @Override
@@ -56,40 +61,47 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        //return true for not refreshing views
+        return true;
     }
 
     @Override
-    public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        String headerTitle = (String)getGroup(i);
+    public View getGroupView(int groupPosition, boolean isExpanded, View view, ViewGroup viewGroup) {
+        String headerTitle = (String)getGroup(groupPosition);
         if(view == null)
         {
             LayoutInflater inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.list_header,null);
         }
         TextView listHeader = view.findViewById(R.id.listHeader);
-
         listHeader.setTypeface(null, Typeface.BOLD);
         listHeader.setText(headerTitle);
         return view;
     }
 
     @Override
-    public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        final String childText = (String)getChild(i,i1);
+    public View getChildView(int groupItem, int childItem, boolean b, View view, ViewGroup viewGroup) {
+        final String childText = (String)getChild(groupItem,childItem);
+        Log.d("childText", childText);
         if(view == null)
         {
             LayoutInflater inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.list_item,null);
         }
-
         TextView listChild = view.findViewById(R.id.listItem);
+        ImageView correctImage = view.findViewById(R.id.correctImage),
+                crossImage = view.findViewById(R.id.crossImage);
+        if(childText.contains("SPM"))
+        {
+            correctImage.setVisibility(View.VISIBLE);
+        }
+
         listChild.setText(childText);
         return view;
     }
 
     @Override
     public boolean isChildSelectable(int i, int i1) {
-        return true;
+        return false;
     }
 }

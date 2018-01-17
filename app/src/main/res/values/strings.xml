@@ -3,10 +3,12 @@
     <string name="hint_name"> Full Name </string>
     <string name="hint_email"> Email </string>
     <string name="hint_password"> Password </string>
-    <string name="err_msg_name"> Please enter full name </string>
+    <string name="err_msg_name"> Please enter valid name </string>
     <string name="err_msg_email"> Please enter valid email address </string>
     <string name="err_contact_number"> Please enter valid contact number </string>
     <string name="err_IC"> Please enter valid IC </string>
+    <string name="err_school_name"> Please enter school name </string>
+    <string name="hint_for_programme"><font size="14">Put None if no interest programme</font></string>
 
     <string-array name="spm_or_oLevel_type">
         <item> </item>
@@ -14,8 +16,59 @@
         <item> O-Level </item>
     </string-array>
 
+    <string-array name="spm_science_technical_vocational_subject">
+        <item> Science </item>
+        <item> Physics </item>
+        <item> Chemistry </item>
+        <item> Biology </item>
+        <item> Sains Pertanian </item>
+        <item> Ekonomi Rumah Tangga </item>
+        <item> Lukisan Kejuruteraan </item>
+        <item> Pengajian Kejuruteraan Mekanikal </item>
+        <item> Pengajian Kejuruteraan Awam </item>
+        <item> Pengajian Kejuruteraan Elektrik dan Elektronik </item>
+        <item> Reka Cipta </item>
+        <item> Teknologi Kejuruteraan </item>
+        <item> Grafik Komunikasi Teknikal </item>
+        <item> Pembinaan Domestik </item>
+        <item> Membuat Perabot </item>
+        <item> Kerja Paip Domestik </item>
+        <item> Pendawaian Domestik </item>
+        <item> Kimpalan Arka dan Gas </item>
+        <item> Menservis Automobil </item>
+        <item> Menservis Motosikal </item>
+        <item> Menservis Peralatan Penyejukan dan Penyamanan Udara </item>
+        <item> Menservis Peralatan Elektrik Domestik </item>
+        <item> Rekaan dan Jahitan Pakaian </item>
+        <item> Katering dan Penyajian </item>
+        <item> Pemprosesan Makanan </item>
+        <item> Penjagaan Muka dan Dandanan Rambut </item>
+        <item> Asuhan dan Pendidikan Awal Kanak-Kanak </item>
+        <item> Gerontologi Asas dan Perkhidmatan Geriatrik </item>
+        <item> Landskap dan Nurseri </item>
+        <item> Akuakultur dan Haiwan Rekreasi </item>
+        <item> Tanaman Makanan </item>
+        <item> Seni Reka Tanda </item>
+        <item> Hiasan Dalaman Asas </item>
+        <item> Produksi Multimedia </item>
+        <item> Grafik Berkomputer </item>
+    </string-array>
+
+    <string-array name="oLevel_science_technical_vocational_subject">
+        <item> Agriculture </item>
+        <item> Biology </item>
+        <item> Chemistry </item>
+        <item> Environmental Management </item>
+        <item> Food and Nutrition </item>
+        <item> Marine Science </item>
+        <item> Physics </item>
+        <item> Science - Combined </item>
+        <item> Physical Education </item>
+        <item> Physics Science </item>
+        <item> Sciences - Co-ordinated (Double) </item>
+    </string-array>
+
     <string-array name="qualification_type">
-        <item> Qualification Level </item>
         <item> SPM </item>
         <item> STPM </item>
         <item> UEC </item>
@@ -30,7 +83,6 @@
 
     <!-- SPM -->
     <string-array name="spm_subjects">
-        <item> </item>
         <item> Bahasa Malaysia </item>
         <item> Bahasa Inggeris </item>
         <item> Sejarah </item>
@@ -44,6 +96,7 @@
         <item> Chemistry </item>
         <item> Biology </item>
         <item> Information and Communication Technology </item>
+        <item> Additional Science </item>
         <!--Social Sciences & Religion-->
         <item> Geografi </item>
         <item> Prinsip Perakaunan </item>
@@ -120,7 +173,6 @@
 
     <!-- STPM -->
     <string-array name="stpm_subjects">
-        <item> </item>
         <item> Pengajian Am </item>
         <item> Bahasa Melayu </item>
         <item> Bahasa Cina </item>
@@ -163,10 +215,9 @@
 
     <!-- UEC -->
     <string-array name="uec_subjects">
-        <item> </item>
-        <item> Bahasa Melayu </item>
+        <item> Bahasa Malaysia </item>
         <item> Chinese </item>
-        <item> English </item>
+        <item> English Language </item>
         <item> Advanced Mathematics </item>
         <item> Mathematics </item>
         <item> Arts </item>
@@ -202,82 +253,121 @@
     </string-array>
 
     <!-- O-Level -->
-    <string-array name="oLevel_subjects"> <!-- got 40 subjects -->
-        <item>  </item>
-        <item> Bahasa Malaysia </item>
-        <!--Mathematics-->
-        <item> Additional Mathematics </item>
-        <item> Mathematics D </item>
-        <!--English language and literature-->
-        <item> English Language </item>
-        <item> Literature in English </item>
-        <!--business, technical and creative-->
+    <string-array name="oLevel_subjects"> <!-- got 101 subjects combined GCE(old) and IGCSE(new) -->
+        <item> Accounting </item>
+        <item> Afrikaans - First Language </item>
+        <item> Afrikaans - Second Language </item>
+        <item> Agriculture </item>
+        <item> Arabic </item>
+        <item> Arabic - First Language </item>
+        <item> Arabic - Foreign Language </item>
         <item> Art and Design </item>
+        <item> Bahasa Indonesia </item>
+        <item> Bangladesh Studies </item>
+        <item> Biology </item>
         <item> Business Studies </item>
-        <item> Commerce </item>
-        <item> Commercial studies </item>
+        <item> Bengali </item>
+        <item> Chemistry </item>
+        <item> Child Development </item>
+        <item> Chinese - First Language </item>
+        <item> Chinese - Second Language </item>
+        <item> Chinese (Mandarin) - Foreign Language </item>
         <item> Computer Science </item>
-        <item> Statistics </item>
-        <item> Principles of Accounting </item>
+        <item> Czech - First Language </item>
+        <item> Commerce </item>
+        <item> Commercial Studies </item>
         <item> CDT: Design and Communication </item>
         <item> Design and Technology </item>
-        <item> Fashion and Textiles </item>
-        <item> Fashion and Fabrics </item>
-        <item> Food and Nutrition </item>
-        <!--Science-->
-        <item> Chemistry </item>
-        <item> Biology </item>
-        <item> Physics </item>
-        <item> Combined Science </item>
-        <item> Marine Science </item>
-        <item> Agriculture </item>
-        <item> Environmental Management </item>
-        <!--Humanities and social science-->
+        <item> Development Studies </item>
+        <item> Drama </item>
+        <item> Dutch - First Language </item>
+        <item> Dutch - Foreign Language </item>
         <item> Economics </item>
+        <item> English Language </item>
+        <item> English - First Language </item>
+        <item> English - Literature </item>
+        <item> Enterprise </item>
+        <item> Environmental Management </item>
+        <item> Food and Nutrition </item>
+        <item> French </item>
+        <item> French - First Language </item>
+        <item> French - Foreign Language </item>
+        <item> Fashion and Textiles </item>
         <item> Geography </item>
-        <item> Bangladesh Studies </item>
-        <item> Hinduism </item>
-        <item> Islamiyat </item>
-        <item> Islamic Religion and Culture </item>
-        <item> Religious Studies </item>
-        <item> Islamic Studies </item>
-        <item> Sociology </item>
+        <item> German </item>
+        <item> German - First Language </item>
+        <item> German - Foreign Language </item>
+        <item> Global Perspectives </item>
+        <item> Greek - Foreign Language </item>
+        <item> Hindi as a Second Language </item>
         <item> History </item>
+        <item> Hinduism </item>
+        <item> History (Modern World Affairs) </item>
+        <item> India Studies </item>
+        <item> Indonesian - Foreign Language </item>
+        <item> Information and Communication Technology </item>
+        <item> International Mathematics </item>
+        <item> IsiZulu as a Second Language </item>
+        <item> Islamiyat </item>
+        <item> Italian - Foreign Language </item>
+        <item> Islamic Studies </item>
+        <item> Japanese - First Language </item>
+        <item> Japanese - Foreign Language </item>
+        <item> Kazakh as a Second Language </item>
+        <item> Korean (First Language) </item>
+        <item> Latin </item>
+        <item> Literature in English </item>
+        <item> Malay - Foreign Language </item>
+        <item> Mathematics </item>
+        <item> Mathematics - Additional </item>
+        <item> Music </item>
+        <item> Marine Science </item>
+        <item> Mathematics D </item>
+        <item> Nepali </item>
         <item> Pakistan Studies </item>
-        <!--Languages-->
-        <item> First Language Urdu </item>
-        <item> Second Language Urdu </item>
+        <item> Physical Education </item>
+        <item> Physical Science </item>
+        <item> Physics </item>
+        <item> Portuguese - First Language </item>
+        <item> Portuguese - Foreign Language </item>
+        <item> Principles of Accounts </item>
+        <item> Religious Studies </item>
+        <item> Russian - First Language </item>
+        <item> Sanskrit </item>
+        <item> Science - Combined </item>
+        <item> Sciences - Co-ordinated (Double) </item>
+        <item> Sociology </item>
+        <item> Spanish </item>
+        <item> Spanish - First Language </item>
+        <item> Spanish - Foreign Language </item>
+        <item> Spanish - Literature </item>
         <item> Setswana </item>
         <item> Sinhala </item>
+        <item> Statistics </item>
         <item> Swahili </item>
         <item> Tamil </item>
-        <item> Nepali </item>
-        <item> German </item>
-        <item> Spanish </item>
-        <item> French </item>
-        <item> Arabic </item>
-        <item> Bengali </item>
-        <!--other-->
-        <item> Human and Social Biology </item>
         <item> Travel and Tourism </item>
+        <item> Thai - First Language </item>
+        <item> Travel and Tourism </item>
+        <item> Turkish - First Language </item>
+        <item> Urdu - First Language </item>
+        <item> Urdu - Second Language </item>
+        <item> World Literature </item>
     </string-array>
     <string-array name="oLevel_grades">
         <item>  </item>
-        <item> A1 </item>
-        <item> A2 </item>
-        <item> B3 </item>
-        <item> B4 </item>
-        <item> C5 </item>
-        <item> C6 </item> <!-- credit -->
-        <item> D7 </item> <!-- pass -->
-        <item> E8 </item> <!-- fail -->
-        <item> F9 </item> <!-- fail -->
+        <item> A </item>
+        <item> B </item>
+        <item> C </item> <!-- credit -->
+        <item> D </item>
+        <item> E </item>
+        <item> F </item>
+        <item> G </item>
         <item> U </item> <!-- fail -->
     </string-array>
 
     <!-- A-Level -->
     <string-array name="aLevel_subjects">
-        <item>  </item>
         <item> Business Studies </item>
         <item> Accounting </item>
         <item> Law </item>
@@ -307,7 +397,6 @@
 
     <!-- STAM -->
     <string-array name="STAM_subjects">
-        <item> </item>
         <item> Hifz Al-Quran dan Tajwid </item>
         <item> Fiqh </item>
         <item> Tafsir dan Ulumuhu </item>
@@ -331,18 +420,17 @@
 
     <!-- Matrikulasi / Matriculation  -->
     <string-array name="matriculation_subjects">
-        <item>  </item>
         <item> Kimia </item> <!-- Chemistry-->
         <item> Fizik </item> <!-- Physics-->
         <item> Biologi </item> <!-- Biology-->
-       	<item> Matematik Sains </item> <!-- Mathematics -->
-       	<item> Sains Komputer </item> <!-- Computer Science -->
-       	<item> Perakaunan </item> <!-- Accounting -->
-       	<item> Pengurusan Perniagaan  </item> <!-- Business Studies-->
-       	<item> Ekonomi </item> <!-- Economics -->
-       	<item> Kimia Kejuruteraan </item> <!-- Engineering Chemistry-->
-       	<item> Fizik Kejuruteraan </item> <!-- Engineering Physics-->
-       	<item> Pengajian Kejuruteraan </item>  <!-- Engineering Studies-->
+        <item> Matematik Sains </item> <!-- Mathematics -->
+        <item> Sains Komputer </item> <!-- Computer Science -->
+        <item> Perakaunan </item> <!-- Accounting -->
+        <item> Pengurusan Perniagaan  </item> <!-- Business Studies-->
+        <item> Ekonomi </item> <!-- Economics -->
+        <item> Kimia Kejuruteraan </item> <!-- Engineering Chemistry-->
+        <item> Fizik Kejuruteraan </item> <!-- Engineering Physics-->
+        <item> Pengajian Kejuruteraan </item>  <!-- Engineering Studies-->
     </string-array>
     <string-array name="matriculation_grades">
         <item>  </item>
@@ -393,6 +481,7 @@
 
     <string-array name="english_proficiency_test">
         <item> </item>
+        <item> None </item>
         <item> MUET </item>
         <item> IELTS </item>
         <item> TOEFL (Paper-Based Test) </item>
@@ -401,7 +490,6 @@
 
     <string-array name="muet_band">
         <item> </item>
-        <item> None </item>
         <item> Band 6 </item>
         <item> Band 5 </item>
         <item> Band 4 </item>
@@ -412,58 +500,56 @@
 
     <string-array name="IELTS_overall_band_score">
         <item> </item>
-        <item> 9   </item>
+        <item> 9.0 </item>
         <item> 8.5 </item>
-        <item> 8   </item>
+        <item> 8.0 </item>
         <item> 7.5 </item>
-        <item> 7   </item>
+        <item> 7.0 </item>
         <item> 6.5 </item>
-        <item> 6   </item>
+        <item> 6.0 </item>
         <item> 5.5 </item>
-        <item> 5   </item>
+        <item> 5.0 </item>
         <item> 4.5 </item>
-        <item> 4   </item>
+        <item> 4.0 </item>
         <item> 3.5 </item>
-        <item> 3   </item>
+        <item> 3.0 </item>
         <item> 2.5 </item>
     </string-array>
 
-    <!--paper test toefl 310 to 677, internet based 0 to 120 -->
-
-    <string-array name="list_of_programmes">
-        <item> </item>
+    <!--Total 31 programme exclude master and degree chemistry-->
+    <string-array name="programme_list">
         <item> Foundation in Arts </item>
         <item> Foundation in Business </item>
         <item> Foundation in Sciences </item>
-        <item> Bachelor of Business Administration (Hons) </item>
-        <item> Bachelor of Business Administration (Hons) in Hospitality &amp; Tourism Management </item>
-        <item> Bachelor of Accountancy (Hons) </item>
-        <item> Bachelor of Finance (Hons) </item>
         <item> Diploma in Business Management </item>
         <item> Diploma in Hotel Management </item>
         <item> Diploma of Accountancy </item>
+        <item> Diploma in Early Childhood Education </item>
+        <item> Diploma in Information Technology </item>
+        <item> Diploma in Business Information System </item>
+        <item> Diploma in Mechatronics Engineering </item>
+        <item> Diploma in Environmental Technology </item>
+        <item> Bachelor of Business Administration (Hons) </item>
+        <item> BBA (Hons) in Hospitality &amp; Tourism Management </item>
+        <item> Bachelor of Accountancy (Hons) </item>
+        <item> Bachelor of Finance (Hons) </item>
         <item> Bachelor of Arts (Hons) TESL </item>
         <item> Bachelor of Corporate Communication (Hons) </item>
         <item> Bachelor of Mass Communication (Hons) Journalism </item>
         <item> Bachelor of Mass Communication (Hons) Advertising </item>
         <item> Bachelor of Early Childhood Education (Hons) </item>
         <item> Bachelor of Special Needs Education (Hons) </item>
-        <item> Diploma in Early Childhood Education </item>
         <item> Bachelor of Computer Science (Hons) </item>
         <item> Bachelor of Information Technology (Hons) </item>
         <item> Bachelor of Business Information System (Hons) </item>
-        <item> Diploma in Information Technology </item>
-        <item> Diploma in Business Information System </item>
         <item> Bachelor of Engineering (Hons) Electronics &amp; Communications Engineering </item>
         <item> Bachelor of Engineering (Hons) in Mechatronics </item>
-        <item> Diploma in Mechatronics Engineering </item>
         <item> Bachelor of Science (Hons) in Biotechnology </item>
         <item> Bachelor of Environmental Technology (Hons) </item>
         <item> Bachelor of Science (Hons) Actuarial Sciences </item>
-        <item> Diploma in Environmental Technology </item>
-        <item> Bachelor of Pharmacy </item>
-        <item> Bachelor of Biomedical Sciences </item>
-        <item> Bachelor of Medicine &amp; Bachelor of Surgery </item>
+        <item> Bachelor of Pharmacy (Hons) </item>
+        <item> Bachelor of Biomedical Sciences (Hons) </item>
+        <item> Bachelor of Medicine &amp; Bachelor of Surgery </item> <!-- 31 -->
     </string-array>
 
 </resources>

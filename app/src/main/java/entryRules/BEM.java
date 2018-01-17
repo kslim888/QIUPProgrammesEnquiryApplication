@@ -15,14 +15,14 @@ public class BEM
     // advanced math is additional maths
     private static RuleAttribute bemRuleAttribute;
     private boolean gotMathSubject, gotMathSubjectAndCredit,
-            gotPhysicsSubject, gotPhysicsSubjectAndCredit;
+            gotPhysics, gotPhysicsAndCredit;
 
     public BEM() {
         bemRuleAttribute = new RuleAttribute();
         gotMathSubject = false;
         gotMathSubjectAndCredit = false;
-        gotPhysicsSubject = false;
-        gotPhysicsSubjectAndCredit = false;
+        gotPhysics = false;
+        gotPhysicsAndCredit = false;
     }
 
     // when
@@ -42,15 +42,15 @@ public class BEM
                 }
                 if(Objects.equals(studentSubjects[i], "Fizik"))
                 {
-                    gotPhysicsSubject = true;
+                    gotPhysics = true;
                 }
-                if(gotMathSubject && gotPhysicsSubject)
+                if(gotMathSubject && gotPhysics)
                 {
                     break;
                 }
             }
 
-            if(!gotMathSubject || !gotPhysicsSubject)
+            if(!gotMathSubject || !gotPhysics)
             {
                 return false;
             }
@@ -84,7 +84,7 @@ public class BEM
                             && !Objects.equals(studentGrades[i], "D")
                             && !Objects.equals(studentGrades[i], "F"))
                     {
-                        gotPhysicsSubjectAndCredit = true;
+                        gotPhysicsAndCredit = true;
                     }
                 }
             }
@@ -112,15 +112,15 @@ public class BEM
                 }
                 if(Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    gotPhysicsSubject = true;
+                    gotPhysics = true;
                 }
-                if(gotMathSubject && gotPhysicsSubject)
+                if(gotMathSubject && gotPhysics)
                 {
                     break;
                 }
             }
 
-            if(!gotMathSubject || !gotPhysicsSubject)
+            if(!gotMathSubject || !gotPhysics)
             {
                 return false;
             }
@@ -146,7 +146,7 @@ public class BEM
                 {
                     if(!Objects.equals(studentGrades[i], "U"))
                     {
-                        gotPhysicsSubjectAndCredit = true;
+                        gotPhysicsAndCredit = true;
                     }
                 }
             }
@@ -171,12 +171,12 @@ public class BEM
                 }
                 if(Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    gotPhysicsSubject = true;
+                    gotPhysics = true;
                 }
             }
 
             // if 1 of the subject - math or physic no, return false
-            if(!gotMathSubject || !gotPhysicsSubject)
+            if(!gotMathSubject || !gotPhysics)
             {
                 return false;
             }
@@ -195,7 +195,7 @@ public class BEM
                 {
                     if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        gotPhysicsSubjectAndCredit = true;
+                        gotPhysicsAndCredit = true;
                     }
                 }
             }
@@ -218,7 +218,7 @@ public class BEM
 
         if(bemRuleAttribute.getCountALevel() >= 2 || bemRuleAttribute.getCountSTPM() >= 2 || bemRuleAttribute.getCountUEC() >= 5)
         {
-            if(gotMathSubjectAndCredit && gotPhysicsSubjectAndCredit)
+            if(gotMathSubjectAndCredit && gotPhysicsAndCredit)
             {
                 return true;
             }

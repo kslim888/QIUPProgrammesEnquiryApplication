@@ -38,10 +38,40 @@ public class MBBS
     @Condition
     public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
                                @Fact("Student's Subjects")String[] studentSubjects,
-                               @Fact("Student's Grades")String[] studentGrades)
+                               @Fact("Student's Grades")String[] studentGrades
+                               //@Fact("Student's English Proficiency Test Name") String studentEnglishProficiencyTestName,
+                               /*@Fact("Student's English Proficiency Level") String studentEnglishProficiencyLevel*/)
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
+            //check got bio chemi math or not
+            for(int i = 0; i < studentSubjects.length; i++)
+            {
+                if(Objects.equals(studentSubjects[i], "Matematik (M)") || Objects.equals(studentSubjects[i], "Matematik (T)"))
+                {
+                    gotMathSubject = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Fizik"))
+                {
+                    gotPhysics = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Kimia"))
+                {
+                    gotChemi = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Biology"))
+                {
+                    gotBio = true;
+                }
+            }
+
+            // if no chemi and bio, straight return false
+            // if no Physics and Mathematics, return false
+            if(!gotChemi || !gotBio || (!gotMathSubject && !gotPhysics))
+            {
+                return false;
+            }
+
             // for all students subject check math, Bio, Chemi, physics / math
             // Grades BBB, ABC or AAC
             for(int i = 0; i < studentSubjects.length; i++)
@@ -100,11 +130,42 @@ public class MBBS
 
             if(mbbsRuleAttribute.getCountSTPM() >= 3)
             {
-                return true;
+                //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
+                //{
+                    return true;
+                //}
             }
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
+            // check got bio chemi math or not
+            for(int i = 0; i < studentSubjects.length; i++)
+            {
+                if(Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                {
+                    gotMathSubject = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Physics"))
+                {
+                    gotPhysics = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Chemistry"))
+                {
+                    gotChemi = true;
+                }
+                if( Objects.equals(studentSubjects[i], "Biology"))
+                {
+                    gotBio = true;
+                }
+            }
+
+            // if no chemi and bio, straight return false
+            // if no Physics and Mathematics, return false
+            if(!gotChemi || !gotBio || (!gotMathSubject && !gotPhysics))
+            {
+                return false;
+            }
+
             // for all students subject check math, Bio, Chemi, physics / math
             // Grades BBB, ABC or AAC
             for(int i = 0; i < studentSubjects.length; i++)
@@ -147,7 +208,10 @@ public class MBBS
             }
             if(mbbsRuleAttribute.getCountALevel() >= 3)
             {
-                return true;
+                //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
+                //{
+                    return true;
+                //}
             }
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
@@ -240,12 +304,15 @@ public class MBBS
 
             if(gotChemiAndCredit && gotBioAndCredit && gotPhysicsAndCredit && gotMathSubjectAndCredit && gotAddMathSubjectAndCredit)
             {
-                return true;
+                //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
+                //{
+                    return true;
+               // }
             }
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            // TODO minimum CGPA, English Proficiency Test
+            // TODO minimum CGPA
             // FIXME Foundation / Matriculation, Diploma
             // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
         }
@@ -265,5 +332,45 @@ public class MBBS
     public static boolean isJoinProgramme()
     {
         return mbbsRuleAttribute.isJoinProgramme();
+    }
+
+    private boolean isEnglishProficiencyPass(String studentEnglishProficiencyTestName, String studentEnglishProficiencyLevel)
+    {
+        double proficiencyNumber;
+        if(Objects.equals(studentEnglishProficiencyTestName, "MUET"))
+        {
+            // at least band 4
+            if(!Objects.equals(studentEnglishProficiencyLevel, "Band 3")
+                    && !Objects.equals(studentEnglishProficiencyLevel, "Band 2")
+                    && !Objects.equals(studentEnglishProficiencyLevel, "Band 1"))
+            {
+                return true;
+            }
+        }
+        else if(Objects.equals(studentEnglishProficiencyTestName, "IELTS"))
+        {
+            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
+            if(proficiencyNumber >= 5.0 )
+            {
+                return true;
+            }
+        }
+        else if(Objects.equals(studentEnglishProficiencyTestName, "TOEFL (Paper-Based Test)"))
+        {
+            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
+            if(proficiencyNumber >= 410)
+            {
+                return true;
+            }
+        }
+        else if(Objects.equals(studentEnglishProficiencyTestName, "TOEFL (Internet-Based Test)"))
+        {
+            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
+            if(proficiencyNumber >= 34)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -14,14 +14,8 @@ import java.util.Objects;
 public class DET
 {
     private static RuleAttribute detRuleAttribute;
-    private int countPassScienceSubjects;
-    private boolean isScienceStream;
 
-    public DET() {
-        detRuleAttribute = new RuleAttribute();
-        countPassScienceSubjects = 0;
-        isScienceStream = false;
-    }
+    public DET() { detRuleAttribute = new RuleAttribute();}
 
     // when
     @Condition
@@ -29,18 +23,19 @@ public class DET
                                @Fact("Student's Subjects")String[] studentSubjects,
                                @Fact("Student's Grades")String[] studentGrades)
     {
-        // first, check whether the student is science stream or not.
-        // if the student is not taking general science, he is science stream
+        // First, check whether the student is science stream or not.
+        // If the student is not taking general science, he is science stream
         if(!Arrays.asList(studentSubjects).contains("Science"))
         {
-            isScienceStream = true;
+            detRuleAttribute.setScienceStreamTrue();
         }
 
-        //start validating condition
-        if(Objects.equals(qualificationLevel, "SPM")) // if is STPM qualification
+        // Start validating condition
+        if(Objects.equals(qualificationLevel, "SPM")) // if is SPM qualification
         {
             for(int i = 0; i < studentSubjects.length; i++)
             {
+                // Check Biology, Physics, Chemistry, Science is pass or not
                 if(Objects.equals(studentSubjects[i], "Biology")
                         || Objects.equals(studentSubjects[i], "Physics")
                         || Objects.equals(studentSubjects[i], "Chemistry")
@@ -48,11 +43,13 @@ public class DET
                 {
                     if(!Objects.equals(studentGrades[i], "G"))
                     {
-                        countPassScienceSubjects++;
+                        detRuleAttribute.incrementCountPassScienceSubjects(1);
                     }
                 }
             }
 
+            // For all student's grade, check grade C or not
+            // Minimum grade C only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
@@ -63,27 +60,33 @@ public class DET
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "O-Level")) // if is STPM qualification
+        else if(Objects.equals(qualificationLevel, "O-Level")) // if is O-Level qualification
         {
+            // Check Sciences Subject is pass or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "Biology")
                         || Objects.equals(studentSubjects[i], "Physics")
                         || Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Combined Science"))
+                        || Objects.equals(studentSubjects[i], "Science - Combined")
+                        || Objects.equals(studentSubjects[i], "Physical Science")
+                        || Objects.equals(studentSubjects[i], "Sciences - Co-ordinated (Double)"))
                 {
                     if(!Objects.equals(studentGrades[i], "U"))
                     {
-                        countPassScienceSubjects++;
+                        detRuleAttribute.incrementCountPassScienceSubjects(1);
                     }
                 }
             }
 
+            // For all student's grade, check grade C or not
+            // Minimum grade C only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "D7")
-                        && !Objects.equals(studentGrades[i], "E8")
-                        && !Objects.equals(studentGrades[i], "F9")
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "F")
+                        && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
                     detRuleAttribute.incrementCountOLevel(1);
@@ -92,6 +95,8 @@ public class DET
         }
         else if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
+            // For all student's grade, check grade C or not
+            // Minimum grade C only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -103,8 +108,10 @@ public class DET
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "A-Level")) // if is STPM qualification
+        else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
+            // For all student's grade, check grade C or not
+            // Minimum grade C only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
@@ -128,6 +135,7 @@ public class DET
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
+            // Check Biology, Physics, Chemistry is at least grade B6 or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if (Objects.equals(studentSubjects[i], "Biology")
@@ -138,12 +146,14 @@ public class DET
                             && !Objects.equals(studentGrades[i], "C8")
                             && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        countPassScienceSubjects++; // here count pass is for credit (at least B6)
+                        // here count pass is for credit (at least B6)
+                        detRuleAttribute.incrementCountPassScienceSubjects(1);
                     }
                 }
             }
 
-            // for all subject check got at least minimum grade B or not
+            // For all subject check got at least minimum grade B or not
+            // At least grade B only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7")
@@ -159,13 +169,17 @@ public class DET
             // TODO SKM level 3
         }
 
-        if(isScienceStream)
+        // If is science stream
+        if(detRuleAttribute.isScienceStream())
         {
+            // Check enough credit or not
             if(detRuleAttribute.getCountSPM() >= 3
                     || detRuleAttribute.getCountOLevel() >= 3
                     || detRuleAttribute.getCountUEC() >= 3)
             {
-                if(countPassScienceSubjects >= 2)
+                // If enough credit, check number of pass science subject is at least 2 or not
+                // If 2 or more, return true as all requirements satisfy
+                if( detRuleAttribute.getCountPassScienceSubjects() >= 2)
                 {
                     return true;
                 }
@@ -173,15 +187,20 @@ public class DET
         }
         else // is not science stream
         {
+            // Check enough credit or not
             if(detRuleAttribute.getCountSPM() >= 3
                     || detRuleAttribute.getCountOLevel() >= 3
                     || detRuleAttribute.getCountUEC() >= 3)
             {
-                if(countPassScienceSubjects >= 1)
+                // If enough credit, check number of pass science subject is at least 2 or not
+                // If 2 or more, return true as all requirements satisfy
+                if( detRuleAttribute.getCountPassScienceSubjects() >= 1)
                 {
                     return true;
                 }
             }
+            // If is not science stream but is STAM, STPM or A-Level
+            // Check enough credit or not. If enough return true as all requirements satisfy
             if(detRuleAttribute.getCountSTAM() >= 1
                     || detRuleAttribute.getCountSTPM() >= 1
                     || detRuleAttribute.getCountALevel() >= 1)
@@ -189,6 +208,7 @@ public class DET
                 return true;
             }
         }
+        // If requirements not satisfy, retuen false
         return false;
     }
 

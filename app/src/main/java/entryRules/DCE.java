@@ -23,8 +23,10 @@ public class DCE
     public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
                                @Fact("Student's Grades")String[] studentGrades)
     {
-        if(Objects.equals(qualificationLevel, "SPM")) // if is STPM qualification
+        if(Objects.equals(qualificationLevel, "SPM")) // if is SPM qualification
         {
+            // For all student's grade, check at least grade C or not
+            // Only at least grade C, then increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
@@ -35,13 +37,16 @@ public class DCE
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "O-Level")) // if is STPM qualification
+        else if(Objects.equals(qualificationLevel, "O-Level")) // if is O-Level qualification
         {
+            // For all student's grade, check at least grade C or not
+            // Only at least grade C, then increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "D7")
-                        && !Objects.equals(studentGrades[i], "E8")
-                        && !Objects.equals(studentGrades[i], "F9")
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "F")
+                        && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
                     dceRuleAttribute.incrementCountOLevel(1);
@@ -50,6 +55,8 @@ public class DCE
         }
         else if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
+            // For all student's grade, check at least grade C or not
+            // Only at least grade C, then increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -61,8 +68,10 @@ public class DCE
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "A-Level")) // if is STPM qualification
+        else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
+            // For all student's grade, check at least grade C or not
+            // Only at least grade C, then increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
@@ -78,7 +87,7 @@ public class DCE
             // minimum grade of Maqbul, only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if( !Objects.equals(studentGrades[i], "Rasib"))
+                if(!Objects.equals(studentGrades[i], "Rasib"))
                 {
                     dceRuleAttribute.incrementCountSTAM(1);
                 }
@@ -102,6 +111,7 @@ public class DCE
             // TODO SKM level 3
         }
 
+        // if credit is enough, requirements satisfy = return true
         if(dceRuleAttribute.getCountSPM() >= 3
                 || dceRuleAttribute.getCountOLevel() >= 3
                 || dceRuleAttribute.getCountUEC() >= 3
@@ -111,6 +121,7 @@ public class DCE
         {
             return true;
         }
+        // if credit not enough, requirements not satisfy = return false
         return false;
     }
 

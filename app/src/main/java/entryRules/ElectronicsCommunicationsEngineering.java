@@ -16,14 +16,14 @@ public class ElectronicsCommunicationsEngineering
     // advanced math is additional maths
     private static RuleAttribute eceRuleAttribute;
     private boolean gotMathSubject, gotMathSubjectAndCredit,
-            gotPhysicsSubject, gotPhysicsSubjectAndCredit;
+            gotPhysics, gotPhysicsAndCredit;
 
     public ElectronicsCommunicationsEngineering() {
         eceRuleAttribute = new RuleAttribute();
         gotMathSubject = false;
         gotMathSubjectAndCredit = false;
-        gotPhysicsSubject = false;
-        gotPhysicsSubjectAndCredit = false;
+        gotPhysics = false;
+        gotPhysicsAndCredit = false;
     }
 
     // when
@@ -43,15 +43,15 @@ public class ElectronicsCommunicationsEngineering
                 }
                 if(Objects.equals(studentSubjects[i], "Fizik"))
                 {
-                    gotPhysicsSubject = true;
+                    gotPhysics = true;
                 }
-                if(gotMathSubject && gotPhysicsSubject)
+                if(gotMathSubject && gotPhysics)
                 {
                     break;
                 }
             }
 
-            if(!gotMathSubject || !gotPhysicsSubject)
+            if(!gotMathSubject || !gotPhysics)
             {
                 return false;
             }
@@ -85,11 +85,11 @@ public class ElectronicsCommunicationsEngineering
                             && !Objects.equals(studentGrades[i], "D")
                             && !Objects.equals(studentGrades[i], "F"))
                     {
-                        gotPhysicsSubjectAndCredit = true;
+                        gotPhysicsAndCredit = true;
                     }
                 }
             }
-            if(gotMathSubjectAndCredit && gotPhysicsSubjectAndCredit)
+            if(gotMathSubjectAndCredit && gotPhysicsAndCredit)
             {
                 return true;
             }
@@ -105,15 +105,15 @@ public class ElectronicsCommunicationsEngineering
                 }
                 if(Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    gotPhysicsSubject = true;
+                    gotPhysics = true;
                 }
-                if(gotMathSubject && gotPhysicsSubject)
+                if(gotMathSubject && gotPhysics)
                 {
                     break;
                 }
             }
 
-            if(!gotMathSubject || !gotPhysicsSubject)
+            if(!gotMathSubject || !gotPhysics)
             {
                 return false;
             }
@@ -139,11 +139,11 @@ public class ElectronicsCommunicationsEngineering
                 {
                     if(!Objects.equals(studentGrades[i], "U"))
                     {
-                        gotPhysicsSubjectAndCredit = true;
+                        gotPhysicsAndCredit = true;
                     }
                 }
             }
-            if(gotMathSubjectAndCredit && gotPhysicsSubjectAndCredit)
+            if(gotMathSubjectAndCredit && gotPhysicsAndCredit)
             {
                 return true;
             }
@@ -159,12 +159,12 @@ public class ElectronicsCommunicationsEngineering
                 }
                 if(Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    gotPhysicsSubject = true;
+                    gotPhysics = true;
                 }
             }
 
             // if 1 of the subject - math or physic no, return false
-            if(!gotMathSubject || !gotPhysicsSubject)
+            if(!gotMathSubject || !gotPhysics)
             {
                 return false;
             }
@@ -183,7 +183,7 @@ public class ElectronicsCommunicationsEngineering
                 {
                     if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        gotPhysicsSubjectAndCredit = true;
+                        gotPhysicsAndCredit = true;
                     }
                 }
             }
@@ -199,7 +199,7 @@ public class ElectronicsCommunicationsEngineering
 
             if(eceRuleAttribute.getCountUEC() >= 3)
             {
-                if(gotMathSubjectAndCredit && gotPhysicsSubjectAndCredit)
+                if(gotMathSubjectAndCredit && gotPhysicsAndCredit)
                 {
                     return true;
                 }
