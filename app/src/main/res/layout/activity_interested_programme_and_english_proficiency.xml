@@ -14,7 +14,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:id="@+id/interestedAndEnglishParentLayout"
-        tools:context="com.example.ahshing.qiupprogrammesenquiryapplication.InterestedProgrammeAndEnglishProficiency">
+        tools:context="com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.com.qiup.programmeenquiry.InterestedProgrammeAndEnglishProficiency">
 
         <TextView
             android:id="@+id/textView"

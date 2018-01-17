@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.example.ahshing.qiupprogrammesenquiryapplication"
+        applicationId "com.qiup.programmeenquiry"
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1

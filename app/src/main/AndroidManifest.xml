@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ahshing.qiupprogrammesenquiryapplication">
+    package="com.qiup.programmeenquiry.qiupprogrammesenquiryapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.com.qiup.programmeenquiry.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -20,24 +20,24 @@
         </activity>
 
         <activity
-            android:name=".FilterProgrammes"
+            android:name="com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.com.qiup.programmeenquiry.FilterProgrammes"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Programmes Enquiry" />
 
         <activity
-            android:name=".CaptureData"
+            android:name="com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.com.qiup.programmeenquiry.CaptureData"
             android:label="Key-in Particulars" />
 
         <activity
-            android:name=".ResultsOfFiltering"
+            android:name="com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.com.qiup.programmeenquiry.ResultsOfFiltering"
             android:label="Eligibility Result" />
 
         <activity
-            android:name=".InterestedProgrammeAndEnglishProficiency"
+            android:name="com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.com.qiup.programmeenquiry.InterestedProgrammeAndEnglishProficiency"
             android:label="Programmes Enquiry" />
 
         <activity
-            android:name=".InterestProgramme"
+            android:name="com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.com.qiup.programmeenquiry.InterestProgramme"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Programmes Enquiry">
         </activity>
