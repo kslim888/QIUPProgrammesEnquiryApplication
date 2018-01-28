@@ -2,11 +2,12 @@ package com.qiup.entryrules;
 
 public class RuleAttribute
 {
-    private int countCredits, countRequiredSubject, countSPM, countSTPM,
-            countSTAM, countALevel, countUEC, countOLevel, countPassScienceSubjects;
+    private int foundationCredit, countRequiredScienceSubject, spmCredit, stpmCredit,
+            stamCredit, aLevelCredit, uecCredit, oLevelCredit, countPassScienceSubjects;
     private float minimumCGPA, minimumGP, englishScore;
     private boolean joinProgramme,
             gotMathSubject, gotMathSubjectAndPass, gotMathSubjectAndCredit,
+            gotAddMaths,
             gotEnglishSubject, gotEnglishSubjectAndPass, gotEnglishSubjectAndCredit,
             gotChemi, gotChemiAndCredit,
             gotBio, gotBioAndCredit,
@@ -32,111 +33,86 @@ public class RuleAttribute
         scienceTechnicalVocationalSubjectsCredit = false;
         isScienceStream = false;
         gotScienceSubjectsCredit = false;
-        countCredits = 0;
-        countRequiredSubject = 0;
-        countSTPM = 0;
-        countSTAM = 0;
-        countALevel = 0;
-        countUEC = 0;
-        countSPM = 0;
-        countOLevel = 0;
+        gotAddMaths = false;
+        foundationCredit = 0;
+        countRequiredScienceSubject = 0;
+        stpmCredit = 0;
+        stamCredit = 0;
+        aLevelCredit = 0;
+        uecCredit = 0;
+        spmCredit = 0;
+        oLevelCredit = 0;
         countPassScienceSubjects = 0;
     }
 
-    public int getCountUEC() {
-        return countUEC;
+    public int getUecCredit() {
+        return uecCredit;
     }
 
-    public void incrementCountUEC(int countUEC) {
-        this.countUEC += countUEC;
+    public void incrementUECCredit() {
+        this.uecCredit++;
     }
 
-    public int getCountALevel() {
-        return countALevel;
+    public int getALevelCredit() {
+        return aLevelCredit;
     }
 
-    public void incrementCountALevel(int countALevel) {
-        this.countALevel += countALevel;
+    public void incrementALevelCredit() {
+        this.aLevelCredit++;
     }
 
-    public int getCountSTAM() {
-        return countSTAM;
+    public int getStamCredit() {
+        return stamCredit;
     }
 
-    public void incrementCountSTAM(int countSTAM) {
-        this.countSTAM += countSTAM;
+    public void incrementSTAMCredit() {
+        this.stamCredit++;
     }
 
-    public int getCountSTPM() {
-        return countSTPM;
+    public int getStpmCredit() {
+        return stpmCredit;
     }
 
-    public void incrementCountSTPM(int countSTPM) {
-        this.countSTPM += countSTPM;
-    }
-
-    public float getMinimumCGPA() {
-        return minimumCGPA;
-    }
-
-    public void setMinimumCGPA(float minimumCGPA) {
-        this.minimumCGPA = minimumCGPA;
-    }
-
-    public float getMinimumGP() {
-        return minimumGP;
-    }
-
-    public void setMinimumGP(float minimumGP) {
-        this.minimumGP = minimumGP;
-    }
-
-    public float getEnglishScore() {
-        return englishScore;
-    }
-
-    public void setEnglishScore(float englishScore) {
-        this.englishScore = englishScore;
+    public void incrementSTPMCredit() {
+        this.stpmCredit++;
     }
 
     public boolean isJoinProgramme() {
         return joinProgramme;
     }
 
-    public void setJoinProgramme(boolean joinProgramme) {
-        this.joinProgramme = joinProgramme;
+    public void setJoinProgrammeTrue() {
+        this.joinProgramme = true;
     }
 
-    public int getCountCredits() {
-        return countCredits;
+    int getFoundationCredit() {
+        return foundationCredit;
     }
 
-    public void incrementCountCredit(int credit) {
-        this.countCredits += credit;
+    void incrementFoundationCredit() {
+        this.foundationCredit++;
     }
 
-    public int getCountRequiredSubject() {
-        return countRequiredSubject;
+    int getCountRequiredScienceSubject() {
+        return countRequiredScienceSubject;
     }
 
-    public void incrementCountRequiredSubject(int countRequiredSubject) {
-        this.countRequiredSubject += countRequiredSubject;
+    void incrementCountRequiredScienceSubject() {
+        this.countRequiredScienceSubject++;
     }
 
-    public int getCountSPM() {
-        return countSPM;
+    int getSpmCredit() {
+        return spmCredit;
     }
 
-    public void incrementCountSPM(int countSPM) {
-        this.countSPM += countSPM;
+    void incrementSPMCredit() {this.spmCredit++; }
+
+    int getoLevelCredit() {
+        return oLevelCredit;
     }
 
-    public int getCountOLevel() {
-        return countOLevel;
-    }
-
-    public void incrementCountOLevel(int countOLevel) {
-        this.countOLevel += countOLevel;
+    void incrementOLevelCredit() {
+        this.oLevelCredit++;
     }
 
     public boolean isGotMathSubject() {
@@ -147,11 +123,11 @@ public class RuleAttribute
         this.gotMathSubject = true;
     }
 
-    public boolean isGotMathSubjectAndPass() {
+    boolean isGotMathSubjectAndPass() {
         return gotMathSubjectAndPass;
     }
 
-    public void setGotMathSubjectAndPass() {
+    void setGotMathSubjectAndPass() {
         this.gotMathSubjectAndPass = true;
     }
 
@@ -163,11 +139,11 @@ public class RuleAttribute
         this.gotMathSubjectAndCredit = true;
     }
 
-    public boolean isGotEnglishSubject() {
+    boolean isGotEnglishSubject() {
         return gotEnglishSubject;
     }
 
-    public void setGotEnglishSubject() {
+    void setGotEnglishSubject() {
         this.gotEnglishSubject = true;
     }
 
@@ -179,91 +155,99 @@ public class RuleAttribute
         this.gotEnglishSubjectAndPass = true;
     }
 
-    public boolean isGotEnglishSubjectAndCredit() {
+    boolean isGotEnglishSubjectAndCredit() {
         return gotEnglishSubjectAndCredit;
     }
 
-    public void setGotEnglishSubjectAndCredit() {
+    void setGotEnglishSubjectAndCredit() {
         this.gotEnglishSubjectAndCredit = true;
     }
 
-    public boolean isGotChemi() {
+    boolean isGotChemi() {
         return gotChemi;
     }
 
-    public void setGotChemi() {
+    void setGotChemi() {
         this.gotChemi = true;
     }
 
-    public boolean isGotChemiAndCredit() {
+    boolean isGotChemiAndCredit() {
         return gotChemiAndCredit;
     }
 
-    public void setGotChemiAndCredit() {
+    void setGotChemiAndCredit() {
         this.gotChemiAndCredit = true;
     }
 
-    public boolean isGotBio() {
+    boolean isGotBio() {
         return gotBio;
     }
 
-    public void setGotBio() {
+    void setGotBio() {
         this.gotBio = true;
     }
 
-    public boolean isGotBioAndCredit() {
+    boolean isGotBioAndCredit() {
         return gotBioAndCredit;
     }
 
-    public void setGotBioAndCredit() {
+    void setGotBioAndCredit() {
         this.gotBioAndCredit = true;
     }
 
-    public boolean isGotPhysics() {
+    boolean isGotPhysics() {
         return gotPhysics;
     }
 
-    public void setGotPhysics() {
+    void setGotPhysics() {
         this.gotPhysics = true;
     }
 
-    public boolean isGotPhysicsAndCredit() {
+    boolean isGotPhysicsAndCredit() {
         return gotPhysicsAndCredit;
     }
 
-    public void setGotPhysicsAndCredit() {
+    void setGotPhysicsAndCredit() {
         this.gotPhysicsAndCredit = true;
     }
 
-    public boolean isScienceTechnicalVocationalSubjectsCredit() {
+    boolean isScienceTechnicalVocationalSubjectsCredit() {
         return scienceTechnicalVocationalSubjectsCredit;
     }
 
-    public void setScienceTechnicalVocationalSubjectsCredit() {
+    void setScienceTechnicalVocationalSubjectsCredit() {
         this.scienceTechnicalVocationalSubjectsCredit = true;
     }
 
-    public boolean isScienceStream() {
+    boolean isScienceStream() {
         return isScienceStream;
     }
 
-    public void setScienceStreamTrue() {
+    void setScienceStreamTrue() {
         isScienceStream = true;
     }
 
-    public int getCountPassScienceSubjects() {
+    int getCountPassScienceSubjects() {
         return countPassScienceSubjects;
     }
 
-    public void incrementCountPassScienceSubjects(int countPassScienceSubjects) {
-        this.countPassScienceSubjects += countPassScienceSubjects;
+    void incrementCountPassScienceSubjects() {
+        this.countPassScienceSubjects++;
     }
 
-    public boolean isGotScienceSubjectsCredit() {
+    boolean isGotScienceSubjectsCredit() {
         return gotScienceSubjectsCredit;
     }
 
-    public void setGotScienceSubjectsCredit() {
+    void setGotScienceSubjectsCredit() {
         this.gotScienceSubjectsCredit = true;
+    }
+
+    boolean isGotAddMaths() {
+        return gotAddMaths;
+    }
+
+    void setGotAddMaths() {
+        this.gotAddMaths = true;
     }
 }

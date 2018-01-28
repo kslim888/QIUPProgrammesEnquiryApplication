@@ -8,14 +8,17 @@ import retrofit2.http.POST;
 public interface SpreadsheetsAPI
 {
 
-    @POST("1FAIpQLSd70K4tb93owJ7e8uyYXaZXAMOrlwrWUWnTG91SALNfwmDObQ/formResponse")
+    @POST("1FAIpQLSc-YHeXIpLuul0aNmOwhk7JuBQfc0RGN9hP-N3wl1UZ9yAIHw/formResponse")
 
     @FormUrlEncoded
     Call<Void> postToSpreadsheets(
-            @Field("entry.619355424") String Name,
-            @Field("entry.1332327210") String IC,
-            @Field("entry.1931534680") String contactNumber,
-            @Field("entry.1048499227") String Email,
-            @Field("entry.1244563596") String Remark
+            @Field("entry.1397369254") String Name,
+            @Field("entry.502184134") String IC,
+            @Field("entry.636103052") String schoolName,
+            @Field("entry.725125565") String qualificationLevel,
+            @Field("entry.517907311") String contactNumber,
+            @Field("entry.794801132") String Email,
+            @Field("entry.1548031110") String interestedProgramme,
+            @Field("entry.1825730903") String Remark
     );
 }

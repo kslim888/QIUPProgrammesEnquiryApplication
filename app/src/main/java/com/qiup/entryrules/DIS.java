@@ -51,7 +51,7 @@ public class DIS
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "G"))
                 {
-                    disRuleAttribute.incrementCountSPM(1);
+                    disRuleAttribute.incrementSPMCredit();
                 }
             }
         }
@@ -86,7 +86,7 @@ public class DIS
                         && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    disRuleAttribute.incrementCountOLevel(1);
+                    disRuleAttribute.incrementOLevelCredit();
                 }
             }
         }
@@ -157,7 +157,7 @@ public class DIS
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    disRuleAttribute.incrementCountSTPM(1);
+                    disRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -227,7 +227,7 @@ public class DIS
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    disRuleAttribute.incrementCountALevel(1);
+                    disRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -283,7 +283,7 @@ public class DIS
             {
                 if( !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    disRuleAttribute.incrementCountSTAM(1);
+                    disRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -310,7 +310,7 @@ public class DIS
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    disRuleAttribute.incrementCountUEC(1);
+                    disRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -322,7 +322,7 @@ public class DIS
         // If is STPM or A-Level, check credit is at least 2 or not
         // If is more than 2 , check math credit and english pass or not
         // If both true, return true for all requirements satisfy
-        if(disRuleAttribute.getCountSTPM() >= 2 || disRuleAttribute.getCountALevel() >= 2)
+        if(disRuleAttribute.getStpmCredit() >= 2 || disRuleAttribute.getALevelCredit() >= 2)
         {
             if(disRuleAttribute.isGotMathSubjectAndCredit() && disRuleAttribute.isGotEnglishSubjectAndPass())
             {
@@ -332,10 +332,10 @@ public class DIS
 
         // If is credit is enough, check math is credit or not
         // If both is true, return true for all requirements satisfy
-        if(disRuleAttribute.getCountSPM() >= 3
-                || disRuleAttribute.getCountOLevel() >= 3
-                || disRuleAttribute.getCountSTAM() >= 1
-                || disRuleAttribute.getCountUEC() >= 3)
+        if(disRuleAttribute.getSpmCredit() >= 3
+                || disRuleAttribute.getoLevelCredit() >= 3
+                || disRuleAttribute.getStamCredit() >= 1
+                || disRuleAttribute.getUecCredit() >= 3)
         {
             if(disRuleAttribute.isGotMathSubjectAndCredit())
             {
@@ -351,7 +351,7 @@ public class DIS
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        disRuleAttribute.setJoinProgramme(true);
+        disRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplomaBusiInfoSystem", "Joined");
     }
 

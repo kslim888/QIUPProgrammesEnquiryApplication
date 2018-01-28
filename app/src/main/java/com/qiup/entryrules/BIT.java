@@ -13,14 +13,9 @@ import java.util.Objects;
 public class BIT
 {
     // Advanced math is additional maths
-    private static RuleAttribute bitTechRuleAttribute;
-    private boolean gotMathSubjectAndCredit, gotMathSubject;
+    private static RuleAttribute bitRuleAttribute;
 
-    public BIT() {
-        bitTechRuleAttribute = new RuleAttribute();
-        gotMathSubjectAndCredit = false;
-        gotMathSubject = false;
-    }
+    public BIT() { bitRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -33,48 +28,40 @@ public class BIT
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            // for all students subject check got mathematics subject or not
+            // For all students subject check got mathematics subject or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "Matematik (M)")
                         || Objects.equals(studentSubjects[i], "Matematik (T)"))
                 {
-                    gotMathSubject = true;
+                    bitRuleAttribute.setGotMathSubject();
                     break;
                 }
             }
 
             // If STPM got math subjects, check it is credit or not
-            if(gotMathSubject)
+            if(bitRuleAttribute.isGotMathSubject())
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Matematik (M)"))
+                    if(Objects.equals(studentSubjects[i], "Matematik (M)")
+                            || Objects.equals(studentSubjects[i], "Matematik (T)"))
                     {
                         if(!Objects.equals(studentGrades[i], "C-")
                                 && !Objects.equals(studentGrades[i], "D+")
                                 && !Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "F"))
                         {
-                            gotMathSubjectAndCredit = true;
-                        }
-                    }
-                    else if(Objects.equals(studentSubjects[i], "Matematik (T)"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "C-")
-                                && !Objects.equals(studentGrades[i], "D+")
-                                && !Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "F"))
-                        {
-                            gotMathSubjectAndCredit = true;
+                            bitRuleAttribute.setGotMathSubjectAndCredit();
+                            break;
                         }
                     }
                 }
             }
 
-            // if STPM got math subject but not credit, or no math subject at STPM
+            // If STPM got math subject but not credit, or no math subject at STPM
             // Check SPM / O-Level got maths subject and is credit or not
-            if(!gotMathSubjectAndCredit)
+            if(!bitRuleAttribute.isGotMathSubjectAndCredit())
             {
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
@@ -83,13 +70,13 @@ public class BIT
                             && !Objects.equals(studentAddMathGrade, "E")
                             && !Objects.equals(studentAddMathGrade, "G"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bitRuleAttribute.setGotMathSubjectAndCredit();
                     }
                     else if(!Objects.equals(studentMathematicsGrade, "D")
                             && !Objects.equals(studentMathematicsGrade, "E")
                             && !Objects.equals(studentMathematicsGrade, "G"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bitRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 else // if is O-level
@@ -101,7 +88,7 @@ public class BIT
                             && !Objects.equals(studentAddMathGrade, "G")
                             && !Objects.equals(studentAddMathGrade, "U"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bitRuleAttribute.setGotMathSubjectAndCredit();
                     }
                     else if(!Objects.equals(studentMathematicsGrade, "D")
                             && !Objects.equals(studentMathematicsGrade, "E")
@@ -109,7 +96,7 @@ public class BIT
                             && !Objects.equals(studentMathematicsGrade, "G")
                             && !Objects.equals(studentMathematicsGrade, "U"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bitRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
             }
@@ -121,7 +108,7 @@ public class BIT
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    bitTechRuleAttribute.incrementCountSTPM(1);
+                    bitRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -133,32 +120,25 @@ public class BIT
                 if(Objects.equals(studentSubjects[i], "Mathematics")
                         || Objects.equals(studentSubjects[i], "Further Mathematics"))
                 {
-                    gotMathSubject = true;
+                    bitRuleAttribute.setGotMathSubject();
                     break;
                 }
             }
 
             // If A-level got math subjects, check it is credit or not
-            if(gotMathSubject)
+            if(bitRuleAttribute.isGotMathSubject())
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Mathematics"))
+                    if(Objects.equals(studentSubjects[i], "Mathematics")
+                            || Objects.equals(studentSubjects[i], "Further Mathematics"))
                     {
                         if(!Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "E")
                                 && !Objects.equals(studentGrades[i], "U"))
                         {
-                            gotMathSubjectAndCredit = true;
-                        }
-                    }
-                    else if(Objects.equals(studentSubjects[i], "Further Mathematics"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "U"))
-                        {
-                            gotMathSubjectAndCredit = true;
+                            bitRuleAttribute.setGotMathSubjectAndCredit();
+                            break;
                         }
                     }
                 }
@@ -166,7 +146,7 @@ public class BIT
 
             // If A-level got math subject but not credit, or no math subject
             // Check SPM / O-Level maths subject got credit or not
-            if(!gotMathSubjectAndCredit)
+            if(!bitRuleAttribute.isGotMathSubjectAndCredit())
             {
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
@@ -175,13 +155,13 @@ public class BIT
                             && !Objects.equals(studentAddMathGrade, "E")
                             && !Objects.equals(studentAddMathGrade, "G"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bitRuleAttribute.setGotMathSubjectAndCredit();
                     }
                     else if(!Objects.equals(studentMathematicsGrade, "D")
                             && !Objects.equals(studentMathematicsGrade, "E")
                             && !Objects.equals(studentMathematicsGrade, "G"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bitRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 else // if is o-level
@@ -193,7 +173,7 @@ public class BIT
                             && !Objects.equals(studentAddMathGrade, "G")
                             && !Objects.equals(studentAddMathGrade, "U"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bitRuleAttribute.setGotMathSubjectAndCredit();
                     }
                     else if(!Objects.equals(studentMathematicsGrade, "D")
                             && !Objects.equals(studentMathematicsGrade, "E")
@@ -201,19 +181,19 @@ public class BIT
                             && !Objects.equals(studentMathematicsGrade, "G")
                             && !Objects.equals(studentMathematicsGrade, "U"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bitRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
             }
 
-            //Only full passes (C) then increment
+            // Only full passes (C) then increment
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    bitTechRuleAttribute.incrementCountALevel(1);
+                    bitRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -225,12 +205,12 @@ public class BIT
                 if(Objects.equals(studentSubjects[i], "Additional Mathematics")
                         || Objects.equals(studentSubjects[i], "Mathematics"))
                 {
-                    gotMathSubject = true;
+                    bitRuleAttribute.setGotMathSubject();
                 }
             }
 
-            // if math no, return false
-            if(!gotMathSubject)
+            // If math no, return false
+            if(!bitRuleAttribute.isGotMathSubject())
             {
                 return false;
             }
@@ -245,7 +225,7 @@ public class BIT
                             && !Objects.equals(studentGrades[i], "C8")
                             && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bitRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
             }
@@ -257,7 +237,7 @@ public class BIT
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    bitTechRuleAttribute.incrementCountUEC(1);
+                    bitRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -268,11 +248,11 @@ public class BIT
 
         // Check enough credit or not. If enough credit check maths is credit or not
         // If both true, return true as all requirements satisfied
-        if(bitTechRuleAttribute.getCountALevel() >= 2
-                || bitTechRuleAttribute.getCountSTPM() >= 2
-                || bitTechRuleAttribute.getCountUEC() >= 5)
+        if(bitRuleAttribute.getALevelCredit() >= 2
+                || bitRuleAttribute.getStpmCredit() >= 2
+                || bitRuleAttribute.getUecCredit() >= 5)
         {
-            if(gotMathSubjectAndCredit)
+            if(bitRuleAttribute.isGotMathSubjectAndCredit())
             {
                 return true;
             }
@@ -286,12 +266,12 @@ public class BIT
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        bitTechRuleAttribute.setJoinProgramme(true);
+        bitRuleAttribute.setJoinProgrammeTrue();
         Log.d("BITjoinProgramme", "Joined");
     }
 
     public static boolean isJoinProgramme()
     {
-        return bitTechRuleAttribute.isJoinProgramme();
+        return bitRuleAttribute.isJoinProgramme();
     }
 }

@@ -10,8 +10,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.R;
-
 import java.util.HashMap;
 import java.util.List;
 

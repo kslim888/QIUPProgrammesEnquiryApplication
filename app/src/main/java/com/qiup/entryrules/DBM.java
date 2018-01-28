@@ -33,7 +33,7 @@ public class DBM
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "G"))
                 {
-                    dbmRuleAttribute.incrementCountSPM(1);
+                    dbmRuleAttribute.incrementSPMCredit();
                 }
             }
         }
@@ -49,7 +49,7 @@ public class DBM
                         && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    dbmRuleAttribute.incrementCountOLevel(1);
+                    dbmRuleAttribute.incrementOLevelCredit();
                 }
             }
         }
@@ -64,7 +64,7 @@ public class DBM
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    dbmRuleAttribute.incrementCountSTPM(1);
+                    dbmRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -78,7 +78,7 @@ public class DBM
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    dbmRuleAttribute.incrementCountALevel(1);
+                    dbmRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -89,7 +89,7 @@ public class DBM
             {
                 if(!Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    dbmRuleAttribute.incrementCountSTAM(1);
+                    dbmRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -102,7 +102,7 @@ public class DBM
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    dbmRuleAttribute.incrementCountUEC(1);
+                    dbmRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -112,12 +112,12 @@ public class DBM
         }
 
         // if credit is enough, requirements satisfy = return true
-        if(dbmRuleAttribute.getCountSPM() >= 3
-                || dbmRuleAttribute.getCountOLevel() >= 3
-                || dbmRuleAttribute.getCountUEC() >= 3
-                || dbmRuleAttribute.getCountSTAM() >= 1
-                || dbmRuleAttribute.getCountSTPM() >= 1
-                || dbmRuleAttribute.getCountALevel() >= 1)
+        if(dbmRuleAttribute.getSpmCredit() >= 3
+                || dbmRuleAttribute.getoLevelCredit() >= 3
+                || dbmRuleAttribute.getUecCredit() >= 3
+                || dbmRuleAttribute.getStamCredit() >= 1
+                || dbmRuleAttribute.getStpmCredit() >= 1
+                || dbmRuleAttribute.getALevelCredit() >= 1)
         {
             return true;
         }
@@ -130,7 +130,7 @@ public class DBM
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        dbmRuleAttribute.setJoinProgramme(true);
+        dbmRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplBusinessManagement", "Joined");
     }
 

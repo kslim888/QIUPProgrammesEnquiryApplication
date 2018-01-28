@@ -26,7 +26,7 @@ import com.qiup.entryrules.BIS;
 import com.qiup.entryrules.BIT;
 import com.qiup.entryrules.BSNE;
 import com.qiup.entryrules.BS_ActuarialSciences;
-import com.qiup.entryrules.Biotech;
+import com.qiup.entryrules.BioTech;
 import com.qiup.entryrules.CorporateComm;
 import com.qiup.entryrules.DAC;
 import com.qiup.entryrules.DBM;
@@ -44,7 +44,6 @@ import com.qiup.entryrules.MassCommAdvertising;
 import com.qiup.entryrules.MassCommJournalism;
 import com.qiup.entryrules.Pharmacy;
 import com.qiup.entryrules.TESL;
-import com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,8 +54,6 @@ public class ResultsOfFiltering extends AppCompatActivity
 {
     //TODO interest programme set marker for none, eligible and not eligible
     //TODO add all the requirements description
-    //TODO Diploma requirements description
-    //TODO Degree requirements description
     //TODO put and set the header and requirements description accordingly
 
     ExpandableListView eligibleListView, notEligibleListView;
@@ -155,22 +152,183 @@ public class ResultsOfFiltering extends AppCompatActivity
     private void initDescription()
     {
         //Foundation requirements description
-        fibfiaRequirements.add("SPM / O-Level \n 5 credits in any subjects");
-        fibfiaRequirements.add("United Examination Certificate (UEC) \n - Minimum Grade B in 3 subjects");
+        fibfiaRequirements.add("SPM / O-Level \n Minimum 5 credits in any subjects");
+        fibfiaRequirements.add("United Examination Certificate (UEC) \n - Minimum Grade B in at least 3 subjects");
+        fisRequirements.add("SPM, O-Level or equivalent \n "
+                + "- Minimum 5 credits including Mathematics, two Sciences subjects and any other two subjects \n "
+                + "- Pass in Bahasa Malaysia and English Language ");
 
-        fisRequirements.add("SPM, O-Level or equivalent \n " +
-                "- 5 credits with Mathematics, two Sciences subjects and any other two subjects \n " +
-                "- Pass in Bahasa Malaysia and English Language ");
+        // Diploma requirements description
+        // Diploma in Business Management
+        dbmRequirements.add("SPM / O-Level \n - Minimum 3 credits in any subjects");
+        dbmRequirements.add("STPM / A-Level \n - Minimum Grade C(GP 2.0) in any 1 subject");
+        dbmRequirements.add("UEC \n - Minimum Grade B in any 3 subjects");
+        dbmRequirements.add("STAM \n - Minimum Grade of Maqbul in any 1 subject");
 
+        // Diploma in Hotel Management
+        dhmRequirements.add("SPM / O-Level \n - Minimum 3 credits in any subjects");
+        dhmRequirements.add("STPM / A-Level \n - Minimum Grade C(GP 2.0) in any 1 subject");
+        dbmRequirements.add("UEC \n - Minimum Grade B in any 3 subjects");
+        dhmRequirements.add("STAM \n - Minimum Grade of Maqbul in any 1 subject");
 
+        // Diploma in Accountancy
+        dacRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and pass in English");
+        dacRequirements.add("STPM / A-Level \n "
+                + "- Minimum Grade C(GP 2.0) in any 1 subject \n "
+                + "- Credit in Mathematics and pass in English at SPM / O-Level");
+        dacRequirements.add("UEC \n "
+                + "- Minimum Grade B in any 3 subjects \n "
+                + "- Including Grade B in Mathematics and pass in English");
+        dacRequirements.add("STAM \n "
+                + "- Minimum Grade of Maqbul in any 1 subject \n "
+                + "- Credit in Mathematics and pass in English at SPM / O-level");
 
-        //Diploma requirements description
+        // Diploma in Early Education Childhood
+        dceRequirements.add("SPM / O-Level \n - Minimum 3 credits in any subjects");
+        dceRequirements.add("STPM / A-Level \n - Minimum Grade C(GP 2.0) in any 1 subject");
+        dceRequirements.add("UEC \n - Minimum Grade B in any 3 subjects");
+        dceRequirements.add("STAM \n - Minimum Grade of Maqbul in any 1 subject");
 
+        // Diploma in Information Technology
+        ditRequirements.add("SPM / O-Level \n - Minimum 3 credits in any subjects including Mathematics");
+        ditRequirements.add("STPM / A-Level \n "
+                + "- Minimum Grade C(GP 2.0) in any 1 subject \n "
+                + "- Credit in Mathematics and pass in English at SPM / O-Level");
+        ditRequirements.add("UEC \n - Minimum Grade B in any 3 subjects including Mathematics");
+        ditRequirements.add("STAM \n "
+                + "- Minimum Grade of Maqbul in any 1 subject \n "
+                + "- Credit in Mathematics");
 
+        // Diploma in Information Technology
+        disRequirements.add("SPM / O-Level \n - Minimum 3 credits in any subjects including Mathematics");
+        disRequirements.add("STPM / A-Level \n "
+                + "- Minimum Grade C(GP 2.0) in any 1 subject \n "
+                + "- Credit in Mathematics and pass in English at SPM / O-Level");
+        disRequirements.add("UEC \n - Minimum Grade B in any 3 subjects including Mathematics");
+        disRequirements.add("STAM \n "
+                + "- Minimum Grade of Maqbul in any 1 subject \n "
+                + "- Credit in Mathematics");
 
+        dmeRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        dmeRequirements.add("STPM / A-Level \n "
+                + "- Minimum Grade C(GP 2.0) in any 1 subject \n "
+                + "- Pass in Mathematics, English and any 1 Science/Technical/Vocational subject at SPM / O-Level");
+        dmeRequirements.add("UEC \n "
+                + "- Minimum Grade B in any 3 subjects \n "
+                + "- Including Mathematics and any 1 Science/Technical/Vocational subject at SPM / O-Level \n "
+                + "- Pass in English");
 
-        //Degree requirements description
+        detRequirements.add("Science stream student \n "
+                + "- SPM / O-Level \n "
+                + "  - At least 3 credits in any subjects \n "
+                + "  - Pass in 2 Science subjects \n "
+                + "- UEC \n "
+                + "  - Minimum Grade B in any 3 subjects \n "
+                + "  - Including 2 Science subjects");
+        detRequirements.add("Non-Science stream student \n "
+                + "- SPM / O-Level \n "
+                + "  - Minimum 3 credits in any subjects \n "
+                + "  - Including credit in 1 science subject \n "
+                + "- UEC \n "
+                + "  - Minimum Grade B in any 3 subjects \n "
+                + "  - Including 1 Science subjects \n "
+                + "- STPM \n "
+                + "  - Minimum Grade C(GP 2.0) in any 1 subject \n "
+                + "- A-Level \n "
+                + "  - Minimum Grade C(GP 2.0) in any 1 subject \n "
+                + "- STAM \n "
+                + "  - Minimum Grade of Maqbul in any 1 subject");
 
+        // Degree requirements description
+        bbaRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bbaHospitalityRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bacRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bfiRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        teslRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        corporateCommRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bmcAdvertisingRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bmcJournalismRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bceRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bsneRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bcsRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bitRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bisRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        eceRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bemRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        biotechRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        betRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        actuarialScienceRequirementsm.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        pharmacyRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        bbsRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
+        mbbsRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects \n "
+                + "- Including credit in Mathematics and 1 subject from Science/Technical/Vocational \n"
+                + "- Pass in English");
 
     }
 
@@ -395,148 +553,351 @@ public class ResultsOfFiltering extends AppCompatActivity
                 // Diploma
                 case "Diploma in Business Management":
                 {
-
+                    if(DBM.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Diploma in Business Management");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Diploma in Business Management");
+                    }
                 }
                 break;
                 case "Diploma in Hotel Management":
                 {
-
+                    if(DHM.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Diploma in Hotel Management");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Diploma in Hotel Management");
+                    }
                 }
                 break;
                 case "Diploma of Accountancy":
                 {
-
+                    if(DAC.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Diploma of Accountancy");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Diploma of Accountancy");
+                    }
                 }
                 break;
                 case "Diploma in Early Childhood Education":
                 {
-
+                    if(DCE.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Diploma in Early Childhood Education");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Diploma in Early Childhood Education");
+                    }
                 }
                 break;
                 case "Diploma in Information Technology":
                 {
-
+                    if(DIT.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Diploma in Information Technology");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Diploma in Information Technology");
+                    }
                 }
                 break;
                 case "Diploma in Business Information System":
                 {
-
+                    if(DIS.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Diploma in Business Information System");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Diploma in Business Information System");
+                    }
                 }
                 break;
                 case "Diploma in Mechatronics Engineering":
                 {
-
+                    if(DME.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Diploma in Mechatronics Engineering");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Diploma in Mechatronics Engineering");
+                    }
                 }
                 break;
                 case "Diploma in Environmental Technology":
                 {
-
+                    if(DET.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Diploma in Environmental Technology");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Diploma in Environmental Technology");
+                    }
                 }
                 break;
 
                 //Degree
                 case "Bachelor of Business Administration (Hons)":
                 {
-
+                    if(BBA.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Business Administration (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Business Administration (Hons)");
+                    }
                 }
                 break;
                 case "BBA (Hons) in Hospitality & Tourism Management":
                 {
-
+                    if(BBA_HospitalityTourismManagement.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("BBA (Hons) in Hospitality & Tourism Management");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("BBA (Hons) in Hospitality & Tourism Management");
+                    }
                 }
                 break;
                 case "Bachelor of Accountancy (Hons)":
                 {
-
+                    if(BAC.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Accountancy (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Accountancy (Hons)");
+                    }
                 }
                 break;
                 case "Bachelor of Finance (Hons)":
                 {
-
+                    if(BFI.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Finance (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Finance (Hons)");
+                    }
                 }
                 break;
                 case "Bachelor of Arts (Hons) TESL":
                 {
-
+                    if(TESL.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Arts (Hons) TESL");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Arts (Hons) TESL");
+                    }
                 }
                 break;
                 case "Bachelor of Corporate Communication (Hons)":
                 {
-
+                    if(CorporateComm.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Corporate Communication (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Corporate Communication (Hons)");
+                    }
                 }
                 break;
                 case "Bachelor of Mass Communication (Hons) Journalism":
                 {
-
+                    if(MassCommAdvertising.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Mass Communication (Hons) Journalism");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Mass Communication (Hons) Journalism");
+                    }
                 }
                 break;
                 case "Bachelor of Mass Communication (Hons) Advertising":
                 {
-
+                    if(MassCommAdvertising.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Mass Communication (Hons) Advertising");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Mass Communication (Hons) Advertising");
+                    }
                 }
                 break;
                 case "Bachelor of Early Childhood Education (Hons)":
                 {
-
+                    if(BCE.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Early Childhood Education (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Early Childhood Education (Hons)");
+                    }
                 }
                 break;
                 case "Bachelor of Special Needs Education (Hons)":
                 {
-
+                    if(BSNE.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Special Needs Education (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Special Needs Education (Hons)");
+                    }
                 }
                 case "Bachelor of Computer Science (Hons)":
                 {
-
+                    if(BCS.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Computer Science (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Computer Science (Hons)");
+                    }
                 }
                 break;
                 case "Bachelor of Information Technology (Hons)":
                 {
-
+                    if(BIT.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Information Technology (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Information Technology (Hons)");
+                    }
                 }
                 break;
                 case "Bachelor of Business Information System (Hons)":
                 {
-
+                    if(BIS.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Business Information System (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Business Information System (Hons)");
+                    }
                 }
                 break;
                 case "Bachelor of Engineering (Hons) Electronics & Communications Engineering":
                 {
-
+                    if(ElectronicsCommunicationsEngineering.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Engineering (Hons) Electronics & Communications Engineering");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Engineering (Hons) Electronics & Communications Engineering");
+                    }
                 }
                 break;
                 case "Bachelor of Engineering (Hons) in Mechatronics":
                 {
-
+                    if(BEM.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Engineering (Hons) in Mechatronics");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Engineering (Hons) in Mechatronics");
+                    }
                 }
                 break;
                 case "Bachelor of Science (Hons) in Biotechnology":
                 {
-
+                    if(BioTech.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Science (Hons) in Biotechnology");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Science (Hons) in Biotechnology");
+                    }
                 }
                 break;
                 case "Bachelor of Environmental Technology (Hons)":
                 {
-
+                    if(BET.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Environmental Technology (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Environmental Technology (Hons)");
+                    }
                 }
                 break;
                 case "Bachelor of Science (Hons) Actuarial Sciences":
                 {
-
+                    if(BS_ActuarialSciences.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Science (Hons) Actuarial Sciences");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Science (Hons) Actuarial Sciences");
+                    }
                 }
                 break;
                 case "Bachelor of Pharmacy (Hons)":
                 {
-
+                    if(Pharmacy.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Pharmacy (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Pharmacy (Hons)");
+                    }
                 }
                 break;
                 case "Bachelor of Biomedical Sciences (Hons)":
                 {
-
+                    if(BBS.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Biomedical Sciences (Hons)");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Biomedical Sciences (Hons)");
+                    }
                 }
                 break;
                 case "Bachelor of Medicine & Bachelor of Surgery":
                 {
-
+                    if(MBBS.isJoinProgramme())
+                    {
+                        eligibleDataHeader.add("Bachelor of Medicine & Bachelor of Surgery");
+                    }
+                    else
+                    {
+                        notEligibleDataHeader.add("Bachelor of Medicine & Bachelor of Surgery");
+                    }
                 }
                 break;
             }
@@ -544,7 +905,7 @@ public class ResultsOfFiltering extends AppCompatActivity
 
         //TODO add hashmap HERE
         // first is header string, second is description
-        notEligibleHashMap.put(notEligibleDataHeader.get(0),fibfiaRequirements);
+        notEligibleHashMap.put(notEligibleDataHeader.get(0),detRequirements);
     }
 
     private void addFoundationJoinProgramme()
@@ -782,7 +1143,7 @@ public class ResultsOfFiltering extends AppCompatActivity
             notEligibleDataHeader.add("Bachelor of Engineering (Hons) in Mechatronics");
         }
 
-        if(Biotech.isJoinProgramme())
+        if(BioTech.isJoinProgramme())
         {
             eligibleDataHeader.add("Bachelor of Science (Hons) in Biotechnology");
         }
@@ -801,7 +1162,6 @@ public class ResultsOfFiltering extends AppCompatActivity
         }
 
         //Faculty of Medicine
-
         if(MBBS.isJoinProgramme())
         {
             eligibleDataHeader.add("Bachelor of Medicine & Bachelor of Surgery (MBBS)");

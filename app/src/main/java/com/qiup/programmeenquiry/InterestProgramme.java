@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.qiup.entryrules.BAC;
 import com.qiup.entryrules.BBA;
 import com.qiup.entryrules.BBA_HospitalityTourismManagement;
@@ -33,7 +34,7 @@ import com.qiup.entryrules.BIS;
 import com.qiup.entryrules.BIT;
 import com.qiup.entryrules.BSNE;
 import com.qiup.entryrules.BS_ActuarialSciences;
-import com.qiup.entryrules.Biotech;
+import com.qiup.entryrules.BioTech;
 import com.qiup.entryrules.CorporateComm;
 import com.qiup.entryrules.DAC;
 import com.qiup.entryrules.DBM;
@@ -51,7 +52,6 @@ import com.qiup.entryrules.MassCommAdvertising;
 import com.qiup.entryrules.MassCommJournalism;
 import com.qiup.entryrules.Pharmacy;
 import com.qiup.entryrules.TESL;
-import com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.R;
 
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rules;
@@ -75,6 +75,7 @@ public class InterestProgramme extends AppCompatActivity
     Bundle extras;
     boolean flagForNewField;
     String[] arrayOfProgramme;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -85,6 +86,7 @@ public class InterestProgramme extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         extras = getIntent().getExtras();
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this); // obtain firebase instances
         addInterestedProgramme = findViewById(R.id.addInterestedProgrammeText);
         deleteInterestedProgramme = findViewById(R.id.deleteInterestedProgrammeText);
         maxTextView = findViewById(R.id.maxTextView);
@@ -199,12 +201,15 @@ public class InterestProgramme extends AppCompatActivity
             }
         });
 
-        generateButton.setOnClickListener(new View.OnClickListener() {
+        generateButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View view)
             {
+                StringBuilder allInterestedProgramme = new StringBuilder();
+
                 // Start validate inputted programme. If the key-in programme is not exist in programme list, return
-                // If checkbox is not checked
+                // If checkbox is not checked, meaning that got interest programme
                 if(!interestCheckBox.isChecked())
                 {
                     // Copy all the array and make all Upper case for case insensitive
@@ -373,12 +378,29 @@ public class InterestProgramme extends AppCompatActivity
                         }
                     }
 
+                    for(int i = 0; i < interestedProgrammeArray.length; i++)
+                    {
+                        if(i != interestedProgrammeArray.length-1)
+                        {
+                            allInterestedProgramme.append(interestedProgrammeArray[i]).append(", ");
+                        }
+                        else
+                        {
+                            allInterestedProgramme.append(interestedProgrammeArray[i]);
+                        }
+                    }
+                    if(editOtherProgramme.getText().length() != 0)
+                    {
+                        allInterestedProgramme.append("\nOther Programme: ").append(editOtherProgramme.getText().toString());
+                    }
+
                     // put intent of string interest programme then pass to next activity
                     extras.putStringArray("STUDENT_INTERESTED_PROGRAMME_LIST", interestedProgrammeArray);
                     extras.putBoolean("STUDENT_IS_GOT_INTERESTED_PROGRAMME", true);
                 }
                 else // no interest programme, pass false for key STUDENT_IS_GOT_INTERESTED_PROGRAMME
                 {
+                    allInterestedProgramme.append("None");
                     extras.putBoolean("STUDENT_IS_GOT_INTERESTED_PROGRAMME", false);
                 }
 
@@ -412,7 +434,7 @@ public class InterestProgramme extends AppCompatActivity
                         new BIS(),
                         new BCS(),
                         new ElectronicsCommunicationsEngineering(),
-                        new Biotech(),
+                        new BioTech(),
                         new BEM(),
                         new BET(),
                         new BIT(),
@@ -434,13 +456,80 @@ public class InterestProgramme extends AppCompatActivity
                 RulesEngine rulesEngine = new DefaultRulesEngine();
                 rulesEngine.fire(rules, facts);
 
-               Intent resultsOfFiltering = new Intent(InterestProgramme.this, ResultsOfFiltering.class);
+                //TODO send to php -> sheets for subject and grade
+                /*Retrofit phpRetrofit = new Retrofit.Builder()
+                        .baseUrl("https://kslim5703.000webhostapp.com/")
+                        .build();
+
+                final PhpAPI PhpAPI = phpRetrofit.create(PhpAPI.class);
+                Call<Void> postToPHP = PhpAPI.postToPHP(
+                        extras.getStringArray("STUDENT_SUBJECTS_LIST"),
+                        extras.getStringArray("STUDENT_GRADES_LIST"));
+                postToPHP.enqueue(new Callback<Void>()
+                {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response)
+                    {
+                        Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t)
+                    {
+                        Toast.makeText(getApplicationContext(), "Unable to submit. No Internet connection", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                /*
+                // use Retrofit library to make post
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("https://docs.google.com/forms/u/1/d/e/")
+                        .build();
+
+                final SpreadsheetsAPI spreadsheetWebService = retrofit.create(SpreadsheetsAPI.class);
+                Call<Void> postToSpreadsheetsCall = spreadsheetWebService.postToSpreadsheets(
+                        extras.getString("NAME"),
+                        extras.getString("IC"),
+                        extras.getString("SCHOOL_NAME"),
+                        extras.getString("QUALIFICATION_LEVEL"),
+                        extras.getString("CONTACT_NUMBER"),
+                        extras.getString("EMAIL"),
+                        allInterestedProgramme.toString(),
+                        extras.getString("REMARK"));
+
+                postToSpreadsheetsCall.enqueue(new Callback<Void>()
+                {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response)
+                    {
+                        Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t)
+                    {
+                        Toast.makeText(getApplicationContext(), "Unable to submit. No Internet connection", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                 */
+
+                editOtherProgramme.setText("");
+                editOtherProgramme.clearFocus();
+                while(interestProgrammeParentLayout.getChildCount() != 6)
+                {
+                    interestProgrammeParentLayout.removeViewAt(interestProgrammeParentLayout.getChildCount() - 4);
+                }
+                interestCheckBox.setChecked(true);
+                interestedProgrammeAutoComplete.setText("");
+
+                Bundle firebaseBundle = new Bundle();
+                firebaseBundle.putInt("GENERATE_BUTTON_ID", generateButton.getId());
+                firebaseAnalytics.logEvent("EnquiryProgramme", firebaseBundle);
+
+                Intent resultsOfFiltering = new Intent(InterestProgramme.this, ResultsOfFiltering.class);
                 resultsOfFiltering.putExtras(extras);
                 startActivity(resultsOfFiltering);
-
-                //TODO reset back to default
-                //TODO all data send to DB
-                //editOtherProgramme.getText().toString().trim();
             }
         });
 

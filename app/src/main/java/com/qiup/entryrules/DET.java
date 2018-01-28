@@ -43,7 +43,7 @@ public class DET
                 {
                     if(!Objects.equals(studentGrades[i], "G"))
                     {
-                        detRuleAttribute.incrementCountPassScienceSubjects(1);
+                        detRuleAttribute.incrementCountPassScienceSubjects();
                     }
                 }
             }
@@ -56,7 +56,7 @@ public class DET
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "G"))
                 {
-                    detRuleAttribute.incrementCountSPM(1);
+                    detRuleAttribute.incrementSPMCredit();
                 }
             }
         }
@@ -74,7 +74,7 @@ public class DET
                 {
                     if(!Objects.equals(studentGrades[i], "U"))
                     {
-                        detRuleAttribute.incrementCountPassScienceSubjects(1);
+                        detRuleAttribute.incrementCountPassScienceSubjects();
                     }
                 }
             }
@@ -89,7 +89,7 @@ public class DET
                         && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    detRuleAttribute.incrementCountOLevel(1);
+                    detRuleAttribute.incrementOLevelCredit();
                 }
             }
         }
@@ -104,7 +104,7 @@ public class DET
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    detRuleAttribute.incrementCountSTPM(1);
+                    detRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -118,7 +118,7 @@ public class DET
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    detRuleAttribute.incrementCountALevel(1);
+                    detRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -129,7 +129,7 @@ public class DET
             {
                 if( !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    detRuleAttribute.incrementCountSTAM(1);
+                    detRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -147,7 +147,7 @@ public class DET
                             && !Objects.equals(studentGrades[i], "F9"))
                     {
                         // here count pass is for credit (at least B6)
-                        detRuleAttribute.incrementCountPassScienceSubjects(1);
+                        detRuleAttribute.incrementCountPassScienceSubjects();
                     }
                 }
             }
@@ -160,7 +160,7 @@ public class DET
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    detRuleAttribute.incrementCountUEC(1);
+                    detRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -173,9 +173,9 @@ public class DET
         if(detRuleAttribute.isScienceStream())
         {
             // Check enough credit or not
-            if(detRuleAttribute.getCountSPM() >= 3
-                    || detRuleAttribute.getCountOLevel() >= 3
-                    || detRuleAttribute.getCountUEC() >= 3)
+            if(detRuleAttribute.getSpmCredit() >= 3
+                    || detRuleAttribute.getoLevelCredit() >= 3
+                    || detRuleAttribute.getUecCredit() >= 3)
             {
                 // If enough credit, check number of pass science subject is at least 2 or not
                 // If 2 or more, return true as all requirements satisfy
@@ -188,9 +188,9 @@ public class DET
         else // is not science stream
         {
             // Check enough credit or not
-            if(detRuleAttribute.getCountSPM() >= 3
-                    || detRuleAttribute.getCountOLevel() >= 3
-                    || detRuleAttribute.getCountUEC() >= 3)
+            if(detRuleAttribute.getSpmCredit() >= 3
+                    || detRuleAttribute.getoLevelCredit() >= 3
+                    || detRuleAttribute.getUecCredit() >= 3)
             {
                 // If enough credit, check number of pass science subject is at least 2 or not
                 // If 2 or more, return true as all requirements satisfy
@@ -201,9 +201,9 @@ public class DET
             }
             // If is not science stream but is STAM, STPM or A-Level
             // Check enough credit or not. If enough return true as all requirements satisfy
-            if(detRuleAttribute.getCountSTAM() >= 1
-                    || detRuleAttribute.getCountSTPM() >= 1
-                    || detRuleAttribute.getCountALevel() >= 1)
+            if(detRuleAttribute.getStamCredit() >= 1
+                    || detRuleAttribute.getStpmCredit() >= 1
+                    || detRuleAttribute.getALevelCredit() >= 1)
             {
                 return true;
             }
@@ -217,7 +217,7 @@ public class DET
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        detRuleAttribute.setJoinProgramme(true);
+        detRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplEnvironmentalTech", "Joined");
     }
 

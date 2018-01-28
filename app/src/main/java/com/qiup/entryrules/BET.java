@@ -108,7 +108,7 @@ public class BET
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    betRuleAttribute.incrementCountSTPM(1);
+                    betRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -158,7 +158,7 @@ public class BET
                 if(!Objects.equals(studentGrades[i], "Maqbul")
                         && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    betRuleAttribute.incrementCountSTAM(1);
+                    betRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -201,7 +201,7 @@ public class BET
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    betRuleAttribute.incrementCountALevel(1);
+                    betRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -211,17 +211,8 @@ public class BET
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 // Check math
-                if(Objects.equals(studentSubjects[i], "Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C7")
-                            && !Objects.equals(studentGrades[i], "C8")
-                            && !Objects.equals(studentGrades[i], "F9"))
-                    {
-                        betRuleAttribute.setGotMathSubjectAndCredit();
-                        break;
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Mathematics")
+                        || Objects.equals(studentSubjects[i], "Additional Mathematics"))
                 {
                     if(!Objects.equals(studentGrades[i], "C7")
                             && !Objects.equals(studentGrades[i], "C8")
@@ -258,7 +249,7 @@ public class BET
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    betRuleAttribute.incrementCountUEC(1);
+                    betRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -267,9 +258,9 @@ public class BET
             // TODO Matriculation, foundation, diploma
         }
 
-        //If qualification is UEC, STPM, or A-Level
-        if(betRuleAttribute.getCountUEC() >= 5 || betRuleAttribute.getCountSTPM() >= 2
-                || betRuleAttribute.getCountALevel() >= 2)
+        //If qualification is UEC, STPM, or A-Level, check enough credit or not
+        if(betRuleAttribute.getUecCredit() >= 5 || betRuleAttribute.getStpmCredit() >= 2
+                || betRuleAttribute.getALevelCredit() >= 2)
         {
             // if enough credit, check math is credit and sciences subject is credit or not
             if(betRuleAttribute.isGotMathSubjectAndCredit() && betRuleAttribute.isGotScienceSubjectsCredit())
@@ -278,8 +269,8 @@ public class BET
             }
         }
 
-        // If qualification is STAM
-        if(betRuleAttribute.getCountSTAM() >= 2)
+        // If qualification is STAM, check enough credit or not
+        if(betRuleAttribute.getStamCredit() >= 2)
         {
             // if enough credit, check math is credit or not
             if(betRuleAttribute.isGotMathSubjectAndCredit())
@@ -296,7 +287,7 @@ public class BET
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        betRuleAttribute.setJoinProgramme(true);
+        betRuleAttribute.setJoinProgrammeTrue();
         Log.d("BET", "Joined");
     }
 

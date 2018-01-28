@@ -33,7 +33,7 @@ public class DHM
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "G"))
                 {
-                    dhmRuleAttribute.incrementCountSPM(1);
+                    dhmRuleAttribute.incrementSPMCredit();
                 }
             }
         }
@@ -49,7 +49,7 @@ public class DHM
                         && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    dhmRuleAttribute.incrementCountOLevel(1);
+                    dhmRuleAttribute.incrementOLevelCredit();
                 }
             }
         }
@@ -64,7 +64,7 @@ public class DHM
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    dhmRuleAttribute.incrementCountSTPM(1);
+                    dhmRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -78,7 +78,7 @@ public class DHM
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    dhmRuleAttribute.incrementCountALevel(1);
+                    dhmRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -89,7 +89,7 @@ public class DHM
             {
                 if( !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    dhmRuleAttribute.incrementCountSTAM(1);
+                    dhmRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -102,7 +102,7 @@ public class DHM
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    dhmRuleAttribute.incrementCountUEC(1);
+                    dhmRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -112,12 +112,12 @@ public class DHM
         }
 
         // if credit is enough, requirements satisfy = return true
-        if(dhmRuleAttribute.getCountSPM() >= 3
-                || dhmRuleAttribute.getCountOLevel() >= 3
-                || dhmRuleAttribute.getCountUEC() >= 3
-                || dhmRuleAttribute.getCountSTAM() >= 1
-                || dhmRuleAttribute.getCountSTPM() >= 1
-                || dhmRuleAttribute.getCountALevel() >= 1)
+        if(dhmRuleAttribute.getSpmCredit() >= 3
+                || dhmRuleAttribute.getoLevelCredit() >= 3
+                || dhmRuleAttribute.getUecCredit() >= 3
+                || dhmRuleAttribute.getStamCredit() >= 1
+                || dhmRuleAttribute.getStpmCredit() >= 1
+                || dhmRuleAttribute.getALevelCredit() >= 1)
         {
                 return true;
         }
@@ -130,7 +130,7 @@ public class DHM
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        dhmRuleAttribute.setJoinProgramme(true);
+        dhmRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplomaHotelManagement", "Joined");
     }
 

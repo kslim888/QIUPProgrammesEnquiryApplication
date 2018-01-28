@@ -59,7 +59,7 @@ public class DAC
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "G"))
                 {
-                    dacRuleAttribute.incrementCountSPM(1);
+                    dacRuleAttribute.incrementSPMCredit();
                 }
             }
         }
@@ -102,7 +102,7 @@ public class DAC
                         && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    dacRuleAttribute.incrementCountOLevel(1);
+                    dacRuleAttribute.incrementOLevelCredit();
                 }
             }
         }
@@ -173,7 +173,7 @@ public class DAC
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    dacRuleAttribute.incrementCountSTPM(1);
+                    dacRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -244,7 +244,7 @@ public class DAC
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    dacRuleAttribute.incrementCountALevel(1);
+                    dacRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -311,7 +311,7 @@ public class DAC
             {
                 if( !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    dacRuleAttribute.incrementCountSTAM(1);
+                    dacRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -333,7 +333,6 @@ public class DAC
             // If either 1 not exist, return false
             if(!dacRuleAttribute.isGotMathSubject() || !dacRuleAttribute.isGotEnglishSubject())
             {
-                //TODO say error
                 return false;
             }
 
@@ -369,7 +368,7 @@ public class DAC
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    dacRuleAttribute.incrementCountUEC(1);
+                    dacRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -381,12 +380,12 @@ public class DAC
         // For all the qualification, check got more than the credit or not
         // If more than, then check english is pass and math is credit or not
         // If both true, return true for all requirements is statisfied
-        if(dacRuleAttribute.getCountSPM() >= 3
-                || dacRuleAttribute.getCountSTAM() >= 1
-                || dacRuleAttribute.getCountSTPM() >= 1
-                || dacRuleAttribute.getCountALevel() >= 1
-                || dacRuleAttribute.getCountOLevel() >= 3
-                || dacRuleAttribute.getCountUEC() >= 3)
+        if(dacRuleAttribute.getSpmCredit() >= 3
+                || dacRuleAttribute.getStamCredit() >= 1
+                || dacRuleAttribute.getStpmCredit() >= 1
+                || dacRuleAttribute.getALevelCredit() >= 1
+                || dacRuleAttribute.getoLevelCredit() >= 3
+                || dacRuleAttribute.getUecCredit() >= 3)
         {
             if(dacRuleAttribute.isGotEnglishSubjectAndPass() && dacRuleAttribute.isGotMathSubjectAndCredit())
             {
@@ -402,7 +401,7 @@ public class DAC
     public void joinProgramme() throws Exception
     {
         // If requirements is statisfied (return true), this action will be executed
-        dacRuleAttribute.setJoinProgramme(true);
+        dacRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplomaInAccountancy", "Joined");
     }
 

@@ -51,7 +51,7 @@ public class DIT
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "G"))
                 {
-                    ditRuleAttribute.incrementCountSPM(1);
+                    ditRuleAttribute.incrementSPMCredit();
                 }
             }
         }
@@ -86,7 +86,7 @@ public class DIT
                         && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    ditRuleAttribute.incrementCountOLevel(1);
+                    ditRuleAttribute.incrementOLevelCredit();
                 }
             }
         }
@@ -157,7 +157,7 @@ public class DIT
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    ditRuleAttribute.incrementCountSTPM(1);
+                    ditRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -227,7 +227,7 @@ public class DIT
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    ditRuleAttribute.incrementCountALevel(1);
+                    ditRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -283,7 +283,7 @@ public class DIT
             {
                 if( !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    ditRuleAttribute.incrementCountSTAM(1);
+                    ditRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -310,7 +310,7 @@ public class DIT
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    ditRuleAttribute.incrementCountUEC(1);
+                    ditRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -322,7 +322,7 @@ public class DIT
         // If is STPM or A-Level, check credit is at least 2 or not
         // If is more than 2 , check math credit and english pass or not
         // If both true, return true for all requirements satisfy
-        if(ditRuleAttribute.getCountSTPM() >= 2 || ditRuleAttribute.getCountALevel() >= 2)
+        if(ditRuleAttribute.getStpmCredit() >= 2 || ditRuleAttribute.getALevelCredit() >= 2)
         {
             if(ditRuleAttribute.isGotMathSubjectAndCredit() && ditRuleAttribute.isGotEnglishSubjectAndPass())
             {
@@ -333,10 +333,10 @@ public class DIT
         // if is SPM , O-Level, STAM, or UEC, check got enough credit or not
         // If is credit enough, check math is credit
         // If both true, return true for all requirements satisfy
-        if(ditRuleAttribute.getCountSPM() >= 3
-                || ditRuleAttribute.getCountOLevel() >= 3
-                || ditRuleAttribute.getCountSTAM() >= 1
-                || ditRuleAttribute.getCountUEC() >= 3)
+        if(ditRuleAttribute.getSpmCredit() >= 3
+                || ditRuleAttribute.getoLevelCredit() >= 3
+                || ditRuleAttribute.getStamCredit() >= 1
+                || ditRuleAttribute.getUecCredit() >= 3)
         {
             if(ditRuleAttribute.isGotMathSubjectAndCredit())
             {
@@ -352,7 +352,7 @@ public class DIT
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), then this action will be executed
-        ditRuleAttribute.setJoinProgramme(true);
+        ditRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplomaIT", "Joined");
     }
 

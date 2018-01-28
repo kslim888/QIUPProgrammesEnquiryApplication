@@ -27,7 +27,7 @@ public class BCS
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            // for all students subject check got add math or not
+            // For all students subject check got add math or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "Matematik (T)"))
@@ -55,7 +55,7 @@ public class BCS
                 }
             }
 
-            // if STPM got add math subject but not credit, or no add math subject at STPM
+            // If STPM got add math subject but not credit, or no add math subject at STPM
             // Check SPM / O-Level got maths subject is credit or not
             if(bcsRuleAttribute.isGotMathSubjectAndCredit())
             {
@@ -91,7 +91,7 @@ public class BCS
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    bcsRuleAttribute.incrementCountSTPM(1);
+                    bcsRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -124,7 +124,7 @@ public class BCS
                 }
             }
 
-            // if A-level got add math subject but not credit, or no add math subject at A-level
+            // If A-level got add math subject but not credit, or no add math subject at A-level
             // Check SPM / O-Level got maths subject is credit or not
             if(!bcsRuleAttribute.isGotMathSubjectAndCredit())
             {
@@ -159,7 +159,7 @@ public class BCS
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    bcsRuleAttribute.incrementCountALevel(1);
+                    bcsRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -187,7 +187,7 @@ public class BCS
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    bcsRuleAttribute.incrementCountUEC(1);
+                    bcsRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -196,14 +196,17 @@ public class BCS
             // TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
         }
 
-        if(bcsRuleAttribute.getCountALevel() >= 2
-                || bcsRuleAttribute.getCountSTPM() >= 2 || bcsRuleAttribute.getCountUEC() >= 5)
+        // Check enough credit or not. If is enough credit, check add maths is credit or not
+        // If both true, return true as requirements are satisfied
+        if(bcsRuleAttribute.getALevelCredit() >= 2
+                || bcsRuleAttribute.getStpmCredit() >= 2 || bcsRuleAttribute.getUecCredit() >= 5)
         {
             if(bcsRuleAttribute.isGotMathSubjectAndCredit())
             {
                 return true;
             }
         }
+        // Return false as requirements is not satiefied
         return false;
     }
 
@@ -212,7 +215,7 @@ public class BCS
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        bcsRuleAttribute.setJoinProgramme(true);
+        bcsRuleAttribute.setJoinProgrammeTrue();
         Log.d("BCSjoinProgramme", "Joined");
     }
 

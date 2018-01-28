@@ -22,18 +22,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.R;
-
-import org.jeasy.rules.api.Facts;
-import org.jeasy.rules.api.Rules;
-import org.jeasy.rules.api.RulesEngine;
-import org.jeasy.rules.core.DefaultRulesEngine;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Objects;
-
 import com.qiup.entryrules.BAC;
 import com.qiup.entryrules.BBA;
 import com.qiup.entryrules.BBA_HospitalityTourismManagement;
@@ -46,7 +34,7 @@ import com.qiup.entryrules.BIS;
 import com.qiup.entryrules.BIT;
 import com.qiup.entryrules.BSNE;
 import com.qiup.entryrules.BS_ActuarialSciences;
-import com.qiup.entryrules.Biotech;
+import com.qiup.entryrules.BioTech;
 import com.qiup.entryrules.CorporateComm;
 import com.qiup.entryrules.DAC;
 import com.qiup.entryrules.DBM;
@@ -64,6 +52,17 @@ import com.qiup.entryrules.MassCommAdvertising;
 import com.qiup.entryrules.MassCommJournalism;
 import com.qiup.entryrules.Pharmacy;
 import com.qiup.entryrules.TESL;
+
+import org.jeasy.rules.api.Facts;
+import org.jeasy.rules.api.Rules;
+import org.jeasy.rules.api.RulesEngine;
+import org.jeasy.rules.core.DefaultRulesEngine;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Objects;
+
 import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class InterestedProgrammeAndEnglishProficiency extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -154,7 +153,7 @@ public class InterestedProgrammeAndEnglishProficiency extends AppCompatActivity 
 
                 // Add the new row before the add field button.
                 interestedAndEnglishParentLayout.addView(rowView, interestedAndEnglishParentLayout.getChildCount() - 3);
-                newInterestedProgrammeSpinner = rowView.findViewById(R.id.newInterestedProgrammeAutoComplete);
+                //newInterestedProgrammeSpinner = rowView.findViewById(R.id.newInterestedProgrammeAutoComplete);
                 if(interestedAndEnglishParentLayout.getChildCount() != 8) // if added new field, make the delete field text enable
                 {
                     deleteInterestedProgramme.setEnabled(true);
@@ -376,7 +375,7 @@ public class InterestedProgrammeAndEnglishProficiency extends AppCompatActivity 
                         new BIS(),
                         new BCS(),
                         new ElectronicsCommunicationsEngineering(),
-                        new Biotech(),
+                        new BioTech(),
                         new BEM(),
                         new BIT(),
                         new BS_ActuarialSciences(),

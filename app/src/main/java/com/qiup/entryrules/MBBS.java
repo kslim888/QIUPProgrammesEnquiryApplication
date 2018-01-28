@@ -14,25 +14,8 @@ public class MBBS
 {
     // advanced math is additional maths
     private static RuleAttribute mbbsRuleAttribute;
-    private boolean gotMathSubject, gotMathSubjectAndCredit,
-            gotAddMathSubject, gotAddMathSubjectAndCredit,
-            gotChemi, gotChemiAndCredit,
-            gotBio, gotBioAndCredit,
-            gotPhysics, gotPhysicsAndCredit;
 
-    public MBBS() {
-        mbbsRuleAttribute = new RuleAttribute();
-        gotMathSubject = false;
-        gotMathSubjectAndCredit = false;
-        gotChemi = false;
-        gotChemiAndCredit = false;
-        gotBio = false;
-        gotBioAndCredit = false;
-        gotPhysics = false;
-        gotPhysicsAndCredit = false;
-        gotAddMathSubject = false;
-        gotAddMathSubjectAndCredit = false;
-    }
+    public MBBS() { mbbsRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -44,91 +27,68 @@ public class MBBS
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            //check got bio chemi math or not
+            // Check got bio chemi math or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)") || Objects.equals(studentSubjects[i], "Matematik (T)"))
+                if(Objects.equals(studentSubjects[i], "Matematik (M)")
+                        || Objects.equals(studentSubjects[i], "Matematik (T)"))
                 {
-                    gotMathSubject = true;
+                    mbbsRuleAttribute.setGotMathSubject();
                 }
                 if( Objects.equals(studentSubjects[i], "Fizik"))
                 {
-                    gotPhysics = true;
+                    mbbsRuleAttribute.setGotPhysics();
                 }
                 if( Objects.equals(studentSubjects[i], "Kimia"))
                 {
-                    gotChemi = true;
+                    mbbsRuleAttribute.setGotChemi();
                 }
                 if( Objects.equals(studentSubjects[i], "Biology"))
                 {
-                    gotBio = true;
+                    mbbsRuleAttribute.setGotBio();
                 }
             }
 
-            // if no chemi and bio, straight return false
-            // if no Physics and Mathematics, return false
-            if(!gotChemi || !gotBio || (!gotMathSubject && !gotPhysics))
+            // If no chemi and bio, straight return false
+            // If no Physics and Mathematics, return false. Either 1 got continue
+            if(!mbbsRuleAttribute.isGotChemi()
+                    || !mbbsRuleAttribute.isGotBio()
+                    || (!mbbsRuleAttribute.isGotMathSubject() && !mbbsRuleAttribute.isGotPhysics()))
             {
                 return false;
             }
 
-            // for all students subject check math, Bio, Chemi, physics / math
+            // For all students subject check math, Bio, Chemi, physics / math
             // Grades BBB, ABC or AAC
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)"))
+                if(Objects.equals(studentSubjects[i], "Matematik (M)")
+                        || Objects.equals(studentSubjects[i], "Matematik (T)")
+                        || Objects.equals(studentSubjects[i], "Fizik"))
                 {
                     if(!Objects.equals(studentGrades[i], "C-")
                             && !Objects.equals(studentGrades[i], "D+")
                             && !Objects.equals(studentGrades[i], "D")
                             && !Objects.equals(studentGrades[i], "F"))
                     {
-                        mbbsRuleAttribute.incrementCountSTPM(1);
+                        mbbsRuleAttribute.incrementSTPMCredit();
                     }
                 }
-                if(Objects.equals(studentSubjects[i], "Matematik (T)"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C-")
-                            && !Objects.equals(studentGrades[i], "D+")
-                            && !Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "F"))
-                    {
-                        mbbsRuleAttribute.incrementCountSTPM(1);
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Fizik"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C-")
-                            && !Objects.equals(studentGrades[i], "D+")
-                            && !Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "F"))
-                    {
-                        mbbsRuleAttribute.incrementCountSTPM(1);
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Kimia"))
+                if(Objects.equals(studentSubjects[i], "Kimia")
+                        || Objects.equals(studentSubjects[i], "Biology"))
                 {
                     if(Objects.equals(studentGrades[i], "A")
                             || Objects.equals(studentGrades[i], "A-")
                             || Objects.equals(studentGrades[i], "B+")
                             || Objects.equals(studentGrades[i], "B"))
                     {
-                        mbbsRuleAttribute.incrementCountSTPM(1);
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    if(Objects.equals(studentGrades[i], "A")
-                            || Objects.equals(studentGrades[i], "A-")
-                            || Objects.equals(studentGrades[i], "B+")
-                            || Objects.equals(studentGrades[i], "B"))
-                    {
-                        mbbsRuleAttribute.incrementCountSTPM(1);
+                        mbbsRuleAttribute.incrementSTPMCredit();
                     }
                 }
             }
 
-            if(mbbsRuleAttribute.getCountSTPM() >= 3)
+            // If credit is enough, return true
+            if(mbbsRuleAttribute.getStpmCredit() >= 3)
             {
                 //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
                 //{
@@ -143,70 +103,61 @@ public class MBBS
             {
                 if(Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Further Mathematics"))
                 {
-                    gotMathSubject = true;
+                    mbbsRuleAttribute.setGotMathSubject();
                 }
                 if( Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    gotPhysics = true;
+                    mbbsRuleAttribute.setGotPhysics();
                 }
                 if( Objects.equals(studentSubjects[i], "Chemistry"))
                 {
-                    gotChemi = true;
+                    mbbsRuleAttribute.setGotChemi();
                 }
                 if( Objects.equals(studentSubjects[i], "Biology"))
                 {
-                    gotBio = true;
+                    mbbsRuleAttribute.setGotBio();
                 }
             }
 
             // if no chemi and bio, straight return false
-            // if no Physics and Mathematics, return false
-            if(!gotChemi || !gotBio || (!gotMathSubject && !gotPhysics))
+            // if no Physics and Mathematics, return false. If either 1 got then continue...
+            if(!mbbsRuleAttribute.isGotChemi()
+                    || !mbbsRuleAttribute.isGotBio()
+                    || (!mbbsRuleAttribute.isGotMathSubject() && !mbbsRuleAttribute.isGotPhysics()))
             {
                 return false;
             }
 
-            // for all students subject check math, Bio, Chemi, physics / math
+            // For all students subject check math, Bio, Chemi, physics / math
             // Grades BBB, ABC or AAC
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Mathematics")
+                        || Objects.equals(studentSubjects[i], "Further Mathematics")
+                        || Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    if(Objects.equals(studentGrades[i], "A*") || Objects.equals(studentGrades[i], "A") || Objects.equals(studentGrades[i], "B") || Objects.equals(studentGrades[i], "C"))
+                    if(Objects.equals(studentGrades[i], "A*")
+                            || Objects.equals(studentGrades[i], "A")
+                            || Objects.equals(studentGrades[i], "B")
+                            || Objects.equals(studentGrades[i], "C"))
                     {
-                        mbbsRuleAttribute.incrementCountALevel(1);
+                        mbbsRuleAttribute.incrementALevelCredit();
                     }
                 }
-                if(Objects.equals(studentSubjects[i], "Further Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Chemistry")
+                        || Objects.equals(studentSubjects[i], "Biology"))
                 {
-                    if(Objects.equals(studentGrades[i], "A*") || Objects.equals(studentGrades[i], "A") || Objects.equals(studentGrades[i], "B") || Objects.equals(studentGrades[i], "C"))
+                    if(Objects.equals(studentGrades[i], "A*")
+                            || Objects.equals(studentGrades[i], "A")
+                            || Objects.equals(studentGrades[i], "B"))
                     {
-                        mbbsRuleAttribute.incrementCountALevel(1);
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    if(Objects.equals(studentGrades[i], "A*") || Objects.equals(studentGrades[i], "A") || Objects.equals(studentGrades[i], "B") || Objects.equals(studentGrades[i], "C"))
-                    {
-                        mbbsRuleAttribute.incrementCountALevel(1);
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Chemistry"))
-                {
-                    if(Objects.equals(studentGrades[i], "A*") || Objects.equals(studentGrades[i], "A") || Objects.equals(studentGrades[i], "B"))
-                    {
-                        mbbsRuleAttribute.incrementCountALevel(1);
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    if(Objects.equals(studentGrades[i], "A*") || Objects.equals(studentGrades[i], "A") || Objects.equals(studentGrades[i], "B"))
-                    {
-                        mbbsRuleAttribute.incrementCountALevel(1);
+                        mbbsRuleAttribute.incrementALevelCredit();
                     }
                 }
             }
-            if(mbbsRuleAttribute.getCountALevel() >= 3)
+
+            // If credit is enough, return true
+            if(mbbsRuleAttribute.getALevelCredit() >= 3)
             {
                 //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
                 //{
@@ -216,93 +167,64 @@ public class MBBS
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
-            // for all students subject check got mathematics, physic, chemi, bio subject or not
-            // add maths is advanced maths
+            // For all students subject check got mathematics, physic, chemi, bio subject or not
+            // Add maths is advanced maths
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
                 {
-                    gotAddMathSubject = true;
+                    mbbsRuleAttribute.setGotAddMaths();
                 }
                 if(Objects.equals(studentSubjects[i], "Mathematics"))
                 {
-                    gotMathSubject = true;
+                    mbbsRuleAttribute.setGotMathSubject();
                 }
                 if(Objects.equals(studentSubjects[i], "Chemistry"))
                 {
-                    gotChemi = true;
+                    mbbsRuleAttribute.setGotChemi();
                 }
                 if(Objects.equals(studentSubjects[i], "Biology"))
                 {
-                    gotBio = true;
+                    mbbsRuleAttribute.setGotBio();
                 }
                 if(Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    gotPhysics = true;
+                    mbbsRuleAttribute.setGotPhysics();
                 }
             }
 
-            if(!gotChemi || !gotBio || !gotPhysics || !gotMathSubject || !gotAddMathSubject)
+            // If either chemi bio physic maths or add maths no, return false
+            if(!mbbsRuleAttribute.isGotChemi()
+                    || !mbbsRuleAttribute.isGotBio()
+                    || !mbbsRuleAttribute.isGotPhysics()
+                    || !mbbsRuleAttribute.isGotMathSubject()
+                    || !mbbsRuleAttribute.isGotAddMaths())
             {
                 return false;
             }
 
-            // for all subject check other subject is at least B or not
+            // For all chemi bio physic maths and add maths
+            // Check is at least grade B4 or not.
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Mathematics")
+                        || Objects.equals(studentSubjects[i], "Additional Mathematics")
+                        || Objects.equals(studentSubjects[i], "Chemistry")
+                        || Objects.equals(studentSubjects[i], "Biology")
+                        || Objects.equals(studentSubjects[i], "Physics"))
                 {
                     if(Objects.equals(studentGrades[i], "A1")
                             || Objects.equals(studentGrades[i], "A2")
                             || Objects.equals(studentGrades[i], "B3")
                             || Objects.equals(studentGrades[i], "B4"))
                     {
-                        gotMathSubjectAndCredit = true;
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
-                {
-                    if(Objects.equals(studentGrades[i], "A1")
-                            || Objects.equals(studentGrades[i], "A2")
-                            || Objects.equals(studentGrades[i], "B3")
-                            || Objects.equals(studentGrades[i], "B4"))
-                    {
-                        gotAddMathSubjectAndCredit = true;
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Chemistry"))
-                {
-                    if(Objects.equals(studentGrades[i], "A1")
-                            || Objects.equals(studentGrades[i], "A2")
-                            || Objects.equals(studentGrades[i], "B3")
-                            || Objects.equals(studentGrades[i], "B4"))
-                    {
-                        gotChemiAndCredit = true;
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    if(Objects.equals(studentGrades[i], "A1")
-                            || Objects.equals(studentGrades[i], "A2")
-                            || Objects.equals(studentGrades[i], "B3")
-                            || Objects.equals(studentGrades[i], "B4"))
-                    {
-                        gotBioAndCredit = true;
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    if(Objects.equals(studentGrades[i], "A1")
-                            || Objects.equals(studentGrades[i], "A2")
-                            || Objects.equals(studentGrades[i], "B3")
-                            || Objects.equals(studentGrades[i], "B4"))
-                    {
-                        gotPhysicsAndCredit = true;
+                        mbbsRuleAttribute.incrementUECCredit();
                     }
                 }
             }
 
-            if(gotChemiAndCredit && gotBioAndCredit && gotPhysicsAndCredit && gotMathSubjectAndCredit && gotAddMathSubjectAndCredit)
+            // If enough credit, return true
+            if(mbbsRuleAttribute.getUecCredit() >= 5)
             {
                 //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
                 //{
@@ -312,11 +234,9 @@ public class MBBS
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            // TODO minimum CGPA
-            // FIXME Foundation / Matriculation, Diploma
-            // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
+            // TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
         }
-
+        // If requirements is not satisfied, return false
         return false;
     }
 
@@ -325,7 +245,7 @@ public class MBBS
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        mbbsRuleAttribute.setJoinProgramme(true);
+        mbbsRuleAttribute.setJoinProgrammeTrue();
         Log.d("MBBS", "Joined");
     }
 

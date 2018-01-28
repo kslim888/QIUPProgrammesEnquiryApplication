@@ -12,14 +12,10 @@ import java.util.Objects;
 @Rule(name = "MassCommJournalism", description = "Entry rule to join Bachelor of Mass Communication Journalism")
 public class MassCommJournalism
 {
-    // advanced math is additional maths
+    // Advanced math is additional maths
     private static RuleAttribute journalismRuleAttribute;
-    private boolean gotEnglishSubjectAndCredit;
 
-    public MassCommJournalism() {
-        journalismRuleAttribute = new RuleAttribute();
-        gotEnglishSubjectAndCredit = false;
-    }
+    public MassCommJournalism() { journalismRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -31,30 +27,29 @@ public class MassCommJournalism
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            //check english at SPM / O-Level
+            // Check english at SPM / O-Level
             if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D")
-                        || Objects.equals(studentEnglishGrade, "E")
-                        || Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    journalismRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
             else // is o-level
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D7")
-                        || Objects.equals(studentEnglishGrade, "E8")
-                        || Objects.equals(studentEnglishGrade, "F9")
-                        || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "F")
+                        && !Objects.equals(studentEnglishGrade, "G")
+                        && !Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    journalismRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
 
-            // for all students subject check at least C or not. At least C only increment
+            // For all students subject check at least C or not. At least C only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -62,125 +57,126 @@ public class MassCommJournalism
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    journalismRuleAttribute.incrementCountSTPM(1);
+                    journalismRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
         {
-            // check english
-            if(Objects.equals(studentSPMOLevel, "SPM"))
+            // Check english got credit or not
+            if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D")
-                        || Objects.equals(studentEnglishGrade, "E")
-                        || Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    journalismRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
             else // is o-level
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D7")
-                        || Objects.equals(studentEnglishGrade, "E8")
-                        || Objects.equals(studentEnglishGrade, "F9")
-                        || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "F")
+                        && !Objects.equals(studentEnglishGrade, "G")
+                        && !Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    journalismRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
 
-            // minimum grade of Jayyid, only increment
+            // Minimum grade of Jayyid, only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
+                if(!Objects.equals(studentGrades[i], "Maqbul")
+                        && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    journalismRuleAttribute.incrementCountSTAM(1);
+                    journalismRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            // check english
+            // For A-Level, check english got at least pass or not
             if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if fail, return false
-                if(Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    journalismRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
             else // is o-level
             {
-                // if fail, return false
-                if(Objects.equals(studentEnglishGrade, "E8")
-                        || Objects.equals(studentEnglishGrade, "F9")
-                        || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    journalismRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
 
-            // for all student subject, check got minimum grade D. At least D only increment
+            // For all student subject, check got minimum grade D. At least D only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    journalismRuleAttribute.incrementCountALevel(1);
+                    journalismRuleAttribute.incrementALevelCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
-            // here check english is at least pass(C8) or not
+            // Here check english is at credit or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
+                // Check english is credit or not
                 if(Objects.equals(studentSubjects[i], "English"))
                 {
-                    if(Objects.equals(studentGrades[i], "F9"))
+                    if(!Objects.equals(studentGrades[i], "C7")
+                            && !Objects.equals(studentGrades[i], "C8")
+                            && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        return false;
-                    }
-                    else if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") )
-                    {
-                        gotEnglishSubjectAndCredit = true;
+                        journalismRuleAttribute.setGotEnglishSubjectAndCredit();
                     }
                     break;
                 }
             }
 
-            // for all subject check got at least minimum grade B or not. At least B only increment
+            // For all subject check got at least minimum grade B or not. At least B only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
+                if(!Objects.equals(studentGrades[i], "C7")
+                        && !Objects.equals(studentGrades[i], "C8")
+                        && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    journalismRuleAttribute.incrementCountUEC(1);
+                    journalismRuleAttribute.incrementUECCredit();
                 }
             }
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            //TODO minimum CGPA of 2.00 out of 4.00, English Proficiency Test
-            //FIXME Foundation / Matriculation
-            // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
+            //TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
         }
 
-        if(journalismRuleAttribute.getCountUEC() >= 5)
+        // For A-Level, requirements is check english is pass and credit is at least 2
+        if(journalismRuleAttribute.getALevelCredit() >= 2)
         {
-            if(gotEnglishSubjectAndCredit)
+            if(journalismRuleAttribute.isGotEnglishSubjectAndPass())
             {
                 return true;
             }
         }
-
-        if(journalismRuleAttribute.getCountALevel() >= 2
-                || journalismRuleAttribute.getCountSTAM() >= 1
-                || journalismRuleAttribute.getCountSTPM() >= 2)
+        // Check enough credit or not. If enough, check english is credit or not
+        // If both true, return true as requirements satisfied
+        if(journalismRuleAttribute.getUecCredit() >= 5
+                || journalismRuleAttribute.getStamCredit() >= 1
+                || journalismRuleAttribute.getStpmCredit() >= 2)
         {
-            return true;
+            if(journalismRuleAttribute.isGotEnglishSubjectAndCredit())
+            {
+                return true;
+            }
         }
+        // Return false as requirements is not satisfied
         return false;
     }
 
@@ -188,8 +184,8 @@ public class MassCommJournalism
     @Action
     public void joinProgramme() throws Exception
     {
-        // if rule is statisfied (return true), this action will be executed
-        journalismRuleAttribute.setJoinProgramme(true);
+        // If rule is statisfied (return true), this action will be executed
+        journalismRuleAttribute.setJoinProgrammeTrue();
         Log.d("MassCommJournalism", "Joined");
     }
 

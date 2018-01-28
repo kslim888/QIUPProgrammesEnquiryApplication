@@ -12,14 +12,10 @@ import java.util.Objects;
 @Rule(name = "MassCommAdvertising", description = "Entry rule to join Bachelor of Mass Communication Advertising")
 public class MassCommAdvertising
 {
-    // advanced math is additional maths
+    // Advanced math is additional maths
     private static RuleAttribute advertisingRuleAttribute;
-    private boolean gotEnglishSubjectAndCredit;
 
-    public MassCommAdvertising() {
-        advertisingRuleAttribute = new RuleAttribute();
-        gotEnglishSubjectAndCredit = false;
-    }
+    public MassCommAdvertising() { advertisingRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -31,30 +27,29 @@ public class MassCommAdvertising
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            //check english at SPM or O-Level
+            //check english at SPM or O-Level is credit or not
             if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D")
-                        || Objects.equals(studentEnglishGrade, "E")
-                        || Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    advertisingRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
             else // is o-level
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D7")
-                        || Objects.equals(studentEnglishGrade, "E8")
-                        || Objects.equals(studentEnglishGrade, "F9")
-                        || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "F")
+                        && !Objects.equals(studentEnglishGrade, "G")
+                        && !Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    advertisingRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
 
-            // for all students subject check got above at least C or not. At least C only increment
+            // For all students subject check got above at least C or not. At least C only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -62,32 +57,31 @@ public class MassCommAdvertising
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    advertisingRuleAttribute.incrementCountSTPM(1);
+                    advertisingRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
         {
-            // check english
-            if(Objects.equals(studentSPMOLevel, "SPM"))
+            // check english at SPM / O-Level is credit or not
+            if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D")
-                        || Objects.equals(studentEnglishGrade, "E")
-                        || Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    advertisingRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
             else // is o-level
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D7")
-                        || Objects.equals(studentEnglishGrade, "E8")
-                        || Objects.equals(studentEnglishGrade, "F9")
-                        || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "F")
+                        && !Objects.equals(studentEnglishGrade, "G")
+                        && !Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    advertisingRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
 
@@ -96,93 +90,92 @@ public class MassCommAdvertising
             {
                 if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    advertisingRuleAttribute.incrementCountSTAM(1);
+                    advertisingRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            // check english at SPM or O-Level
+            // Check english at SPM or O-Level is pass or not
             if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if fail, return false
-                if(Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    advertisingRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
             else // is o-level
             {
-                // if fail, return false
-                if(Objects.equals(studentEnglishGrade, "E8")
-                        || Objects.equals(studentEnglishGrade, "F9")
-                        || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    advertisingRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
 
-            // for all student subject, check got minimum grade D. At least D only increment
+            // For all student subject, check got minimum grade D. At least D only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    advertisingRuleAttribute.incrementCountALevel(1);
+                    advertisingRuleAttribute.incrementALevelCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
-            // here check english is at least pass(C8) or not
+            // Here check english is at credit or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
+                // Check english is credit or not
                 if(Objects.equals(studentSubjects[i], "English"))
                 {
-                    if(Objects.equals(studentGrades[i], "F9"))
+                    if(!Objects.equals(studentGrades[i], "C7")
+                            && !Objects.equals(studentGrades[i], "C8")
+                            && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        return false;
-                    }
-                    else if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") )
-                    {
-                        gotEnglishSubjectAndCredit = true;
+                        advertisingRuleAttribute.setGotEnglishSubjectAndCredit();
                     }
                     break;
                 }
             }
 
-            // for all subject check got at least minimum grade B or not. At least B only increment
+            // For all subject check got at least minimum grade B or not. At least B only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7")
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    advertisingRuleAttribute.incrementCountUEC(1);
+                    advertisingRuleAttribute.incrementUECCredit();
                 }
             }
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            //TODO minimum CGPA of 2.00 out of 4.00, English Proficiency Test
-            //FIXME Foundation / Matriculation
-            // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
+            //TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
         }
 
-        if(advertisingRuleAttribute.getCountUEC() >= 5)
+        // Check enough credit or not. If enough, check english is credit or not
+        // If both true, return true as requirements satisfied
+        if(advertisingRuleAttribute.getUecCredit() >= 5
+                || advertisingRuleAttribute.getStamCredit() >= 1
+                || advertisingRuleAttribute.getStpmCredit() >= 2)
         {
-            if(gotEnglishSubjectAndCredit)
+            if(advertisingRuleAttribute.isGotEnglishSubjectAndCredit())
             {
                 return true;
             }
         }
-
-        if(advertisingRuleAttribute.getCountALevel() >= 2
-                || advertisingRuleAttribute.getCountSTAM() >= 1
-                || advertisingRuleAttribute.getCountSTPM() >= 2)
+        // For A-Level, requirements is check english is pass and credit is at least 2
+        if(advertisingRuleAttribute.getALevelCredit() >= 2)
         {
-            return true;
+            if(advertisingRuleAttribute.isGotEnglishSubjectAndPass())
+            {
+                return true;
+            }
         }
+        // Return false as requirements is not satisfied
         return false;
     }
 
@@ -190,8 +183,8 @@ public class MassCommAdvertising
     @Action
     public void joinProgramme() throws Exception
     {
-        // if rule is statisfied (return true), this action will be executed
-        advertisingRuleAttribute.setJoinProgramme(true);
+        // If rule is statisfied (return true), this action will be executed
+        advertisingRuleAttribute.setJoinProgrammeTrue();
         Log.d("MassCommAdvertising", "Joined");
     }
 

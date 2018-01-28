@@ -25,7 +25,7 @@ public class BCE
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            // for all students subject check  at least C or not. At least C only increment
+            // For all students subject check  at least C or not. At least C only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -33,59 +33,58 @@ public class BCE
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    bceRuleAttribute.incrementCountSTPM(1);
+                    bceRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
         {
-            // minimum grade of Jayyid, only increment
+            // Minimum grade of Jayyid, only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    bceRuleAttribute.incrementCountSTAM(1);
+                    bceRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            // for all student subject, check got minimum grade C
+            // For all student subject, check got minimum grade C
             // At least C(full passes) only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "F"))
                 {
-                    bceRuleAttribute.incrementCountALevel(1);
+                    bceRuleAttribute.incrementALevelCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
-            // for all subject check got at least minimum grade B or not. At least B only increment
+            // For all subject check got at least minimum grade B or not. At least B only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    bceRuleAttribute.incrementCountUEC(1);
+                    bceRuleAttribute.incrementUECCredit();
                 }
             }
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            //TODO minimum CGPA of 2.00 out of 4.00, English Proficiency Test
-            //FIXME Foundation / Matriculation
-            // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
+            //TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
         }
 
-        if(bceRuleAttribute.getCountUEC() >= 5
-                || bceRuleAttribute.getCountALevel() >= 2
-                || bceRuleAttribute.getCountSTAM() >= 1
-                || bceRuleAttribute.getCountSTPM() >= 2)
+        // If enough credit, return true
+        if(bceRuleAttribute.getUecCredit() >= 5
+                || bceRuleAttribute.getALevelCredit() >= 2
+                || bceRuleAttribute.getStamCredit() >= 1
+                || bceRuleAttribute.getStpmCredit() >= 2)
         {
             return true;
         }
-
+        // If not enough credit, return false
         return false;
     }
 
@@ -93,8 +92,8 @@ public class BCE
     @Action
     public void joinProgramme() throws Exception
     {
-        // if rule is statisfied (return true), this action will be executed
-        bceRuleAttribute.setJoinProgramme(true);
+        // If rule is statisfied (return true), this action will be executed
+        bceRuleAttribute.setJoinProgrammeTrue();
         Log.d("EarlyChildhoodEdu", "Joined");
     }
 

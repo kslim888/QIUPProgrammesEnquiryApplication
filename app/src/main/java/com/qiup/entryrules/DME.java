@@ -102,7 +102,7 @@ public class DME
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "G"))
                 {
-                    dmeRuleAttribute.incrementCountSPM(1);
+                    dmeRuleAttribute.incrementSPMCredit();
                 }
             }
         }
@@ -174,7 +174,7 @@ public class DME
                         && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    dmeRuleAttribute.incrementCountOLevel(1);
+                    dmeRuleAttribute.incrementOLevelCredit();
                 }
             }
         }
@@ -292,7 +292,7 @@ public class DME
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    dmeRuleAttribute.incrementCountSTPM(1);
+                    dmeRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -410,7 +410,7 @@ public class DME
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    dmeRuleAttribute.incrementCountALevel(1);
+                    dmeRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -473,7 +473,7 @@ public class DME
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    dmeRuleAttribute.incrementCountUEC(1);
+                    dmeRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -485,11 +485,11 @@ public class DME
         // if enough credit, check english pass, science/technical/vocational credit
         // math subject pass or credit or not.
         // if all requirements satisfy, return true
-        if(dmeRuleAttribute.getCountUEC() >= 3
-                || dmeRuleAttribute.getCountSPM() >= 3
-                || dmeRuleAttribute.getCountOLevel() >= 3
-                || dmeRuleAttribute.getCountSTPM() >= 1
-                || dmeRuleAttribute.getCountALevel() >= 1)
+        if(dmeRuleAttribute.getUecCredit() >= 3
+                || dmeRuleAttribute.getSpmCredit() >= 3
+                || dmeRuleAttribute.getoLevelCredit() >= 3
+                || dmeRuleAttribute.getStpmCredit() >= 1
+                || dmeRuleAttribute.getALevelCredit() >= 1)
         {
             if(dmeRuleAttribute.isGotEnglishSubjectAndPass()
                     && (dmeRuleAttribute.isGotMathSubjectAndCredit() || dmeRuleAttribute.isGotMathSubjectAndPass())
@@ -507,7 +507,7 @@ public class DME
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        dmeRuleAttribute.setJoinProgramme(true);
+        dmeRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplMechaEngineering", "Joined");
     }
 

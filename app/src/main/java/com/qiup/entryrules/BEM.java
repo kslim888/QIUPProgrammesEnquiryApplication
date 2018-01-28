@@ -14,16 +14,8 @@ public class BEM
 {
     // advanced math is additional maths
     private static RuleAttribute bemRuleAttribute;
-    private boolean gotMathSubject, gotMathSubjectAndCredit,
-            gotPhysics, gotPhysicsAndCredit;
 
-    public BEM() {
-        bemRuleAttribute = new RuleAttribute();
-        gotMathSubject = false;
-        gotMathSubjectAndCredit = false;
-        gotPhysics = false;
-        gotPhysicsAndCredit = false;
-    }
+    public BEM() { bemRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -33,48 +25,42 @@ public class BEM
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            // for all students subject check got math and physics or not
+            // For all students subject check got math and physics or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)") || Objects.equals(studentSubjects[i], "Matematik (T)"))
+                if(Objects.equals(studentSubjects[i], "Matematik (M)")
+                        || Objects.equals(studentSubjects[i], "Matematik (T)"))
                 {
-                    gotMathSubject = true;
+                    bemRuleAttribute.setGotMathSubject();
                 }
                 if(Objects.equals(studentSubjects[i], "Fizik"))
                 {
-                    gotPhysics = true;
+                    bemRuleAttribute.setGotPhysics();
                 }
-                if(gotMathSubject && gotPhysics)
+                if(bemRuleAttribute.isGotMathSubject() && bemRuleAttribute.isGotPhysics())
                 {
                     break;
                 }
             }
 
-            if(!gotMathSubject || !gotPhysics)
+            // If either math or physic no, return false
+            if(!bemRuleAttribute.isGotMathSubject() || ! bemRuleAttribute.isGotPhysics())
             {
                 return false;
             }
 
+            // Check math and physic is credit or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)"))
+                if(Objects.equals(studentSubjects[i], "Matematik (M)")
+                        || Objects.equals(studentSubjects[i], "Matematik (T)"))
                 {
                     if(!Objects.equals(studentGrades[i], "C-")
                             && !Objects.equals(studentGrades[i], "D+")
                             && !Objects.equals(studentGrades[i], "D")
                             && !Objects.equals(studentGrades[i], "F"))
                     {
-                        gotMathSubjectAndCredit = true;
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Matematik (T)"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C-")
-                            && !Objects.equals(studentGrades[i], "D+")
-                            && !Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "F"))
-                    {
-                        gotMathSubjectAndCredit = true;
+                        bemRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "Fizik"))
@@ -84,12 +70,12 @@ public class BEM
                             && !Objects.equals(studentGrades[i], "D")
                             && !Objects.equals(studentGrades[i], "F"))
                     {
-                        gotPhysicsAndCredit = true;
+                        bemRuleAttribute.setGotPhysicsAndCredit();
                     }
                 }
             }
 
-            // for all student subject, check got at least C or not. Only C increment
+            // For all student subject, check got at least C or not. Only C increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -97,56 +83,56 @@ public class BEM
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    bemRuleAttribute.incrementCountSTPM(1);
+                    bemRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            // for all students subject check got mathematics and physics subject or not
+            // For all students subject check got mathematics and physics subject or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Mathematics")
+                        || Objects.equals(studentSubjects[i], "Further Mathematics"))
                 {
-                    gotMathSubject = true;
+                    bemRuleAttribute.setGotMathSubject();
                 }
                 if(Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    gotPhysics = true;
+                    bemRuleAttribute.setGotPhysics();
                 }
-                if(gotMathSubject && gotPhysics)
+                if(bemRuleAttribute.isGotMathSubject() && bemRuleAttribute.isGotPhysics())
                 {
                     break;
                 }
             }
 
-            if(!gotMathSubject || !gotPhysics)
+            //If either math or physic no, return false
+            if(!bemRuleAttribute.isGotMathSubject() || !bemRuleAttribute.isGotPhysics())
             {
                 return false;
             }
 
-            // here credit means pass
+            // Check math and physic is credit or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Mathematics")
+                        || Objects.equals(studentSubjects[i], "Further Mathematics"))
                 {
-                    if(!Objects.equals(studentGrades[i], "U"))
+                    if(!Objects.equals(studentGrades[i], "D")
+                            && !Objects.equals(studentGrades[i], "E")
+                            && !Objects.equals(studentGrades[i], "U"))
                     {
-                        gotMathSubjectAndCredit = true;
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Further Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "U"))
-                    {
-                        gotMathSubjectAndCredit = true;
+                        bemRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    if(!Objects.equals(studentGrades[i], "U"))
+                    if(!Objects.equals(studentGrades[i], "D")
+                            && !Objects.equals(studentGrades[i], "E")
+                            && !Objects.equals(studentGrades[i], "U"))
                     {
-                        gotPhysicsAndCredit = true;
+                        bemRuleAttribute.setGotPhysicsAndCredit();
                     }
                 }
             }
@@ -156,7 +142,7 @@ public class BEM
             {
                 if(!Objects.equals(studentGrades[i], "U"))
                 {
-                    bemRuleAttribute.incrementCountALevel(1);
+                    bemRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -165,64 +151,65 @@ public class BEM
             // for all students subject check got mathematics and physics subject or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
+                        || Objects.equals(studentSubjects[i], "Mathematics"))
                 {
-                    gotMathSubject = true;
+                    bemRuleAttribute.setGotMathSubject();
                 }
                 if(Objects.equals(studentSubjects[i], "Physics"))
                 {
-                    gotPhysics = true;
+                    bemRuleAttribute.setGotPhysics();
                 }
             }
 
-            // if 1 of the subject - math or physic no, return false
-            if(!gotMathSubject || !gotPhysics)
+            // If 1 of the subject - math or physic no, return false
+            if(!bemRuleAttribute.isGotMathSubject() || !bemRuleAttribute.isGotPhysics())
             {
                 return false;
             }
 
-            // check math and physic is at least grade B or not
+            // Check math and physic is at least grade B or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics"))
                 {
                     if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bemRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 if( Objects.equals(studentSubjects[i], "Physics"))
                 {
                     if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        gotPhysicsAndCredit = true;
+                        bemRuleAttribute.setGotPhysicsAndCredit();
                     }
                 }
             }
 
-            // for all subject check got at least minimum grade B or not
+            // For all subject check got at least minimum grade B or not
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    bemRuleAttribute.incrementCountUEC(1);
+                    bemRuleAttribute.incrementUECCredit();
                 }
             }
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            // TODO minimum CGPA, English Proficiency Test
-            // FIXME Foundation / Matriculation, Diploma
-            // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
+            // TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
         }
 
-        if(bemRuleAttribute.getCountALevel() >= 2 || bemRuleAttribute.getCountSTPM() >= 2 || bemRuleAttribute.getCountUEC() >= 5)
+        // If enough credit, and math and physics is credit, return true
+        if(bemRuleAttribute.getALevelCredit() >= 2 || bemRuleAttribute.getStpmCredit() >= 2 || bemRuleAttribute.getUecCredit() >= 5)
         {
-            if(gotMathSubjectAndCredit && gotPhysicsAndCredit)
+            if(bemRuleAttribute.isGotMathSubjectAndCredit() && bemRuleAttribute.isGotPhysicsAndCredit())
             {
                 return true;
             }
         }
+        // If requirements not satisfied, return false
         return false;
     }
 
@@ -231,7 +218,7 @@ public class BEM
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        bemRuleAttribute.setJoinProgramme(true);
+        bemRuleAttribute.setJoinProgrammeTrue();
         Log.d("MechajoinProgramme", "Joined");
     }
 

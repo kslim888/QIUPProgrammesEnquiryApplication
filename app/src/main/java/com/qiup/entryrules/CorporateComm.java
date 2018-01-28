@@ -14,12 +14,8 @@ public class CorporateComm
 {
     // advanced math is additional maths
     private static RuleAttribute corporateCommRuleAttribute;
-    private boolean gotEnglishSubjectAndCredit;
 
-    public CorporateComm() {
-        corporateCommRuleAttribute = new RuleAttribute();
-        gotEnglishSubjectAndCredit = false;
-    }
+    public CorporateComm() { corporateCommRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -31,30 +27,29 @@ public class CorporateComm
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            //check english at SPM or O-Level
+            // Check english it is credit or not
             if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D")
-                        || Objects.equals(studentEnglishGrade, "E")
-                        || Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    corporateCommRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
             else // is o-level
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D7")
-                        || Objects.equals(studentEnglishGrade, "E8")
-                        || Objects.equals(studentEnglishGrade, "F9")
-                        || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "F")
+                        && !Objects.equals(studentEnglishGrade, "G")
+                        && !Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    corporateCommRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
 
-            // for all students subject check got above at least C or not. At least C only increment
+            // For all students subject check got above at least C or not. At least C only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -62,126 +57,126 @@ public class CorporateComm
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    corporateCommRuleAttribute.incrementCountSTPM(1);
+                    corporateCommRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
         {
-            // check english
-            if(Objects.equals(studentSPMOLevel, "SPM"))
+            // Check english it is credit or not
+            if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D")
-                        || Objects.equals(studentEnglishGrade, "E")
-                        || Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    corporateCommRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
             else // is o-level
             {
-                // if is not credit, return false
-                if(Objects.equals(studentEnglishGrade, "D7")
-                        || Objects.equals(studentEnglishGrade, "E8")
-                        || Objects.equals(studentEnglishGrade, "F9")
-                        || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "D")
+                        && !Objects.equals(studentEnglishGrade, "E")
+                        && !Objects.equals(studentEnglishGrade, "F")
+                        && !Objects.equals(studentEnglishGrade, "G")
+                        && !Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    corporateCommRuleAttribute.setGotEnglishSubjectAndCredit();
                 }
             }
 
-            // minimum grade of Jayyid, only increment
+            // Minimum grade of Jayyid, only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "Maqbul")
                         && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    corporateCommRuleAttribute.incrementCountSTAM(1);
+                    corporateCommRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            // check english
+            // For A-level, check english is at least pass or not
             if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if fail, return false
-                if(Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    corporateCommRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
             else // is o-level
             {
-                // if fail, return false
-                if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    corporateCommRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
 
-            // for all student subject, check got minimum grade D. At least D only increment
+            // For all student subject, check got minimum grade D. At least D only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    corporateCommRuleAttribute.incrementCountALevel(1);
+                    corporateCommRuleAttribute.incrementALevelCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
-            // here check english is at least pass(C8) or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
+                // Check english is credit or not
                 if(Objects.equals(studentSubjects[i], "English"))
                 {
-                    if(Objects.equals(studentGrades[i], "F9"))
+                    if(!Objects.equals(studentGrades[i], "C7")
+                            && !Objects.equals(studentGrades[i], "C8")
+                            && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        return false;
-                    }
-                    else if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") )
-                    {
-                        gotEnglishSubjectAndCredit = true;
+                        corporateCommRuleAttribute.setGotEnglishSubjectAndCredit();
                     }
                     break;
                 }
             }
 
-            // for all subject check got at least minimum grade B or not. At least B only increment
+            // For all subject check got at least minimum grade B or not. At least B only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C7")
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    corporateCommRuleAttribute.incrementCountUEC(1);
+                    corporateCommRuleAttribute.incrementUECCredit();
                 }
             }
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            //TODO minimum CGPA of 2.00 out of 4.00, English Proficiency Test
-            //FIXME Foundation / Matriculation
-            // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
+            //TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
         }
 
-        if(corporateCommRuleAttribute.getCountUEC() >= 5)
+        // Check it is enough credit or not. If is enough credit, check english is credit or not
+        // If both true, return true as all requirements satisfied
+        if(corporateCommRuleAttribute.getUecCredit() >= 5
+                || corporateCommRuleAttribute.getStamCredit() >= 1
+                || corporateCommRuleAttribute.getStpmCredit() >= 2)
         {
-            if(gotEnglishSubjectAndCredit)
+            if(corporateCommRuleAttribute.isGotEnglishSubjectAndCredit())
             {
                 return true;
             }
         }
-
-        if(corporateCommRuleAttribute.getCountALevel() >= 2
-                || corporateCommRuleAttribute.getCountSTAM() >= 1
-                || corporateCommRuleAttribute.getCountSTPM() >= 2)
+        // A-level need check english is pass or not and credit is at least 2
+        if(corporateCommRuleAttribute.getALevelCredit() >= 2)
         {
-            return true;
+            if(corporateCommRuleAttribute.isGotEnglishSubjectAndPass())
+            {
+                return true;
+            }
+
         }
+        // Return false as requirements not satisfied
         return false;
     }
 
@@ -189,8 +184,8 @@ public class CorporateComm
     @Action
     public void joinProgramme() throws Exception
     {
-        // if rule is statisfied (return true), this action will be executed
-        corporateCommRuleAttribute.setJoinProgramme(true);
+        // If rule is statisfied (return true), this action will be executed
+        corporateCommRuleAttribute.setJoinProgrammeTrue();
         Log.d("CorporateComm", "Joined");
     }
 

@@ -46,17 +46,8 @@ public class BAC
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Matematik (M)"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "C-")
-                                && !Objects.equals(studentGrades[i], "D+")
-                                && !Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "F"))
-                        {
-                            bacRuleAttribute.setGotMathSubjectAndCredit();
-                        }
-                    }
-                    else if(Objects.equals(studentSubjects[i], "Matematik (T)"))
+                    if(Objects.equals(studentSubjects[i], "Matematik (M)")
+                            || Objects.equals(studentSubjects[i], "Matematik (T)"))
                     {
                         if(!Objects.equals(studentGrades[i], "C-")
                                 && !Objects.equals(studentGrades[i], "D+")
@@ -132,7 +123,7 @@ public class BAC
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    bacRuleAttribute.incrementCountSTPM(1);
+                    bacRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -193,7 +184,7 @@ public class BAC
             {
                 if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    bacRuleAttribute.incrementCountSTAM(1);
+                    bacRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -215,16 +206,8 @@ public class BAC
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Mathematics"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "U"))
-                        {
-                            bacRuleAttribute.setGotMathSubjectAndCredit();
-                        }
-                    }
-                    else if(Objects.equals(studentSubjects[i], "Further Mathematics"))
+                    if(Objects.equals(studentSubjects[i], "Mathematics")
+                            || Objects.equals(studentSubjects[i], "Further Mathematics"))
                     {
                         if(!Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "E")
@@ -299,7 +282,7 @@ public class BAC
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    bacRuleAttribute.incrementCountALevel(1);
+                    bacRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -326,7 +309,6 @@ public class BAC
             // if either math or english subject no, return false
             if(!bacRuleAttribute.isGotMathSubject() || !bacRuleAttribute.isGotEnglishSubject())
             {
-                //TODO say error
                 return false;
             }
 
@@ -365,7 +347,7 @@ public class BAC
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    bacRuleAttribute.incrementCountUEC(1);
+                    bacRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -375,10 +357,10 @@ public class BAC
         }
 
         // Check credit is enough or not
-        if(bacRuleAttribute.getCountALevel() >= 2
-                || bacRuleAttribute.getCountSTAM() >= 1
-                || bacRuleAttribute.getCountSTPM() >= 2
-                || bacRuleAttribute.getCountUEC() >= 5)
+        if(bacRuleAttribute.getALevelCredit() >= 2
+                || bacRuleAttribute.getStamCredit() >= 1
+                || bacRuleAttribute.getStpmCredit() >= 2
+                || bacRuleAttribute.getUecCredit() >= 5)
         {
             // if credit is enough, check math is credit or not.
             // If is credit then all requirements satisfied = return true
@@ -396,7 +378,7 @@ public class BAC
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        bacRuleAttribute.setJoinProgramme(true);
+        bacRuleAttribute.setJoinProgrammeTrue();
         Log.d("BACjoinProgramme", "Joined");
     }
 

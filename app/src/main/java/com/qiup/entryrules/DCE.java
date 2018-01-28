@@ -33,7 +33,7 @@ public class DCE
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "G"))
                 {
-                    dceRuleAttribute.incrementCountSPM(1);
+                    dceRuleAttribute.incrementSPMCredit();
                 }
             }
         }
@@ -49,7 +49,7 @@ public class DCE
                         && !Objects.equals(studentGrades[i], "G")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    dceRuleAttribute.incrementCountOLevel(1);
+                    dceRuleAttribute.incrementOLevelCredit();
                 }
             }
         }
@@ -64,7 +64,7 @@ public class DCE
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    dceRuleAttribute.incrementCountSTPM(1);
+                    dceRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -78,7 +78,7 @@ public class DCE
                         && !Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    dceRuleAttribute.incrementCountALevel(1);
+                    dceRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -89,7 +89,7 @@ public class DCE
             {
                 if(!Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    dceRuleAttribute.incrementCountSTAM(1);
+                    dceRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -102,7 +102,7 @@ public class DCE
                         && !Objects.equals(studentGrades[i], "C8")
                         && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    dceRuleAttribute.incrementCountUEC(1);
+                    dceRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -112,12 +112,12 @@ public class DCE
         }
 
         // if credit is enough, requirements satisfy = return true
-        if(dceRuleAttribute.getCountSPM() >= 3
-                || dceRuleAttribute.getCountOLevel() >= 3
-                || dceRuleAttribute.getCountUEC() >= 3
-                || dceRuleAttribute.getCountSTAM() >= 1
-                || dceRuleAttribute.getCountSTPM() >= 1
-                || dceRuleAttribute.getCountALevel() >= 1)
+        if(dceRuleAttribute.getSpmCredit() >= 3
+                || dceRuleAttribute.getoLevelCredit() >= 3
+                || dceRuleAttribute.getUecCredit() >= 3
+                || dceRuleAttribute.getStamCredit() >= 1
+                || dceRuleAttribute.getStpmCredit() >= 1
+                || dceRuleAttribute.getALevelCredit() >= 1)
         {
             return true;
         }
@@ -130,7 +130,7 @@ public class DCE
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        dceRuleAttribute.setJoinProgramme(true);
+        dceRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplEarlyChildhood", "Joined");
     }
 

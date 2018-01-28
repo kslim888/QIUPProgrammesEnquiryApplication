@@ -14,12 +14,8 @@ public class TESL
 {
     // advanced math is additional maths
     private static RuleAttribute teslRuleAttribute;
-    private boolean gotEnglishSubject, gotEnglishSubjectAndPass;
 
-    public TESL() {
-        teslRuleAttribute = new RuleAttribute();
-        gotEnglishSubjectAndPass = false;
-    }
+    public TESL() { teslRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -31,25 +27,23 @@ public class TESL
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            //check english
+            //Check english is pass or not
             if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if fail, return false
-                if(Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    teslRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
             else // is o-level
             {
-                // if fail, return false
-                if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    teslRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
 
-            // for all students subject check got above at least C or not. At least C only increment
+            // For all students subject check got above at least C or not. At least C only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -57,35 +51,35 @@ public class TESL
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    teslRuleAttribute.incrementCountSTPM(1);
+                    teslRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
         {
-            // check english
-            if(Objects.equals(studentSPMOLevel, "SPM"))
+            // Check english is credit or not
+            if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                if(Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    teslRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
             else // is o-level
             {
-                // check english
-                if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    teslRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
 
-            // minimum grade of Jayyid, only increment
+            // Minimum grade of Jayyid, only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
+                if(!Objects.equals(studentGrades[i], "Maqbul")
+                        && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    teslRuleAttribute.incrementCountSTAM(1);
+                    teslRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -94,78 +88,73 @@ public class TESL
             // check english
             if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
             {
-                // if fail, return false
-                if(Objects.equals(studentEnglishGrade, "G"))
+                if(!Objects.equals(studentEnglishGrade, "G"))
                 {
-                    return false;
+                    teslRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
             else // is o-level
             {
-                // if fail, return false
-                if(Objects.equals(studentEnglishGrade, "E8") || Objects.equals(studentEnglishGrade, "F9") || Objects.equals(studentEnglishGrade, "U"))
+                if(!Objects.equals(studentEnglishGrade, "U"))
                 {
-                    return false;
+                    teslRuleAttribute.setGotEnglishSubjectAndPass();
                 }
             }
 
-            // for all student subject, check got minimum grade D. At least D only increment
+            // For all student subject, check got minimum grade D. At least D only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "E")
                         && !Objects.equals(studentGrades[i], "U"))
                 {
-                    teslRuleAttribute.incrementCountALevel(1);
+                    teslRuleAttribute.incrementALevelCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
-            // here check english is at least pass(C8) or not
+            // Here check english is at least pass (C8) or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
                 if(Objects.equals(studentSubjects[i], "English"))
                 {
-                    if(Objects.equals(studentGrades[i], "F9"))
+                    if(!Objects.equals(studentGrades[i], "F9"))
                     {
-                        return false;
-                    }
-                    else
-                    {
-                        gotEnglishSubjectAndPass = true;
+                        teslRuleAttribute.setGotEnglishSubjectAndPass();
                     }
                     break;
                 }
             }
 
-            // for all subject check got at least minimum grade B or not. At least B only increment
+            // For all subject check got at least minimum grade B or not. At least B only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
+                if(!Objects.equals(studentGrades[i], "C7")
+                        && !Objects.equals(studentGrades[i], "C8")
+                        && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    teslRuleAttribute.incrementCountUEC(1);
+                    teslRuleAttribute.incrementUECCredit();
                 }
             }
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            //TODO minimum CGPA of 2.00 out of 4.00, English Proficiency Test
-            //FIXME Foundation / Matriculation
-            // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
+            //TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
         }
 
-        if(teslRuleAttribute.getCountUEC() >= 5)
+        // Check enough credit or not. If is enough credit, check english is pass or not
+        // If both true, return true as requirements are satisfied
+        if(teslRuleAttribute.getUecCredit() >= 5
+                || teslRuleAttribute.getALevelCredit() >= 2
+                || teslRuleAttribute.getStamCredit() >= 1
+                || teslRuleAttribute.getStpmCredit() >= 2)
         {
-            if(gotEnglishSubjectAndPass)
+            if(teslRuleAttribute.isGotEnglishSubjectAndPass())
             {
                 return true;
             }
         }
-
-        if(teslRuleAttribute.getCountALevel() >= 2 || teslRuleAttribute.getCountSTAM() >= 1 || teslRuleAttribute.getCountSTPM() >= 2)
-        {
-            return true;
-        }
+        // Return false as requirements not satisfied
         return false;
     }
 
@@ -173,8 +162,8 @@ public class TESL
     @Action
     public void joinProgramme() throws Exception
     {
-        // if rule is statisfied (return true), this action will be executed
-        teslRuleAttribute.setJoinProgramme(true);
+        // If rule is statisfied (return true), this action will be executed
+        teslRuleAttribute.setJoinProgrammeTrue();
         Log.d("TESLjoinProgramme", "Joined");
     }
 

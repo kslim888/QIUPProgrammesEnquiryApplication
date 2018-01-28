@@ -33,7 +33,7 @@ public class BBA_HospitalityTourismManagement
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    bbaOtherRuleAttribute.incrementCountSTPM(1);
+                    bbaOtherRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -44,7 +44,7 @@ public class BBA_HospitalityTourismManagement
             {
                 if (!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    bbaOtherRuleAttribute.incrementCountSTAM(1);
+                    bbaOtherRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -55,7 +55,7 @@ public class BBA_HospitalityTourismManagement
             {
                 if (!Objects.equals(studentGrades[i], "U"))
                 {
-                    bbaOtherRuleAttribute.incrementCountALevel(1);
+                    bbaOtherRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -65,7 +65,7 @@ public class BBA_HospitalityTourismManagement
             {
                 if (!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    bbaOtherRuleAttribute.incrementCountUEC(1);
+                    bbaOtherRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -74,13 +74,15 @@ public class BBA_HospitalityTourismManagement
             // TODO minimum CGPA of 2.00 out of 4.00
         }
 
-        if (bbaOtherRuleAttribute.getCountALevel() >= 2 ||
-                bbaOtherRuleAttribute.getCountSTAM() >= 1 ||
-                bbaOtherRuleAttribute.getCountSTPM() >= 2 ||
-                bbaOtherRuleAttribute.getCountUEC() >= 5)
+        // if enough credit, return true
+        if (bbaOtherRuleAttribute.getALevelCredit() >= 2 ||
+                bbaOtherRuleAttribute.getStamCredit() >= 1 ||
+                bbaOtherRuleAttribute.getStpmCredit() >= 2 ||
+                bbaOtherRuleAttribute.getUecCredit() >= 5)
         {
             return true;
         }
+        // if not enough credit, return false
         return false;
     }
 
@@ -89,7 +91,7 @@ public class BBA_HospitalityTourismManagement
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        bbaOtherRuleAttribute.setJoinProgramme(true);
+        bbaOtherRuleAttribute.setJoinProgrammeTrue();
         Log.d("hospitalityJoin ", "Joined");
     }
 

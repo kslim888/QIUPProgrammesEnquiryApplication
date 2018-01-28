@@ -19,13 +19,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.R;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-
 public class CaptureData extends AppCompatActivity
 {
     private EditText editName,editIC,editContactNumber,editEmail,editRemark, editSchool;
@@ -225,15 +218,12 @@ public class CaptureData extends AppCompatActivity
     //button submit post to google spreadsheets
     public void submitData(View view)
     {
+        if(!isOnline())
+        {
+            Toast.makeText(getApplicationContext(), "Unable to submit. No Internet connection", Toast.LENGTH_LONG).show();
+            return;
+        }
         validateName();
-        if (!getValid())
-            return;
-
-        validateEmail() ;
-        if (!getValid())
-            return;
-
-        validateContactNumber();
         if (!getValid())
             return;
 
@@ -245,42 +235,43 @@ public class CaptureData extends AppCompatActivity
         if (!getValid())
             return;
 
+        validateContactNumber();
+        if (!getValid())
+            return;
+
+        validateEmail() ;
+        if (!getValid())
+            return;
+
+        Bundle bundle = new Bundle();
+
         //get the input text
-        String nameInput = editName.getText().toString();
-        String icInput = editIC.getText().toString();
+        String nameInput = editName.getText().toString(); // Name
+        String icInput = editIC.getText().toString(); // IC
+        String schoolNameInput = editSchool.getText().toString(); // School Name
         String contactNumber = editContactNumber.getText().toString();
-        String contactNumberInput = contactNumber.replaceAll("[\\s\\-()]", " ");
-        String emailInput = editEmail.getText().toString();
-        String remarkInput = editRemark.getText().toString();
+        String contactNumberInput = contactNumber.replaceAll("[\\s\\-()]", " "); // Contact Number
+        String emailInput = editEmail.getText().toString(); // Email
+        String remarkInput = editRemark.getText().toString(); // Remark
 
-        // use Retrofit library to make post
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://docs.google.com/forms/d/e/")
-                .build();
+        bundle.putString("NAME", nameInput);
+        bundle.putString("IC", icInput);
+        bundle.putString("SCHOOL_NAME", schoolNameInput);
+        bundle.putString("CONTACT_NUMBER", contactNumberInput);
+        bundle.putString("EMAIL", emailInput);
+        bundle.putString("REMARK", remarkInput);
 
-        final SpreadsheetsAPI spreadsheetWebService = retrofit.create(SpreadsheetsAPI.class);
-        Call<Void> postToSpreadsheetsCall = spreadsheetWebService.postToSpreadsheets(nameInput, icInput, contactNumberInput, emailInput, remarkInput);
-        postToSpreadsheetsCall.enqueue(new Callback<Void>()
-        {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response)
-            {
-                Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_LONG).show();
-                //clear text field upon successful submit
-                editName.setText("");
-                editIC.setText("");
-                editContactNumber.setText("");
-                editEmail.setText("");
-                editRemark.setText("");
-                editSchool.setText("");
-            }
+        // Clear text field upon successful submit
+        editName.setText("");
+        editIC.setText("");
+        editContactNumber.setText("");
+        editEmail.setText("");
+        editRemark.setText("");
+        editSchool.setText("");
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t)
-            {
-                Toast.makeText(getApplicationContext(), "Unable to submit. No Internet connection", Toast.LENGTH_LONG).show();
-            }
-        });
+        Intent nextActivity = new Intent(CaptureData.this, FilterProgrammes.class);
+        nextActivity.putExtras(bundle);
+        startActivity(nextActivity);
     }
 
     private class CustomTextWatcher implements TextWatcher

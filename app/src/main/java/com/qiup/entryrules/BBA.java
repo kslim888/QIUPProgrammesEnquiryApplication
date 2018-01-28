@@ -54,18 +54,13 @@ public class BBA
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Matematik (M)"))
+                    if(Objects.equals(studentSubjects[i], "Matematik (M)")
+                            || Objects.equals(studentSubjects[i], "Matematik (T)"))
                     {
                         if(!Objects.equals(studentGrades[i], "F"))
                         {
                             bbaRuleAttribute.setGotMathSubjectAndPass();
-                        }
-                    }
-                    else if(Objects.equals(studentSubjects[i], "Matematik (T)"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "F"))
-                        {
-                            bbaRuleAttribute.setGotMathSubjectAndPass();
+                            break;
                         }
                     }
                 }
@@ -147,7 +142,7 @@ public class BBA
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    bbaRuleAttribute.incrementCountSTPM(1);
+                    bbaRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
@@ -196,7 +191,7 @@ public class BBA
             {
                 if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    bbaRuleAttribute.incrementCountSTAM(1);
+                    bbaRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
@@ -225,18 +220,13 @@ public class BBA
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Mathematics"))
+                    if(Objects.equals(studentSubjects[i], "Mathematics")
+                            || Objects.equals(studentSubjects[i], "Further Mathematics"))
                     {
                         if(!Objects.equals(studentGrades[i], "U"))
                         {
                             bbaRuleAttribute.setGotMathSubjectAndPass();
-                        }
-                    }
-                    else if(Objects.equals(studentSubjects[i], "Further Mathematics"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "U"))
-                        {
-                            bbaRuleAttribute.setGotMathSubjectAndPass();
+                            break;
                         }
                     }
                 }
@@ -316,7 +306,7 @@ public class BBA
             {
                 if(!Objects.equals(studentGrades[i], "U"))
                 {
-                    bbaRuleAttribute.incrementCountALevel(1);
+                    bbaRuleAttribute.incrementALevelCredit();
                 }
             }
         }
@@ -338,28 +328,18 @@ public class BBA
 
             if(!bbaRuleAttribute.isGotMathSubject() || !bbaRuleAttribute.isGotEnglishSubject())
             {
-                //TODO say error
                 return false;
             }
 
             // Check advanced math, math and english got at least pass or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
+                        || Objects.equals(studentSubjects[i], "Mathematics"))
                 {
                     if(!Objects.equals(studentGrades[i], "F9"))
                     {
                         bbaRuleAttribute.setGotMathSubjectAndPass();
-                    }
-                }
-                if(!bbaRuleAttribute.isGotMathSubjectAndPass())
-                {
-                    if(Objects.equals(studentSubjects[i], "Mathematics"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "F9"))
-                        {
-                            bbaRuleAttribute.setGotMathSubjectAndPass();
-                        }
                     }
                 }
                 if(Objects.equals(studentSubjects[i], "English"))
@@ -375,9 +355,11 @@ public class BBA
             // At least B only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
+                if(!Objects.equals(studentGrades[i], "C7")
+                        && !Objects.equals(studentGrades[i], "C8")
+                        && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    bbaRuleAttribute.incrementCountUEC(1);
+                    bbaRuleAttribute.incrementUECCredit();
                 }
             }
         }
@@ -387,10 +369,10 @@ public class BBA
         }
 
         // If all credit is enough, check math and english is pass or not
-        if(bbaRuleAttribute.getCountALevel() >= 2
-                || bbaRuleAttribute.getCountSTAM() >= 1
-                || bbaRuleAttribute.getCountSTPM() >= 2
-                || bbaRuleAttribute.getCountUEC() >= 5)
+        if(bbaRuleAttribute.getALevelCredit() >= 2
+                || bbaRuleAttribute.getStamCredit() >= 1
+                || bbaRuleAttribute.getStpmCredit() >= 2
+                || bbaRuleAttribute.getUecCredit() >= 5)
         {
             // If math and english is pass, return true as all requirements satisfied
             if(bbaRuleAttribute.isGotMathSubjectAndPass()
@@ -408,7 +390,7 @@ public class BBA
     public void joinProgramme() throws Exception
     {
         // if rule is statisfied (return true), this action will be executed
-        bbaRuleAttribute.setJoinProgramme(true);
+        bbaRuleAttribute.setJoinProgrammeTrue();
         Log.d("BBAjoinProgramme", "Joined");
     }
 

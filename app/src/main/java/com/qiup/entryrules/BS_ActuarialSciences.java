@@ -12,15 +12,10 @@ import java.util.Objects;
 @Rule(name = "BS_ActuarialSciences", description = "Entry rule to join Bachelor of Science Actuarial Sciences")
 public class BS_ActuarialSciences
 {
-    // advanced math is additional maths
+    // Advanced math is additional maths
     private static RuleAttribute bsActuarialSciencesRuleAttribute;
-    private boolean gotMathSubject, gotMathSubjectAndCredit;
 
-    public BS_ActuarialSciences() {
-        bsActuarialSciencesRuleAttribute = new RuleAttribute();
-        gotMathSubject = false;
-        gotMathSubjectAndCredit = false;
-    }
+    public BS_ActuarialSciences() { bsActuarialSciencesRuleAttribute = new RuleAttribute(); }
 
     // when
     @Condition
@@ -33,47 +28,39 @@ public class BS_ActuarialSciences
     {
         if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
         {
-            // for all students subject check got math and physics or not
+            // For all students subject check got math and physics or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)") || Objects.equals(studentSubjects[i], "Matematik (T)"))
+                if(Objects.equals(studentSubjects[i], "Matematik (M)")
+                        || Objects.equals(studentSubjects[i], "Matematik (T)"))
                 {
-                    gotMathSubject = true;
+                    bsActuarialSciencesRuleAttribute.setGotMathSubject();
                 }
             }
 
-            if(gotMathSubject)
+            // If STPM got math subject, check it is credit or not
+            if(bsActuarialSciencesRuleAttribute.isGotMathSubject())
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Matematik (M)"))
+                    if(Objects.equals(studentSubjects[i], "Matematik (M)")
+                            || Objects.equals(studentSubjects[i], "Matematik (T)"))
                     {
                         if(!Objects.equals(studentGrades[i], "C-")
                                 && !Objects.equals(studentGrades[i], "D+")
                                 && !Objects.equals(studentGrades[i], "D")
                                 && !Objects.equals(studentGrades[i], "F"))
                         {
-                            gotMathSubjectAndCredit = true;
-                        }
-                    }
-                    if(Objects.equals(studentSubjects[i], "Matematik (T)"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "C-")
-                                && !Objects.equals(studentGrades[i], "D+")
-                                && !Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "F"))
-                        {
-                            gotMathSubjectAndCredit = true;
+                            bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                         }
                     }
                 }
             }
 
-
-            // if stpm got math subject but not credit, or no math subject at STPM
-            if(!gotMathSubjectAndCredit)
+            // If STPM got math subject but not credit, or no math subject at STPM
+            if(!bsActuarialSciencesRuleAttribute.isGotMathSubjectAndCredit())
             {
-                // check maths and add maths got credit or not. if no credit return false
+                // Check maths and add maths got credit or not. if no credit return false
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
                     if(!Objects.equals(studentAddMathGrade, "None")
@@ -81,44 +68,40 @@ public class BS_ActuarialSciences
                             && !Objects.equals(studentAddMathGrade, "E")
                             && !Objects.equals(studentAddMathGrade, "G"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                     }
-                    else if(Objects.equals(studentMathematicsGrade, "D")
-                            || Objects.equals(studentMathematicsGrade, "E")
-                            || Objects.equals(studentMathematicsGrade, "G"))
+                    else if(!Objects.equals(studentMathematicsGrade, "D")
+                            && !Objects.equals(studentMathematicsGrade, "E")
+                            && !Objects.equals(studentMathematicsGrade, "G"))
                     {
-                        return false;
-                    }
-                    else // set math got credit for SPM
-                    {
-                        gotMathSubjectAndCredit = true;
+                        bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 else // if is o-level
                 {
-                    // check maths and add maths got credit or not. if no credit return false
+                    // Check maths and add maths got credit or not. if no credit return false
                     if(!Objects.equals(studentAddMathGrade, "None")
-                            && !Objects.equals(studentAddMathGrade, "D7")
-                            && !Objects.equals(studentAddMathGrade, "E8")
-                            && !Objects.equals(studentAddMathGrade, "F9")
+                            && !Objects.equals(studentAddMathGrade, "D")
+                            && !Objects.equals(studentAddMathGrade, "E")
+                            && !Objects.equals(studentAddMathGrade, "F")
+                            && !Objects.equals(studentAddMathGrade, "G")
                             && !Objects.equals(studentAddMathGrade, "U"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                     }
-                    else if(Objects.equals(studentMathematicsGrade, "D7")
-                            || Objects.equals(studentMathematicsGrade, "E8")
-                            || Objects.equals(studentMathematicsGrade, "F9")
-                            || Objects.equals(studentMathematicsGrade, "U"))
+                    else if(!Objects.equals(studentMathematicsGrade, "D")
+                            && !Objects.equals(studentMathematicsGrade, "E")
+                            && !Objects.equals(studentMathematicsGrade, "F")
+                            && !Objects.equals(studentMathematicsGrade, "G")
+                            && !Objects.equals(studentMathematicsGrade, "U"))
                     {
-                        return false;
-                    }
-                    else // set math got credit for o-level
-                    {
-                        gotMathSubjectAndCredit = true;
+                        bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
             }
 
+            // For all student grades, check it is at least C or not.
+            // Only C and above only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "C-")
@@ -126,13 +109,13 @@ public class BS_ActuarialSciences
                         && !Objects.equals(studentGrades[i], "D")
                         && !Objects.equals(studentGrades[i], "F"))
                 {
-                    bsActuarialSciencesRuleAttribute.incrementCountSTPM(1);
+                    bsActuarialSciencesRuleAttribute.incrementSTPMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
         {
-            // check maths and add maths got credit or not. if no credit return false
+            // Check maths and add maths got credit or not. if no credit return false
             if(Objects.equals(studentSPMOLevel, "SPM"))
             {
                 if(!Objects.equals(studentAddMathGrade, "None")
@@ -140,92 +123,81 @@ public class BS_ActuarialSciences
                         && !Objects.equals(studentAddMathGrade, "E")
                         && !Objects.equals(studentAddMathGrade, "G"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                 }
-                else if(Objects.equals(studentMathematicsGrade, "D")
-                        || Objects.equals(studentMathematicsGrade, "E")
-                        || Objects.equals(studentMathematicsGrade, "G"))
+                else if(!Objects.equals(studentMathematicsGrade, "D")
+                        && !Objects.equals(studentMathematicsGrade, "E")
+                        && !Objects.equals(studentMathematicsGrade, "G"))
                 {
-                    return false;
-                }
-                else // set math got credit for SPM
-                {
-                    gotMathSubjectAndCredit = true;
+                    bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                 }
             }
             else // if is o-level
             {
-                // check maths and add maths got credit or not. if no credit return false
+                // Check maths and add maths got credit or not. if no credit return false
                 if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D7")
-                        && !Objects.equals(studentAddMathGrade, "E8")
-                        && !Objects.equals(studentAddMathGrade, "F9")
+                        && !Objects.equals(studentAddMathGrade, "D")
+                        && !Objects.equals(studentAddMathGrade, "E")
+                        && !Objects.equals(studentAddMathGrade, "F")
+                        && !Objects.equals(studentAddMathGrade, "G")
                         && !Objects.equals(studentAddMathGrade, "U"))
                 {
-                    gotMathSubjectAndCredit = true;
+                    bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                 }
-                else if(Objects.equals(studentMathematicsGrade, "D7")
-                        || Objects.equals(studentMathematicsGrade, "E8")
-                        || Objects.equals(studentMathematicsGrade, "F9")
-                        || Objects.equals(studentMathematicsGrade, "U"))
+                else if(!Objects.equals(studentMathematicsGrade, "D")
+                        && !Objects.equals(studentMathematicsGrade, "E")
+                        && !Objects.equals(studentMathematicsGrade, "F")
+                        && !Objects.equals(studentMathematicsGrade, "G")
+                        && !Objects.equals(studentMathematicsGrade, "U"))
                 {
-                    return false;
-                }
-                else // set math got credit for o-level
-                {
-                    gotMathSubjectAndCredit = true;
+                    bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                 }
             }
 
-            // for all students subject, check it is at least Jayyid or not. Only jayyid and above only increment
+            // For all student grades, check it is at least Jayyid or not. Only jayyid and above only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
+                if(!Objects.equals(studentGrades[i], "Maqbul")
+                        && !Objects.equals(studentGrades[i], "Rasib"))
                 {
-                    bsActuarialSciencesRuleAttribute.incrementCountSTAM(1);
+                    bsActuarialSciencesRuleAttribute.incrementSTAMCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            // for all students subject check got mathematics and physics subject or not
+            // For all students subject check got mathematics and physics subject or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Mathematics")
+                        || Objects.equals(studentSubjects[i], "Further Mathematics"))
                 {
-                    gotMathSubject = true;
+                    bsActuarialSciencesRuleAttribute.setGotMathSubject();
                 }
             }
 
-            if(gotMathSubject)
+            // If A-Level got math subject, check it is credit or not
+            if(bsActuarialSciencesRuleAttribute.isGotMathSubject())
             {
                 for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Mathematics"))
+                    if(Objects.equals(studentSubjects[i], "Mathematics")
+                            || Objects.equals(studentSubjects[i], "Further Mathematics"))
                     {
                         if(!Objects.equals(studentGrades[i], "D")
-                                || !Objects.equals(studentGrades[i], "E")
-                                || !Objects.equals(studentGrades[i], "U"))
+                                && !Objects.equals(studentGrades[i], "E")
+                                && !Objects.equals(studentGrades[i], "U"))
                         {
-                            gotMathSubjectAndCredit = true;
-                        }
-                    }
-                    if(Objects.equals(studentSubjects[i], "Further Mathematics"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "D")
-                                || !Objects.equals(studentGrades[i], "E")
-                                || !Objects.equals(studentGrades[i], "U"))
-                        {
-                            gotMathSubjectAndCredit = true;
+                            bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                         }
                     }
                 }
             }
 
-            // if A-level got math subject but not credit, or no math subject
-            if(!gotMathSubjectAndCredit)
+            // If A-level got math subject but not credit, or no math subject
+            if(!bsActuarialSciencesRuleAttribute.isGotMathSubjectAndCredit())
             {
-                // check maths and add maths got credit or not. if no credit return false
+                // Check maths and add maths got credit or not. if no credit return false
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
                     if(!Objects.equals(studentAddMathGrade, "None")
@@ -233,112 +205,113 @@ public class BS_ActuarialSciences
                             && !Objects.equals(studentAddMathGrade, "E")
                             && !Objects.equals(studentAddMathGrade, "G"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                     }
-                    else if(Objects.equals(studentMathematicsGrade, "D")
-                            || Objects.equals(studentMathematicsGrade, "E")
-                            || Objects.equals(studentMathematicsGrade, "G"))
+                    else if(!Objects.equals(studentMathematicsGrade, "D")
+                            && !Objects.equals(studentMathematicsGrade, "E")
+                            && !Objects.equals(studentMathematicsGrade, "G"))
                     {
-                        return false;
-                    }
-                    else // set math got credit for SPM
-                    {
-                        gotMathSubjectAndCredit = true;
+                        bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
                 else // if is o-level
                 {
-                    // check maths and add maths got credit or not. if no credit return false
+                    // Check maths and add maths got credit or not. if no credit return false
                     if(!Objects.equals(studentAddMathGrade, "None")
-                            && !Objects.equals(studentAddMathGrade, "D7")
-                            && !Objects.equals(studentAddMathGrade, "E8")
-                            && !Objects.equals(studentAddMathGrade, "F9")
+                            && !Objects.equals(studentAddMathGrade, "D")
+                            && !Objects.equals(studentAddMathGrade, "E")
+                            && !Objects.equals(studentAddMathGrade, "F")
+                            && !Objects.equals(studentAddMathGrade, "G")
                             && !Objects.equals(studentAddMathGrade, "U"))
                     {
-                        gotMathSubjectAndCredit = true;
+                        bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                     }
-                    else if(Objects.equals(studentMathematicsGrade, "D7")
-                            || Objects.equals(studentMathematicsGrade, "E8")
-                            || Objects.equals(studentMathematicsGrade, "F9")
-                            || Objects.equals(studentMathematicsGrade, "U"))
+                    else if(!Objects.equals(studentMathematicsGrade, "D")
+                            && !Objects.equals(studentMathematicsGrade, "E")
+                            && !Objects.equals(studentMathematicsGrade, "F")
+                            && !Objects.equals(studentMathematicsGrade, "G")
+                            && !Objects.equals(studentMathematicsGrade, "U"))
                     {
-                        return false;
-                    }
-                    else // set math got credit for o-level
-                    {
-                        gotMathSubjectAndCredit = true;
+                        bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
             }
 
-            // for all students subject, check if it is full passes(C) or not
+            // For all students subject, check if it is full passes(C) or not
+            // C and above only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
                 if(!Objects.equals(studentGrades[i], "D")
-                        || !Objects.equals(studentGrades[i], "E")
-                        || !Objects.equals(studentGrades[i], "U"))
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "U"))
                 {
-                    bsActuarialSciencesRuleAttribute.incrementCountALevel(1);
+                    bsActuarialSciencesRuleAttribute.incrementALevelCredit();
                 }
             }
         }
         else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
         {
-            // for all students subject check got mathematics and physics subject or not
+            // For all students subject check got mathematics and physics subject or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics"))
+                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
+                        || Objects.equals(studentSubjects[i], "Mathematics"))
                 {
-                    gotMathSubject = true;
+                    bsActuarialSciencesRuleAttribute.setGotMathSubject();
                 }
             }
 
-            // if math subject no, return false
-            if(!gotMathSubject )
+            // If math subject no, return false
+            if(!bsActuarialSciencesRuleAttribute.isGotMathSubject())
             {
                 return false;
             }
-            else
+
+            // Check math and physic is at least grade B or not
+            for(int i = 0; i < studentSubjects.length; i++)
             {
-                // check math and physic is at least grade B or not
-                for(int i = 0; i < studentSubjects.length; i++)
+                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
+                        || Objects.equals(studentSubjects[i], "Mathematics"))
                 {
-                    if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics"))
+                    if(!Objects.equals(studentGrades[i], "C7")
+                            && !Objects.equals(studentGrades[i], "C8")
+                            && !Objects.equals(studentGrades[i], "F9"))
                     {
-                        if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
-                        {
-                            gotMathSubjectAndCredit = true;
-                        }
+                        bsActuarialSciencesRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
             }
 
-            // for all subject check got at least minimum grade B or not
+            // For all subject check got at least minimum grade B or not
+            // B and above only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
+                if(!Objects.equals(studentGrades[i], "C7")
+                        && !Objects.equals(studentGrades[i], "C8")
+                        && !Objects.equals(studentGrades[i], "F9"))
                 {
-                    bsActuarialSciencesRuleAttribute.incrementCountUEC(1);
+                    bsActuarialSciencesRuleAttribute.incrementUECCredit();
                 }
             }
         }
         else // Foundation / Program Asasi / Asas / Matriculation / Diploma
         {
-            // TODO minimum CGPA, English Proficiency Test
-            // FIXME Foundation / Matriculation, Diploma
-            // Has the Mathematics subject and the grade is equivalent or above the required grade for Mathematics at SPM level
+            // TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
         }
 
-        if(bsActuarialSciencesRuleAttribute.getCountALevel() >= 2
-                || bsActuarialSciencesRuleAttribute.getCountSTPM() >= 2
-                || bsActuarialSciencesRuleAttribute.getCountSTAM() >= 2
-                || bsActuarialSciencesRuleAttribute.getCountUEC() >= 5)
+        // Check enough credit or not. If is enough credit, check math is credit or not
+        // If both true, return true as requirements satisfied
+        if(bsActuarialSciencesRuleAttribute.getALevelCredit() >= 2
+                || bsActuarialSciencesRuleAttribute.getStpmCredit() >= 2
+                || bsActuarialSciencesRuleAttribute.getStamCredit() >= 2
+                || bsActuarialSciencesRuleAttribute.getUecCredit() >= 5)
         {
-            if(gotMathSubjectAndCredit)
+            if(bsActuarialSciencesRuleAttribute.isGotMathSubjectAndCredit())
             {
                 return true;
             }
         }
+        // Return false as requirements not satisfy
         return false;
     }
 
@@ -346,13 +319,10 @@ public class BS_ActuarialSciences
     @Action
     public void joinProgramme() throws Exception
     {
-        // if rule is statisfied (return true), this action will be executed
-        bsActuarialSciencesRuleAttribute.setJoinProgramme(true);
+        // If rule is statisfied (return true), this action will be executed
+        bsActuarialSciencesRuleAttribute.setJoinProgrammeTrue();
         Log.d("ActuarialScience", "Joined");
     }
 
-    public static boolean isJoinProgramme()
-    {
-        return bsActuarialSciencesRuleAttribute.isJoinProgramme();
-    }
+    public static boolean isJoinProgramme() { return bsActuarialSciencesRuleAttribute.isJoinProgramme(); }
 }

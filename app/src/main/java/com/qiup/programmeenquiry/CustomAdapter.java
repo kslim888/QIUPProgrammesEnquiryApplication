@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.R;
-
 public class CustomAdapter extends ArrayAdapter<String>
 {
     private Context context;

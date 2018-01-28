@@ -19,44 +19,56 @@ public class FIBFIA
 
     // when
     @Condition
-    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel, @Fact("Student's Subjects")String[] studentSubjects, @Fact("Student's Grades")String[] studentGrades)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
+                               @Fact("Student's Grades")String[] studentGrades)
     {
+        // All qualification check grade is Credit or not.
+        // Only credit then increment
         if(Objects.equals(qualificationLevel, "SPM"))
         {
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "D") && !Objects.equals(studentGrades[i], "E") && !Objects.equals(studentGrades[i], "G"))
-                    fibfiaRuleAttribute.incrementCountCredit(1);
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "G"))
+                    fibfiaRuleAttribute.incrementFoundationCredit();
             }
         }
         else if(Objects.equals(qualificationLevel, "O-Level"))
         {
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "D7") && !Objects.equals(studentGrades[i], "E8") && !Objects.equals(studentGrades[i], "F9") && !Objects.equals(studentGrades[i], "U"))
-                    fibfiaRuleAttribute.incrementCountCredit(1);
+                if(!Objects.equals(studentGrades[i], "D")
+                        && !Objects.equals(studentGrades[i], "E")
+                        && !Objects.equals(studentGrades[i], "F")
+                        && !Objects.equals(studentGrades[i], "G")
+                        && !Objects.equals(studentGrades[i], "U"))
+                    fibfiaRuleAttribute.incrementFoundationCredit();
             }
         }
         else if(Objects.equals(qualificationLevel, "UEC"))// is UEC
         {
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "C7") && !Objects.equals(studentGrades[i], "C8") && !Objects.equals(studentGrades[i], "F9"))
-                    fibfiaRuleAttribute.incrementCountCredit(1);
+                if(!Objects.equals(studentGrades[i], "C7")
+                        && !Objects.equals(studentGrades[i], "C8")
+                        && !Objects.equals(studentGrades[i], "F9"))
+                    fibfiaRuleAttribute.incrementFoundationCredit();
             }
         }
 
-        if(!Objects.equals(qualificationLevel, "UEC")) // is SPM or O-Level
+        // If credit not enough, return false
+        if(!Objects.equals(qualificationLevel, "UEC")) // If is SPM or O-Level
         {
-            if(fibfiaRuleAttribute.getCountCredits() < 5)
+            if(fibfiaRuleAttribute.getFoundationCredit() < 5)
                 return false;
         }
         else // is UEC
         {
-            if(fibfiaRuleAttribute.getCountCredits() < 3)
+            if(fibfiaRuleAttribute.getFoundationCredit() < 3)
                 return false;
         }
-
+        // If requirements is satiafied, return true
         return true;
     }
 
@@ -64,8 +76,8 @@ public class FIBFIA
     @Action
     public void joinProgramme() throws Exception
     {
-        // if rule is statisfied (return true), this action will be executed
-        fibfiaRuleAttribute.setJoinProgramme(true);
+        // If rule is statisfied (return true), this action will be executed
+        fibfiaRuleAttribute.setJoinProgrammeTrue();
         Log.d("FIBFIA joinProgramme", "Joined");
     }
 
