@@ -4,14 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -86,7 +87,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         ArrayAdapter<String> resultsArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, stringsResultsType)
         {
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent)
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
             {
                 View v;
                 if (position == 0) {
@@ -110,7 +111,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             // If is position 0(the initial dummy entry), make it hidden
             // else, pass convertView as null to prevent reuse of special case views
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent)
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
             {
                 View v;
                 if (position == 0) {
@@ -155,22 +156,6 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
         qualificationSpinner.setOnItemSelectedListener(this);
         setSpinnerScrollbar(); //set spinner scrollbar for resultsSpinner, subjectsSpinner and gradesSpinner
-
-        scienceTechnicalVocationalAutoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus)
-            {
-                if (hasFocus)
-                {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(scienceTechnicalVocationalAutoCompleteTextView, InputMethodManager.SHOW_IMPLICIT);
-                    scienceTechnicalVocationalAutoCompleteTextView.setHint("Leave blank if none");
-                }
-                else
-                    scienceTechnicalVocationalAutoCompleteTextView.setHint("");
-            }
-        });
 
         scienceTechnicalVocationalAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -414,7 +399,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
                 //TODO change subject name
                 // After validation, change the string value to proper subject and match with Rules
-                // English Language is for UEC and O-Level
+                // English Language is for UEC, O-Level, SPM
                 // Advanced Mathematics is for UEC
                 for(int i = 0; i < arrayStringSubjects.length; i++)
                 {
@@ -552,6 +537,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        onBackPressed();
+        return super.onOptionsItemSelected(item);
+    }
+
     private boolean checkSecondQualificationError(String spmOLevelQualification,
                                       String secondMath,
                                       String secondEng,
@@ -639,13 +631,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         gradesList = getResources().getStringArray(R.array.spm_grades);
 
                         //subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
+                        subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
                         {
                             @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
                                 View v;
                                 if (position == 0) {
@@ -673,13 +665,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         gradesList = getResources().getStringArray(R.array.stpm_grades);
 
                         // subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
+                        subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
                         {
                             @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
                                 View v;
                                 if (position == 0) {
@@ -708,13 +700,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         gradesList = getResources().getStringArray(R.array.uec_grades);
 
                         //subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
+                        subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
                         {
                             @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
                                 View v;
                                 if (position == 0)
@@ -743,13 +735,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         gradesList = getResources().getStringArray(R.array.oLevel_grades);
 
                         //subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
+                        subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
                         {
                             @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
                                 View v;
                                 if (position == 0) {
@@ -777,13 +769,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         gradesList = getResources().getStringArray(R.array.aLevel_grades);
 
                         //subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
+                        subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
                         {
                             @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
                                 View v;
                                 if (position == 0) {
@@ -812,13 +804,13 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         gradesList = getResources().getStringArray(R.array.STAM_grades);
 
                         //subject list
-                        subjectsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
+                        subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
                         gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
                         {
                             @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
                                 View v;
                                 if (position == 0) {
@@ -861,7 +853,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         spmOLevelGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, gradesList)
                         {
                             @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
                                 View v;
                                 if (position == 0) {
@@ -879,7 +871,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         spmOLevelAddMathGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, addMathGradeList)
                         {
                             @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
                                 View v;
                                 if (position == 0) {
@@ -894,7 +886,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                                 return v;
                             }
                         };
-                        scienceTechnicalVocationalAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, scienceTechnicalVocationalSubjectArrays);
+                        scienceTechnicalVocationalAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, scienceTechnicalVocationalSubjectArrays);
                         scienceTechnicalVocationalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spmOLevelGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spmOLevelAddMathGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -917,7 +909,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         spmOLevelGradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
                         {
                             @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
                                 View v;
                                 if (position == 0) {
@@ -935,7 +927,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         spmOLevelAddMathGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, addMathGradeList)
                         {
                             @Override
-                            public View getDropDownView(int position, View convertView, ViewGroup parent)
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
                                 View v;
                                 if (position == 0) {
@@ -950,7 +942,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                                 return v;
                             }
                         };
-                        scienceTechnicalVocationalAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, scienceTechnicalVocationalSubjectArrays);
+                        scienceTechnicalVocationalAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, scienceTechnicalVocationalSubjectArrays);
                         scienceTechnicalVocationalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spmOLevelGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spmOLevelAddMathGradesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

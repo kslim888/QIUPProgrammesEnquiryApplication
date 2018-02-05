@@ -9,32 +9,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Eligible"
+        android:text="@string/eligible"
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <ExpandableListView
-        android:id="@+id/eligibleProgrammes"
+    <ListView
+        android:id="@+id/eligibleProgrammesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </ExpandableListView>
+    </ListView>
 
     <TextView
         android:id="@+id/notEligibleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Not eligible"
+        android:text="@string/not_eligible"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="gone"/>
 
-    <ExpandableListView
-        android:id="@+id/notEligibleProgrammes"
+    <ListView
+        android:id="@+id/notEligibleProgrammesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
-    </ExpandableListView>
+    </ListView>
 
 </LinearLayout>
 

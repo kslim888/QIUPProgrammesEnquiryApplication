@@ -11,7 +11,6 @@ import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -23,7 +22,7 @@ public class CaptureData extends AppCompatActivity
 {
     private EditText editName,editIC,editContactNumber,editEmail,editRemark, editSchool;
     private TextInputLayout inputLayoutName, inputLayoutIC, inputLayoutContactNumber, inputLayoutEmail, inputLayoutSchool;
-    boolean valid; // for form validation
+    boolean valid; // For form validation
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -131,7 +130,9 @@ public class CaptureData extends AppCompatActivity
     //validate IC
     private void validateIC()
     {
-        if (editIC.getText().toString().trim().isEmpty() || editIC.getText().length() != 14)
+        if (editIC.getText().toString().trim().isEmpty()
+                || editIC.getText().length() != 12
+                || editIC.getText().toString().contains("-"))
         {
             editIC.setError(getString(R.string.err_IC));
             requestFocus(editIC);
@@ -147,6 +148,20 @@ public class CaptureData extends AppCompatActivity
     //validate contact number
     private void validateContactNumber()
     {
+        for(int i = 0; i < editContactNumber.getText().toString().length(); i++)
+        {
+            if(i != 3)
+            {
+                char myChar = editContactNumber.getText().toString().charAt(i);
+                if(myChar == '-')
+                {
+                    editContactNumber.setError(getString(R.string.err_contact_number));
+                    requestFocus(editContactNumber);
+                    valid = false;
+                    return;
+                }
+            }
+        }
         if (editContactNumber.getText().toString().trim().isEmpty()
                 || editContactNumber.getText().length() > 11
                 || editContactNumber.getText().length() < 10)
@@ -225,23 +240,23 @@ public class CaptureData extends AppCompatActivity
         }
         validateName();
         if (!getValid())
-            return;
+           // return;
 
         validateIC();
         if (!getValid())
-            return;
-
-        validateSchoolName();
-        if (!getValid())
-            return;
+          //  return;
 
         validateContactNumber();
         if (!getValid())
-            return;
+            //return;
 
         validateEmail() ;
         if (!getValid())
-            return;
+           // return;
+
+        validateSchoolName();
+       // if (!getValid())
+          //  return;
 
         Bundle bundle = new Bundle();
 
@@ -250,25 +265,31 @@ public class CaptureData extends AppCompatActivity
         String icInput = editIC.getText().toString(); // IC
         String schoolNameInput = editSchool.getText().toString(); // School Name
         String contactNumber = editContactNumber.getText().toString();
-        String contactNumberInput = contactNumber.replaceAll("[\\s\\-()]", " "); // Contact Number
+        if(contactNumber.contains("-"))
+        {
+        //    contactNumber =  contactNumber.replace('-', ' ');
+        }
+        else
+        {
+//            contactNumber = contactNumber.substring(0, 3) + " " +  contactNumber.substring(3, contactNumber.length());
+        }
         String emailInput = editEmail.getText().toString(); // Email
         String remarkInput = editRemark.getText().toString(); // Remark
 
         bundle.putString("NAME", nameInput);
         bundle.putString("IC", icInput);
         bundle.putString("SCHOOL_NAME", schoolNameInput);
-        bundle.putString("CONTACT_NUMBER", contactNumberInput);
+        bundle.putString("CONTACT_NUMBER", contactNumber);
         bundle.putString("EMAIL", emailInput);
         bundle.putString("REMARK", remarkInput);
 
         // Clear text field upon successful submit
-        editName.setText("");
-        editIC.setText("");
-        editContactNumber.setText("");
-        editEmail.setText("");
-        editRemark.setText("");
-        editSchool.setText("");
-
+        //editName.setText("");
+        //editIC.setText("");
+        //editContactNumber.setText("");
+        //editEmail.setText("");
+        //editRemark.setText("");
+        //editSchool.setText("");
         Intent nextActivity = new Intent(CaptureData.this, FilterProgrammes.class);
         nextActivity.putExtras(bundle);
         startActivity(nextActivity);
@@ -276,8 +297,6 @@ public class CaptureData extends AppCompatActivity
 
     private class CustomTextWatcher implements TextWatcher
     {
-        private boolean isFormatting, deletingHyphen, deletingBackward;
-        private int hyphenStart;
         private View view;
 
         CustomTextWatcher(View view)
@@ -288,26 +307,6 @@ public class CaptureData extends AppCompatActivity
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after)
         {
-            if (isFormatting)
-                return;
-
-            // Make sure user is deleting one char, without a selection
-            final int selStart = Selection.getSelectionStart(s);
-            final int selEnd = Selection.getSelectionEnd(s);
-            if (s.length() > 1 // Can delete another character
-                    && count == 1 // Deleting only one character
-                    && after == 0 // Deleting
-                    && s.charAt(start) == '-' // a hyphen
-                    && selStart == selEnd)
-            {
-                // no selection
-                deletingHyphen = true;
-                hyphenStart = start;
-                // Check if the user is deleting forward or backward
-                deletingBackward = selStart == start + 1;
-            }
-            else
-                deletingHyphen = false;
 
         }
 
@@ -330,7 +329,6 @@ public class CaptureData extends AppCompatActivity
 
                 case R.id.editIC:
                 {
-                    insertDashIC(text);
                     inputLayoutIC.setErrorEnabled(false);
                 }
 
@@ -351,42 +349,6 @@ public class CaptureData extends AppCompatActivity
                 }
                 break;
             }
-        }
-
-        // insert dash/hypen for IC
-        void insertDashIC(Editable text)
-        {
-            if (isFormatting)
-                return;
-
-            isFormatting = true;
-
-            // If deleting hyphen, also delete character before or after it
-            if (deletingHyphen && hyphenStart > 0)
-            {
-                if (deletingBackward)
-                {
-                    if (hyphenStart - 1 < text.length())
-                    {
-                        text.delete(hyphenStart - 1, hyphenStart);
-                    }
-                }
-                else if (hyphenStart < text.length())
-                {
-                    text.delete(hyphenStart, hyphenStart + 1);
-                }
-            }
-
-            // find at which EditText and switching it
-            // insert dash/hyphen also
-            if(view.getId() == R.id.editIC)
-            {
-                if (text.length() == 6 || text.length() == 9)
-                {
-                    text.append('-');
-                }
-            }
-            isFormatting = false;
         }
     }
 }

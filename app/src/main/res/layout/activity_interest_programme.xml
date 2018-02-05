@@ -4,8 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.com.qiup.programmeenquiry.InterestProgramme"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:context="com.qiup.programmeenquiry.InterestProgramme">
 
     <LinearLayout
         android:orientation="vertical"
@@ -21,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="No Interest Programme"
+            android:text="@string/no_interest_programme"
             android:textSize="14sp" />
 
         <TextView
@@ -29,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Choose Interested Programmes (Max 3)"
+            android:text="@string/choose_interested_programmes_max_3"
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp" />
 
@@ -43,7 +42,7 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="If other programme, please specify...">
+            android:hint="@string/if_other_programme_please_specify">
 
             <EditText
                 android:id="@+id/editOtherProgramme"
@@ -63,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:text="Add more interest programme"
+                android:text="@string/add_more_interest_programme"
                 android:textAlignment="center"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="12sp" />
@@ -74,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/addInterestedProgrammeText"
                 android:layout_below="@+id/addInterestedProgrammeText"
-                android:text="Delete interest programme"
+                android:text="@string/delete_interest_programme"
                 android:textAlignment="center"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="12sp" />
@@ -85,7 +84,7 @@
             android:id="@+id/generateResultButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Generate" />
+            android:text="@string/generate" />
 
     </LinearLayout>
 

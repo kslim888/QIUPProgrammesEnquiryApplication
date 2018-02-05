@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="3dp"
             android:paddingStart="23dp"
-            android:text="Qualification Level : "
+            android:text="@string/qualification_level"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="3dp"
             android:paddingStart="23dp"
-            android:text="English Proficiency Test : "
+            android:text="@string/english_proficiency_test"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="3dp"
             android:paddingStart="23dp"
-            android:text="Proficiency Level : "
+            android:text="@string/proficiency_level"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -118,17 +118,17 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/secondQualificationLevelText"
+            android:id="@+id/supportiveQualificationLevelText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="3dp"
             android:paddingStart="23dp"
-            android:text="Second Qualification Level : "
+            android:text="@string/supportive_qualification_level"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/secondQualificationLevel"
+            android:id="@+id/supportiveQualificationLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="3dp"
@@ -152,12 +152,36 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/scienceTechnicalVocationalSubject"
+            android:layout_width="203dp"
+            android:layout_height="wrap_content"
+            android:paddingEnd="20dp"
+            android:paddingStart="25dp"
+            android:text="abc "
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/scienceTechnicalVocationalGrade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="20dp"
+            android:paddingStart="10dp"
+            android:text="abc"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
             android:id="@+id/bahasaMalaysiaText"
             android:layout_width="203dp"
             android:layout_height="wrap_content"
             android:paddingEnd="20dp"
             android:paddingStart="25dp"
-            android:text="Bahasa Malaysia "
+            android:text="@string/bahasa_malaysia"
             android:textSize="14sp" />
 
         <TextView
@@ -181,7 +205,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="20dp"
             android:paddingStart="25dp"
-            android:text="English "
+            android:text="@string/english"
             android:textSize="14sp" />
 
         <TextView
@@ -205,7 +229,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="20dp"
             android:paddingStart="25dp"
-            android:text="Mathematics "
+            android:text="@string/mathematics"
             android:textSize="14sp" />
 
         <TextView
@@ -229,7 +253,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="20dp"
             android:paddingStart="25dp"
-            android:text="Additional Mathematics "
+            android:text="@string/additional_mathematics"
             android:textSize="14sp" />
 
         <TextView

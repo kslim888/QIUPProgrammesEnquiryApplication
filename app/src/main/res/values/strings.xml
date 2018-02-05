@@ -9,6 +9,36 @@
     <string name="err_IC"> Please enter valid IC </string>
     <string name="err_school_name"> Please enter school name </string>
     <string name="hint_for_programme"><font size="14">Put None if no interest programme</font></string>
+    <string name="please_key_in_your_particulars">Please key-in your particulars</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_ic_without_dash">Enter IC without dash</string>
+    <string name="enter_contact_number">Enter Contact Number</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_school_name">Enter School Name</string>
+    <string name="enter_remark">Enter Remark</string>
+    <string name="no_interest_programme">No Interest Programme</string>
+    <string name="choose_interested_programmes_max_3">Choose Interested Programmes (Max 3)</string>
+    <string name="if_other_programme_please_specify">If other programme, please specify…</string>
+    <string name="add_more_interest_programme">Add more interest programme</string>
+    <string name="delete_interest_programme">Delete interest programme</string>
+    <string name="generate">Generate</string>
+    <string name="qualification_level">Qualification Level :</string>
+    <string name="english_proficiency_test">English Proficiency Test :</string>
+    <string name="proficiency_level">Proficiency Level :</string>
+    <string name="supportive_qualification_level">Supportive Qualification Level :</string>
+    <string name="bahasa_malaysia">Bahasa Malaysia</string>
+    <string name="english">English</string>
+    <string name="mathematics">Mathematics</string>
+    <string name="additional_mathematics">Additional Mathematics</string>
+    <string name="not_eligible">Not eligible</string>
+    <string name="eligible">Eligible</string>
+    <string name="subjects">Subjects</string>
+    <string name="grades">Grades</string>
+    <string name="add_more_dropdown">Add more Dropdown</string>
+    <string name="delete_dropdown">Delete dropdown</string>
+    <string name="choose_spm_or_o_level">Choose SPM or O-Level</string>
+    <string name="any_science_technical_vocational_subject">Any Science/Technical/Vocational subject</string>
+    <string name="next">Next</string>
 
     <string-array name="spm_or_oLevel_type">
         <item> </item>
@@ -550,7 +580,7 @@
         <item> Bachelor of Science (Hons) Actuarial Sciences </item>
         <item> Bachelor of Pharmacy (Hons) </item>
         <item> Bachelor of Biomedical Sciences (Hons) </item>
-        <item> Bachelor of Medicine &amp; Bachelor of Surgery </item> <!-- 31 -->
+        <item> Bachelor of Medicine &amp; Bachelor of Surgery (MBBS) </item> <!-- 31 -->
     </string-array>
 
 </resources>

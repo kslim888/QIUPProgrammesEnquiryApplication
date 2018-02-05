@@ -250,7 +250,7 @@ public class FIS
             // For both SPM or O-Level, check credit is at least 5 or not
             if(fisRuleAttribute.getFoundationCredit() >= 5)
             {
-                // If credit is at least 5, check required subject got at least2 or not
+                // If credit is at least 5, check required subject got at least 2 or not
                 if(fisRuleAttribute.getCountRequiredScienceSubject() >= 2)
                 {
                     // If required subject got at least 2, check it math is credit or not

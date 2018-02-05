@@ -50,11 +50,11 @@ public class BCE
         }
         else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
         {
-            // For all student subject, check got minimum grade C
-            // At least C(full passes) only increment
+            // For all student subject, check got minimum grade E
+            // At least E( passes) only increment
             for(int i = 0; i < studentGrades.length; i++)
             {
-                if(!Objects.equals(studentGrades[i], "F"))
+                if(!Objects.equals(studentGrades[i], "U"))
                 {
                     bceRuleAttribute.incrementALevelCredit();
                 }

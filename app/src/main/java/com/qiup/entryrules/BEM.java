@@ -202,7 +202,7 @@ public class BEM
         }
 
         // If enough credit, and math and physics is credit, return true
-        if(bemRuleAttribute.getALevelCredit() >= 2 || bemRuleAttribute.getStpmCredit() >= 2 || bemRuleAttribute.getUecCredit() >= 5)
+        if(bemRuleAttribute.getALevelCredit() >= 3 || bemRuleAttribute.getStpmCredit() >= 3 || bemRuleAttribute.getUecCredit() >= 5)
         {
             if(bemRuleAttribute.isGotMathSubjectAndCredit() && bemRuleAttribute.isGotPhysicsAndCredit())
             {

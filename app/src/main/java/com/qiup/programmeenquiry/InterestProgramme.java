@@ -63,6 +63,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class InterestProgramme extends AppCompatActivity
 {
     TextView addInterestedProgramme, deleteInterestedProgramme, maxTextView;
@@ -456,36 +461,11 @@ public class InterestProgramme extends AppCompatActivity
                 RulesEngine rulesEngine = new DefaultRulesEngine();
                 rulesEngine.fire(rules, facts);
 
-                //TODO send to php -> sheets for subject and grade
-                /*Retrofit phpRetrofit = new Retrofit.Builder()
-                        .baseUrl("https://kslim5703.000webhostapp.com/")
-                        .build();
-
-                final PhpAPI PhpAPI = phpRetrofit.create(PhpAPI.class);
-                Call<Void> postToPHP = PhpAPI.postToPHP(
-                        extras.getStringArray("STUDENT_SUBJECTS_LIST"),
-                        extras.getStringArray("STUDENT_GRADES_LIST"));
-                postToPHP.enqueue(new Callback<Void>()
-                {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response)
-                    {
-                        Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t)
-                    {
-                        Toast.makeText(getApplicationContext(), "Unable to submit. No Internet connection", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                /*
-                // use Retrofit library to make post
+                // Use Retrofit library to make post
+                // Post to capture students info spreadsheet
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("https://docs.google.com/forms/u/1/d/e/")
                         .build();
-
                 final SpreadsheetsAPI spreadsheetWebService = retrofit.create(SpreadsheetsAPI.class);
                 Call<Void> postToSpreadsheetsCall = spreadsheetWebService.postToSpreadsheets(
                         extras.getString("NAME"),
@@ -495,24 +475,14 @@ public class InterestProgramme extends AppCompatActivity
                         extras.getString("CONTACT_NUMBER"),
                         extras.getString("EMAIL"),
                         allInterestedProgramme.toString(),
-                        extras.getString("REMARK"));
+                        extras.getString("REMARK")
+                );
+                postToSpreadsheetsCall.enqueue(new EmptyCallback<Void>());
 
-                postToSpreadsheetsCall.enqueue(new Callback<Void>()
-                {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response)
-                    {
-                        Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t)
-                    {
-                        Toast.makeText(getApplicationContext(), "Unable to submit. No Internet connection", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                 */
+                // Post to SPM spreadsheet
+                Retrofit spmRetrofit = new Retrofit.Builder()
+                        .baseUrl("https://docs.google.com/forms/d/e/")
+                        .build();
 
                 editOtherProgramme.setText("");
                 editOtherProgramme.clearFocus();
@@ -560,6 +530,15 @@ public class InterestProgramme extends AppCompatActivity
     {
         onBackPressed();
         return super.onOptionsItemSelected(item);
+    }
+
+    public class EmptyCallback<T> implements Callback<T> {
+
+        @Override
+        public void onResponse(Call<T> call, Response<T> response) { }
+
+        @Override
+        public void onFailure(Call<T> call, Throwable t) { }
     }
 
 }

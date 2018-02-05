@@ -38,7 +38,7 @@
                 android:layout_weight="1"
                 android:paddingEnd="10dp"
                 android:paddingStart="7dp"
-                android:text="Subjects"
+                android:text="@string/subjects"
                 android:textColor="@color/colorAccent" />
 
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_weight="1.9"
                 android:paddingStart="5dp"
                 android:paddingEnd="10dp"
-                android:text="Grades"
+                android:text="@string/grades"
                 android:textColor="@color/colorAccent" />
         </LinearLayout>
 
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:text="Add more Dropdown"
+                android:text="@string/add_more_dropdown"
                 android:textAlignment="center"
                 android:textSize="12sp" />
 
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/addNewSpinnerText"
                 android:layout_below="@+id/addNewSpinnerText"
-                android:text="Delete dropdown"
+                android:text="@string/delete_dropdown"
                 android:textAlignment="center"
                 android:textSize="12sp" />
 
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="Choose SPM or O-Level "
+                android:text="@string/choose_spm_or_o_level"
                 android:textSize="12sp"
                 android:textColor="@color/colorAccent"/>
 
@@ -138,7 +138,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_width="222dp"
                 android:layout_height="wrap_content"
-                android:hint="Any Science/Technical/Vocational subject"
+                android:hint="@string/any_science_technical_vocational_subject"
                 app:hintTextAppearance="@style/TextLabel">
                 <AutoCompleteTextView
                     android:id="@+id/scienceTechnicalVocationalAutoCompleteTextView"
@@ -168,7 +168,7 @@
                 android:layout_width="140dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="10dp"
-                android:text="Bahasa Malaysia : "
+                android:text="@string/bahasa_malaysia"
                 android:textSize="12sp"
                 android:layout_marginTop="30dp" />
 
@@ -190,7 +190,7 @@
                 android:layout_width="140dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="10dp"
-                android:text="English : "
+                android:text="@string/english"
                 android:textSize="12sp"
                 android:layout_marginTop="30dp" />
 
@@ -212,7 +212,7 @@
                 android:layout_width="140dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="10dp"
-                android:text="Mathematics : "
+                android:text="@string/mathematics"
                 android:textSize="12sp"
                 android:layout_marginTop="30dp" />
 
@@ -234,7 +234,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="10dp"
-                android:text="Additional Mathematics : "
+                android:text="@string/additional_mathematics"
                 android:textSize="12sp"
                 android:layout_marginTop="30dp" />
 
@@ -256,7 +256,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:text="Next" />
+                android:text="@string/next" />
         </RelativeLayout>
     </LinearLayout>
 

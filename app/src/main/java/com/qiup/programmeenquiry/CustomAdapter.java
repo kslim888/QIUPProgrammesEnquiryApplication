@@ -1,6 +1,7 @@
 package com.qiup.programmeenquiry;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ public class CustomAdapter extends ArrayAdapter<String>
 
     public CustomAdapter(Context context, String[] subject, String[] grade)
     {
-        super(context, R.layout.dialog_list_view, subject);
+        super(context, R.layout.dialog_list_view);
         this.subject = subject;
         this.grade = grade;
         this.context = context;
@@ -26,7 +27,8 @@ public class CustomAdapter extends ArrayAdapter<String>
         TextView subject, grade;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent)
+    @NonNull
+    public View getView(int position, View convertView, @NonNull ViewGroup parent)
     {
         View v = convertView;
         if (v == null)

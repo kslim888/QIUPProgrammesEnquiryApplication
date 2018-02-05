@@ -187,7 +187,7 @@ public class ElectronicsCommunicationsEngineering
             }
 
             // If enough credit, check math and physic is credit or not
-            if(eceRuleAttribute.getUecCredit() >= 3)
+            if(eceRuleAttribute.getUecCredit() >= 5)
             {
                 if( eceRuleAttribute.isGotMathSubjectAndCredit() && eceRuleAttribute.isGotPhysicsAndCredit())
                 {

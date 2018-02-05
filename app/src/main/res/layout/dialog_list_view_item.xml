@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:paddingEnd="10dp"
         android:paddingStart="20dp"
-        android:text="Subjects"
+        android:text="@string/subjects"
         android:textSize="12sp"
         android:layout_weight="1.6"/>
 
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:paddingEnd="20dp"
         android:paddingStart="10dp"
-        android:text="Grades"
+        android:text="@string/grades"
         android:textSize="12sp"
         android:layout_weight="1"/>
 
