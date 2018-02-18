@@ -1,10 +1,13 @@
 package com.qiup.entryrules;
 
+import java.util.List;
+
 public class RuleAttribute
 {
     private int foundationCredit, countRequiredScienceSubject, spmCredit, stpmCredit,
-            stamCredit, aLevelCredit, uecCredit, oLevelCredit, countPassScienceSubjects;
-    private float minimumCGPA, minimumGP, englishScore;
+            stamCredit, aLevelCredit, uecCredit, oLevelCredit, countPassScienceSubjects,
+            countCorrectSubjectRequired, countSupportiveSubjectRequired, countScienceSubjectRequired;
+    private float minimumCGPA, minimumGP;
     private boolean joinProgramme,
             gotMathSubject, gotMathSubjectAndPass, gotMathSubjectAndCredit,
             gotAddMaths,
@@ -15,6 +18,20 @@ public class RuleAttribute
             gotScienceSubjectsCredit,
             scienceTechnicalVocationalSubjectsCredit,
             isScienceStream;
+
+    // total 14, here 12
+    private int amountOfCreditRequired, minimumCreditGrade;
+    private boolean gotRequiredSubject, needSupportiveQualification;
+    private String whatSupportiveQualification;
+    private int minimumRequiredScienceSubject; // for IsScienceStream / NotScienceStream and SPM
+    private List<String> subjectRequired; // WhatSubjectRequired
+    private List<Integer> minimumGradeRequired; // MinimumSubjectRequiredGrade
+
+    private List<String> supportiveSubjectRequired; // WhatSupportiveSubject
+    private List<String> supportiveGradeRequired; // WhatSupportiveGrade
+
+    private List<String> scienceSubjectRequired; // WhatScienceSubjectRequired
+    private List<Integer> minimumScienceSubjectGradeRequired; // MinimumScienceSubjectGrade
 
     RuleAttribute() {
         joinProgramme = false;
@@ -43,6 +60,10 @@ public class RuleAttribute
         spmCredit = 0;
         oLevelCredit = 0;
         countPassScienceSubjects = 0;
+
+        countCorrectSubjectRequired = 0;
+        countSupportiveSubjectRequired = 0;
+        countScienceSubjectRequired = 0;
     }
 
     public int getUecCredit() {
@@ -249,5 +270,127 @@ public class RuleAttribute
 
     void setGotAddMaths() {
         this.gotAddMaths = true;
+    }
+
+    // JSON attribute
+    public int getAmountOfCreditRequired() {
+        return amountOfCreditRequired;
+    }
+
+    public void setAmountOfCreditRequired(int amountOfCreditRequired) {
+        this.amountOfCreditRequired = amountOfCreditRequired;
+    }
+
+    public int getMinimumCreditGrade() {
+        return minimumCreditGrade;
+    }
+
+    public void setMinimumCreditGrade(int minimumCreditGrade) {
+        this.minimumCreditGrade = minimumCreditGrade;
+    }
+
+    public boolean isGotRequiredSubject() {
+        return gotRequiredSubject;
+    }
+
+    public void setGotRequiredSubject(boolean gotRequiredSubject) {
+        this.gotRequiredSubject = gotRequiredSubject;
+    }
+
+    public boolean isNeedSupportiveQualification() {
+        return needSupportiveQualification;
+    }
+
+    public void setNeedSupportiveQualification(boolean needSupportiveQualification) {
+        this.needSupportiveQualification = needSupportiveQualification;
+    }
+
+    public String getWhatSupportiveQualification() {
+        return whatSupportiveQualification;
+    }
+
+    public void setWhatSupportiveQualification(String whatSupportiveQualification) {
+        this.whatSupportiveQualification = whatSupportiveQualification;
+    }
+
+    public int getMinimumRequiredScienceSubject() {
+        return minimumRequiredScienceSubject;
+    }
+
+    public void setMinimumRequiredScienceSubject(int minimumRequiredScienceSubject) {
+        this.minimumRequiredScienceSubject = minimumRequiredScienceSubject;
+    }
+
+    public List<String> getSubjectRequired() {
+        return subjectRequired;
+    }
+
+    public void setSubjectRequired(List<String> subjectRequired) {
+        this.subjectRequired = subjectRequired;
+    }
+
+    public List<Integer> getMinimumGradeRequired() {
+        return minimumGradeRequired;
+    }
+
+    public void setMinimumGradeRequired(List<Integer> gradeRequired) {
+        this.minimumGradeRequired = gradeRequired;
+    }
+
+    public List<String> getSupportiveSubjectRequired() {
+        return supportiveSubjectRequired;
+    }
+
+    public void setSupportiveSubjectRequired(List<String> supportiveSubjectRequired) {
+        this.supportiveSubjectRequired = supportiveSubjectRequired;
+    }
+
+    public List<String> getSupportiveGradeRequired() {
+        return supportiveGradeRequired;
+    }
+
+    public void setSupportiveGradeRequired(List<String> supportiveGradeRequired) {
+        this.supportiveGradeRequired = supportiveGradeRequired;
+    }
+
+    public List<String> getScienceSubjectRequired() {
+        return scienceSubjectRequired;
+    }
+
+    public void setScienceSubjectRequired(List<String> scienceSubjectRequired) {
+        this.scienceSubjectRequired = scienceSubjectRequired;
+    }
+
+    public List<Integer> getMinimumScienceSubjectGradeRequired() {
+        return minimumScienceSubjectGradeRequired;
+    }
+
+    public void setMinimumScienceSubjectGradeRequired(List<Integer> minimumScienceSubjectGradeRequired) {
+        this.minimumScienceSubjectGradeRequired = minimumScienceSubjectGradeRequired;
+    }
+
+    // For the length of required things
+    public int getCountCorrectSubjectRequired() {
+        return countCorrectSubjectRequired;
+    }
+
+    public void incrementCountSubjectRequired() {
+        this.countCorrectSubjectRequired++;
+    }
+
+    public int getCountSupportiveSubjectRequired() {
+        return countSupportiveSubjectRequired;
+    }
+
+    public void incrementCountSupportiveSubjectRequired() {
+        this.countSupportiveSubjectRequired++;
+    }
+
+    public int getCountScienceSubjectRequired() {
+        return countScienceSubjectRequired;
+    }
+
+    public void incrementCountScienceSubjectRequired() {
+        this.countScienceSubjectRequired++;
     }
 }

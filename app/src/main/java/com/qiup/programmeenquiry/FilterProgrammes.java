@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +23,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -32,63 +33,36 @@ import java.util.Objects;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 
-public class FilterProgrammes extends AppCompatActivity implements AdapterView.OnItemSelectedListener
-{
+public class FilterProgrammes extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+
     MaterialSpinner qualificationSpinner, gradesSpinner, gradesSpinner1,
             spmOLevelSpinner, mathematicsSpinner, englishSpinner,
             addMathSpinner, bahasaMalaysiaSpinner, scienceTechnicalVocationalGradeSpinner;
     AutoCompleteTextView subjectsAutoCompleteTextView, newSubjectsAutoCompleteTextView,
             scienceTechnicalVocationalAutoCompleteTextView;
     ArrayAdapter<String> subjectsAdapter, gradesAdapter;
-    Button filterButton;
+    Button filterButton, addNewField, deleteFieldText;
     LinearLayout parentLinearLayout;
-    TextView addNewField, deleteFieldText, subjectsText,
-            gradesText, englishText, mathematicsText,
-            spmOlevelText, addMathText, bahasaMalaysiaText;
+    TextView subjectsText, gradesText, englishText, mathematicsText, spmOlevelText, addMathText, bahasaMalaysiaText;
     Bundle extras;
     boolean flagForNewField;
     String [] subjectsList, scienceTechnicalVocationalSubjectArrays;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filter_programme);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         extras = getIntent().getExtras(); // get the data from previous activity
 
-        //find view by ID...
-        parentLinearLayout = findViewById(R.id.parent_layout);
-        filterButton = findViewById(R.id.filterButton);
-        deleteFieldText = findViewById(R.id.deleteFieldText);
-        addNewField = findViewById(R.id.addNewSpinnerText);
-        subjectsText = findViewById(R.id.subjectsText);
-        gradesText  = findViewById(R.id.gradesText);
-        englishText = findViewById(R.id.englishText);
-        mathematicsText = findViewById(R.id.mathematicsText);
-        qualificationSpinner = findViewById(R.id.qualificationSpinner);
-        subjectsAutoCompleteTextView = findViewById(R.id.subjectsAutoCompleteTextView);
-        newSubjectsAutoCompleteTextView = findViewById(R.id.newSubjectsAutoCompleteTextView);
-        gradesSpinner = findViewById(R.id.gradesSpinner);
-        spmOlevelText = findViewById(R.id.spmOlevelText);
-        spmOLevelSpinner = findViewById(R.id.spmOLevelSpinner);
-        mathematicsSpinner = findViewById(R.id.mathematicsSpinner);
-        englishSpinner = findViewById(R.id.englishSpinner);
-        addMathText = findViewById(R.id.addMathText);
-        addMathSpinner = findViewById(R.id.addMathSpinner);
-        bahasaMalaysiaSpinner = findViewById(R.id.bahasaMalaysiaSpinner);
-        bahasaMalaysiaText = findViewById(R.id.bahasaMalaysiaText);
-        scienceTechnicalVocationalAutoCompleteTextView = findViewById(R.id.scienceTechnicalVocationalAutoCompleteTextView);
-        scienceTechnicalVocationalGradeSpinner = findViewById(R.id.scienceTechnicalVocationalGrade);
+        initializeLayoutItem(); //find view by ID...
 
-        // setting the results type Adapter
+        // Setting the results type Adapter
         String[] stringsResultsType = getResources().getStringArray(R.array.qualification_type);
-        ArrayAdapter<String> resultsArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, stringsResultsType)
-        {
+        ArrayAdapter<String> resultsArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, stringsResultsType) {
             @Override
-            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
-            {
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
                 View v;
                 if (position == 0) {
                     TextView tv = new TextView(getContext());
@@ -106,13 +80,11 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
         // setting the results type Adapter
         final String[] stringsSPMOLevelType = getResources().getStringArray(R.array.spm_or_oLevel_type);
-        ArrayAdapter<String> SPMOLevelArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, stringsSPMOLevelType)
-        {
+        ArrayAdapter<String> SPMOLevelArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, stringsSPMOLevelType) {
             // If is position 0(the initial dummy entry), make it hidden
             // else, pass convertView as null to prevent reuse of special case views
             @Override
-            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
-            {
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
                 View v;
                 if (position == 0) {
                     CheckedTextView tv = new CheckedTextView(getContext());
@@ -129,9 +101,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         SPMOLevelArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         addNewField.setEnabled(false);
-        addNewField.setTextColor(Color.GRAY);
         deleteFieldText.setEnabled(false);
-        deleteFieldText.setTextColor(Color.GRAY);
         subjectsText.setTextColor(Color.GRAY);
         gradesText.setTextColor(Color.GRAY);
         flagForNewField = false;
@@ -150,34 +120,27 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         bahasaMalaysiaSpinner.setVisibility(View.GONE);
         scienceTechnicalVocationalAutoCompleteTextView.setVisibility(View.GONE);
         scienceTechnicalVocationalGradeSpinner.setVisibility(View.GONE);
+
         spmOLevelSpinner.setAdapter(SPMOLevelArrayAdapter);
         spmOLevelSpinner.setOnItemSelectedListener(this);
         qualificationSpinner.setAdapter(resultsArrayAdapter);
-
         qualificationSpinner.setOnItemSelectedListener(this);
         setSpinnerScrollbar(); //set spinner scrollbar for resultsSpinner, subjectsSpinner and gradesSpinner
 
         scienceTechnicalVocationalAutoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void afterTextChanged(Editable editable)
-            {
-                if(Objects.equals(scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim(), ""))
-                {
+            public void afterTextChanged(Editable editable) {
+                if(Objects.equals(scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim(), "")) {
                     scienceTechnicalVocationalGradeSpinner.setSelection(0);
                     scienceTechnicalVocationalGradeSpinner.setEnabled(false);
                 }
-                else
-                {
+                else {
                     scienceTechnicalVocationalGradeSpinner.setEnabled(true);
                 }
             }
@@ -187,67 +150,47 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         addNewField.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View rowView = inflater.inflate(R.layout.new_dropdown_field, null);
                 // Add the new row before the add field button.
                 parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 9);
+
                 if(parentLinearLayout.getChildCount() != 12) // if added new field, make the delete field text enable
-                {
                     deleteFieldText.setEnabled(true);
-                    deleteFieldText.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
-                }
+
                 newSubjectsAutoCompleteTextView = rowView.findViewById(R.id.newSubjectsAutoCompleteTextView);
                 gradesSpinner1 = rowView.findViewById(R.id.gradesSpinner1);
                 String selectedItem = qualificationSpinner.getSelectedItem().toString();
                 if(Objects.equals(selectedItem, "SPM"))
                 {
                     if(parentLinearLayout.getChildCount() == 23) // max 12
-                    {
                         addNewField.setEnabled(false);
-                        addNewField.setTextColor(Color.GRAY);
-                    }
                 }
                 else if(Objects.equals(selectedItem, "O-Level")) // max 10
                 {
                     if(parentLinearLayout.getChildCount() == 21)
-                    {
                         addNewField.setEnabled(false);
-                        addNewField.setTextColor(Color.GRAY);
-                    }
                 }
                 else if(Objects.equals(selectedItem, "A-Level")) // max 5
                 {
                     if(parentLinearLayout.getChildCount() == 16)
-                    {
                         addNewField.setEnabled(false);
-                        addNewField.setTextColor(Color.GRAY);
-                    }
                 }
                 else if(Objects.equals(selectedItem, "STPM")) // max 5
                 {
                     if(parentLinearLayout.getChildCount() == 16)
-                    {
                         addNewField.setEnabled(false);
-                        addNewField.setTextColor(Color.GRAY);
-                    }
                 }
                 else if(Objects.equals(selectedItem, "STAM")) // max 11
                 {
                     if(parentLinearLayout.getChildCount() == 22)
-                    {
                         addNewField.setEnabled(false);
-                        addNewField.setTextColor(Color.GRAY);
-                    }
                 }
                 else if(Objects.equals(selectedItem, "UEC"))
                 {
                     if(parentLinearLayout.getChildCount() == 21)
-                    {
                         addNewField.setEnabled(false);
-                        addNewField.setTextColor(Color.GRAY);
-                    }
                 }
 
                 try {
@@ -260,28 +203,21 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
         deleteFieldText.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-                if(parentLinearLayout.getChildCount() != 12) // if added new field
-                {
+            public void onClick(View view) {
+                if(parentLinearLayout.getChildCount() != 12) { // if added new field
                     parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 10);
                     addNewField.setEnabled(true);
-                    addNewField.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 }
-                if(parentLinearLayout.getChildCount() == 12) // if deleted and back to original layout
-                {
+                if(parentLinearLayout.getChildCount() == 12) { // if deleted and back to original layout
                     deleteFieldText.setEnabled(false);
-                    deleteFieldText.setTextColor(Color.GRAY);
                     flagForNewField = false;
                 }
             }
         });
 
-        filterButton.setOnClickListener(new View.OnClickListener()
-        {
+        filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 ArrayList<String> addedSubjectsList = new ArrayList<>();
                 ArrayList<TextView> addedGradesList = new ArrayList<>();
                 String spmOLevelString="", mathematicsGrade="", englishGrade="",
@@ -290,9 +226,8 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 // Validate Subjects First
                 // first convert all the subjects into UpperCase for case-insensitive validation
                 for(int i = 0; i  < subjectsList.length; i++)
-                {
                     subjectsList[i] = subjectsList[i].toUpperCase();
-                }
+
                 // If the key-in subject is not exist in subjects list according to qualification, return
                 if(!Arrays.asList(subjectsList).contains(subjectsAutoCompleteTextView.getText().toString().toUpperCase())
                         && !Objects.equals(subjectsAutoCompleteTextView.getText().toString(), ""))
@@ -336,7 +271,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 TextView selection = (TextView)gradesSpinner.getSelectedView();
                 selectedItem = selection.getText().toString();
                 arrayStringGrades[0] = selectedItem;
-                for(int i = 1; i <  arrayStringSubjects.length; i++)
+                for(int i = 1; i <  arrayStringGrades.length; i++)
                     arrayStringGrades[i] = addedGradesList.get(i-1).getText().toString();
 
                 // selectedItem Lastly is assigned as Qualification Level
@@ -353,6 +288,24 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         Toast.makeText(FilterProgrammes.this, "Subjects must include Bahasa Malaysia, Bahasa Inggeris, Sejarah and Mathematics", Toast.LENGTH_LONG).show();
                         return;
                     }
+                    for(int i = 0; i < arrayStringSubjects.length; i++)
+                    {
+                        if(Objects.equals(arrayStringSubjects[i], "Bahasa Malaysia")
+                                || Objects.equals(arrayStringSubjects[i], "Bahasa Inggeris")
+                                || Objects.equals(arrayStringSubjects[i], "Sejarah"))
+                        {
+                            if(Objects.equals(arrayStringGrades[i], "G"))
+                            {
+                                MaterialDialog materialDialog = new MaterialDialog.Builder(FilterProgrammes.this)
+                                        .title("SPM Failed")
+                                        .content("Sorry. Your SPM is failed.")
+                                        .positiveText("Return")
+                                        .build();
+                                materialDialog.show();
+                                return;
+                            }
+                        }
+                    }
                 }
                 else if(Objects.equals(selectedItem, "STPM"))
                 {
@@ -361,20 +314,35 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         Toast.makeText(FilterProgrammes.this, "Subjects must include Pengajian Am", Toast.LENGTH_LONG).show();
                         return;
                     }
+                    for(int i = 0; i < arrayStringSubjects.length; i++)
+                    {
+                        if(Objects.equals(arrayStringSubjects[i], "Pengajiam Am"))
+                        {
+                            if(Objects.equals(arrayStringGrades[i], "F"))
+                            {
+                                MaterialDialog materialDialog = new MaterialDialog.Builder(FilterProgrammes.this)
+                                        .title("STPM Failed")
+                                        .content("Sorry. Your STPM is failed.")
+                                        .positiveText("Return")
+                                        .build();
+                                materialDialog.show();
+                                return;
+                            }
+                        }
+                    }
                 }
                 else if(Objects.equals(selectedItem, "UEC"))
                 {
                     if(!Arrays.asList(arrayStringSubjects).contains("Bahasa Malaysia")
                             || !Arrays.asList(arrayStringSubjects).contains("Chinese")
-                            || !Arrays.asList(arrayStringSubjects).contains("History")
                             || !Arrays.asList(arrayStringSubjects).contains("English Language"))
                     {
-                        Toast.makeText(FilterProgrammes.this, "Subjects must include Bahasa Malaysia, English Language, Chinese and History", Toast.LENGTH_LONG).show();
+                        Toast.makeText(FilterProgrammes.this, "Subjects must include Bahasa Malaysia, English Language and Chinese", Toast.LENGTH_LONG).show();
                         return;
                     }
                 }
 
-                // Uf there are subjects is not key-in / selected
+                // If there are subjects is not key-in / selected
                 for(int i = 0; i < arrayStringSubjects.length; i++)
                 {
                     if(Objects.equals(arrayStringSubjects[i], ""))
@@ -397,20 +365,28 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     }
                 }
 
-                //TODO change subject name
+                // TODO change subject name
                 // After validation, change the string value to proper subject and match with Rules
-                // English Language is for UEC, O-Level, SPM
+                // English Language is for UEC, O-Level, SPM, English - First Language is for O-Level
                 // Advanced Mathematics is for UEC
                 for(int i = 0; i < arrayStringSubjects.length; i++)
                 {
                     if(Objects.equals(arrayStringSubjects[i], "Bahasa Inggeris")
-                            || Objects.equals(arrayStringSubjects[i], "English Language"))
+                            || Objects.equals(arrayStringSubjects[i], "English Language")
+                            || Objects.equals(arrayStringSubjects[i], "English - First Language"))
                     {
                         arrayStringSubjects[i] = "English";
                     }
-                    if(Objects.equals(arrayStringSubjects[i], "Advanced Mathematics"))
+                    if(Objects.equals(arrayStringSubjects[i], "Advanced Mathematics")
+                    	|| Objects.equals(arrayStringSubjects[i], "Advanced Mathematics I")
+                    	|| Objects.equals(arrayStringSubjects[i], "Advanced Mathematics II"))
                     {
                         arrayStringSubjects[i] = "Additional Mathematics";
+                    }
+                    if(Objects.equals(arrayStringSubjects[i], "Mathematics D")
+                            || Objects.equals(arrayStringSubjects[i], "International Mathematics"))
+                    {
+                        arrayStringSubjects[i] = "Mathematics";
                     }
                 }
 
@@ -467,16 +443,61 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
 
                 //check second qualification grades error if the qualification is STPM, STAM or A-Level
-                if(checkSecondQualificationError(spmOLevelString, mathematicsGrade, englishGrade,
-                        addMathGrade, bahasaMalaysiaGrade, scienceTechnicalVocationalGrade, selectedItem))
-                {
+                if(checkSecondQualificationError(spmOLevelString, mathematicsGrade, englishGrade, addMathGrade, bahasaMalaysiaGrade, scienceTechnicalVocationalGrade, selectedItem))
                     return; // if error is true, dont do anything
+
+
+                // Validate minimum input subjects
+                /*
+                if(Objects.equals(selectedItem, "SPM"))
+                {
+                    if(parentLinearLayout.getChildCount() < 18) // min 7
+                    {
+                        Toast.makeText(FilterProgrammes.this, "Need minimum 7 subjects SPM", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                 }
+                else if(Objects.equals(selectedItem, "O-Level")) // min 7
+                {
+                    if(parentLinearLayout.getChildCount() < 18)
+                    {
+                        Toast.makeText(FilterProgrammes.this, "Need minimum 7 subjects O-Level", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
+                else if(Objects.equals(selectedItem, "A-Level")) // min 4
+                {
+                    if(parentLinearLayout.getChildCount() < 15)
+                    {
+                        Toast.makeText(FilterProgrammes.this, "Need minimum 4 subjects A-Level", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
+                else if(Objects.equals(selectedItem, "STPM")) // min 4
+                {
+                    if(parentLinearLayout.getChildCount() < 15)
+                    {
+                        Toast.makeText(FilterProgrammes.this, "Need minimum 4 subjects STPM", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
+                else if(Objects.equals(selectedItem, "UEC")) // min 8
+                {
+                    if(parentLinearLayout.getChildCount() < 19)
+                    {
+                        Toast.makeText(FilterProgrammes.this, "Need minimum 8 subjects UEC", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                } */
+
+                // Change grade to number
+                int[] arrayIntegerGrades = new int[arrayStringGrades.length];
+                convertToIntegerGrade(selectedItem, arrayIntegerGrades, arrayStringGrades);
 
                 // Put together with previous activity's data and send to next activity
                 extras.putString("QUALIFICATION_LEVEL", selectedItem);
                 extras.putStringArray("STUDENT_SUBJECTS_LIST", arrayStringSubjects);
-                extras.putStringArray("STUDENT_GRADES_LIST", arrayStringGrades);
+                extras.putIntArray("STUDENT_GRADES_LIST", arrayIntegerGrades);
                 extras.putString("STUDENT_SECONDARY_QUALIFICATION", spmOLevelString);
                 extras.putString("STUDENT_SECONDARY_MATH", mathematicsGrade);
                 extras.putString("STUDENT_SECONDARY_ENG", englishGrade);
@@ -485,12 +506,8 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 extras.putString("STUDENT_STV_SUBJECT", scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim());
                 extras.putString("STUDENT_STV_GRADE", scienceTechnicalVocationalGrade);
 
-                Intent nextActivity = new Intent(FilterProgrammes.this, InterestProgramme.class);
-                nextActivity.putExtras(extras);
-                startActivity(nextActivity);
-
-                // Reset back to default
-                qualificationSpinner.setSelection(0);
+                // Upon submit, reset back to default
+                /*qualificationSpinner.setSelection(0);
                 while ( parentLinearLayout.getChildCount() != 12)
                 {
                     parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 10);
@@ -502,9 +519,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 gradesText.setTextColor(Color.GRAY);
                 gradesSpinner.setEnabled(false);
                 addNewField.setEnabled(false);
-                addNewField.setTextColor(Color.GRAY);
                 deleteFieldText.setEnabled(false);
-                deleteFieldText.setTextColor(Color.GRAY);
                 subjectsText.setTextColor(Color.GRAY);
 
                 // Secondary qualification reset
@@ -532,9 +547,287 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 addMathSpinner.setEnabled(false);
                 scienceTechnicalVocationalAutoCompleteTextView.setEnabled(false);
                 scienceTechnicalVocationalGradeSpinner.setEnabled(false);
-                filterButton.setEnabled(false);
+                filterButton.setEnabled(false); */
+
+                Intent nextActivity = new Intent(FilterProgrammes.this, InterestProgramme.class);
+                nextActivity.putExtras(extras);
+                startActivity(nextActivity);
             }
         });
+    }
+
+    private void initializeLayoutItem() {
+        parentLinearLayout = findViewById(R.id.parent_layout);
+        filterButton = findViewById(R.id.filterButton);
+        deleteFieldText = findViewById(R.id.deleteFieldText);
+        addNewField = findViewById(R.id.addNewSpinnerText);
+        subjectsText = findViewById(R.id.subjectsText);
+        gradesText  = findViewById(R.id.gradesText);
+        englishText = findViewById(R.id.englishText);
+        mathematicsText = findViewById(R.id.mathematicsText);
+        qualificationSpinner = findViewById(R.id.qualificationSpinner);
+        subjectsAutoCompleteTextView = findViewById(R.id.subjectsAutoCompleteTextView);
+        newSubjectsAutoCompleteTextView = findViewById(R.id.newSubjectsAutoCompleteTextView);
+        gradesSpinner = findViewById(R.id.gradesSpinner);
+        spmOlevelText = findViewById(R.id.spmOlevelText);
+        spmOLevelSpinner = findViewById(R.id.spmOLevelSpinner);
+        mathematicsSpinner = findViewById(R.id.mathematicsSpinner);
+        englishSpinner = findViewById(R.id.englishSpinner);
+        addMathText = findViewById(R.id.addMathText);
+        addMathSpinner = findViewById(R.id.addMathSpinner);
+        bahasaMalaysiaSpinner = findViewById(R.id.bahasaMalaysiaSpinner);
+        bahasaMalaysiaText = findViewById(R.id.bahasaMalaysiaText);
+        scienceTechnicalVocationalAutoCompleteTextView = findViewById(R.id.scienceTechnicalVocationalAutoCompleteTextView);
+        scienceTechnicalVocationalGradeSpinner = findViewById(R.id.scienceTechnicalVocationalGrade);
+    }
+
+    private void convertToIntegerGrade(String qualificationLevel, int[] arrayIntegerGrades, String[] arrayStringGrades)
+    {
+        switch(qualificationLevel)
+        {
+            case "SPM":
+            {
+                for(int i = 0; i < arrayIntegerGrades.length; i++)
+                {
+                    if(Objects.equals(arrayStringGrades[i], "A+"))
+                    {
+                        arrayIntegerGrades[i] = 1;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "A"))
+                    {
+                        arrayIntegerGrades[i] = 2;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "A-"))
+                    {
+                        arrayIntegerGrades[i] = 3;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B+"))
+                    {
+                        arrayIntegerGrades[i] = 4;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B"))
+                    {
+                        arrayIntegerGrades[i] = 5;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "C+"))
+                    {
+                        arrayIntegerGrades[i] = 6;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "C"))
+                    {
+                        arrayIntegerGrades[i] = 7;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "D"))
+                    {
+                        arrayIntegerGrades[i] = 8;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "E"))
+                    {
+                        arrayIntegerGrades[i] = 9;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "G"))
+                    {
+                        arrayIntegerGrades[i] = 10;
+                    }
+                }
+            }
+            break;
+            case "O-Level":
+            {
+                for(int i = 0; i < arrayIntegerGrades.length; i++)
+                {
+                    if(Objects.equals(arrayStringGrades[i], "A"))
+                    {
+                        arrayIntegerGrades[i] = 1;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B"))
+                    {
+                        arrayIntegerGrades[i] = 2;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "C"))
+                    {
+                        arrayIntegerGrades[i] = 3;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "D"))
+                    {
+                        arrayIntegerGrades[i] = 4;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "E"))
+                    {
+                        arrayIntegerGrades[i] = 5;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "F"))
+                    {
+                        arrayIntegerGrades[i] = 6;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "G"))
+                    {
+                        arrayIntegerGrades[i] = 7;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "U"))
+                    {
+                        arrayIntegerGrades[i] = 8;
+                    }
+                }
+            }
+            break;
+            case "STPM":
+            {
+                for(int i = 0; i < arrayIntegerGrades.length; i++)
+                {
+                    if(Objects.equals(arrayStringGrades[i], "A"))
+                    {
+                        arrayIntegerGrades[i] = 1;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "A-"))
+                    {
+                        arrayIntegerGrades[i] = 2;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B+"))
+                    {
+                        arrayIntegerGrades[i] = 3;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B"))
+                    {
+                        arrayIntegerGrades[i] = 4;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B-"))
+                    {
+                        arrayIntegerGrades[i] = 5;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "C+"))
+                    {
+                        arrayIntegerGrades[i] = 6;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "C"))
+                    {
+                        arrayIntegerGrades[i] = 7;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "C-"))
+                    {
+                        arrayIntegerGrades[i] = 8;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "D+"))
+                    {
+                        arrayIntegerGrades[i] = 9;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "D"))
+                    {
+                        arrayIntegerGrades[i] = 10;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "F"))
+                    {
+                        arrayIntegerGrades[i] = 11;
+                    }
+                }
+            }
+            break;
+            case "A-Level":
+            {
+                for(int i = 0; i < arrayIntegerGrades.length; i++)
+                {
+                    if(Objects.equals(arrayStringGrades[i], "A*"))
+                    {
+                        arrayIntegerGrades[i] = 1;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "A"))
+                    {
+                        arrayIntegerGrades[i] = 2;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B"))
+                    {
+                        arrayIntegerGrades[i] = 3;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "C"))
+                    {
+                        arrayIntegerGrades[i] = 4;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "D"))
+                    {
+                        arrayIntegerGrades[i] = 5;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "E"))
+                    {
+                        arrayIntegerGrades[i] = 6;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "U"))
+                    {
+                        arrayIntegerGrades[i] = 7;
+                    }
+                }
+            }
+            break;
+            case "UEC":
+            {
+                for(int i = 0; i < arrayIntegerGrades.length; i++)
+                {
+                    if(Objects.equals(arrayStringGrades[i], "A1"))
+                    {
+                        arrayIntegerGrades[i] = 1;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "A2"))
+                    {
+                        arrayIntegerGrades[i] = 2;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B3"))
+                    {
+                        arrayIntegerGrades[i] = 3;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B4"))
+                    {
+                        arrayIntegerGrades[i] = 4;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B5"))
+                    {
+                        arrayIntegerGrades[i] = 5;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "B6"))
+                    {
+                        arrayIntegerGrades[i] = 6;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "C7"))
+                    {
+                        arrayIntegerGrades[i] = 7;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "C8"))
+                    {
+                        arrayIntegerGrades[i] = 8;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "F9"))
+                    {
+                        arrayIntegerGrades[i] = 9;
+                    }
+                }
+            }
+            break;
+            case "STAM":
+            {
+                for(int i = 0; i < arrayIntegerGrades.length; i++)
+                {
+                    if(Objects.equals(arrayStringGrades[i], "Mumtaz"))
+                    {
+                        arrayIntegerGrades[i] = 1;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "Jayyid Jiddan"))
+                    {
+                        arrayIntegerGrades[i] = 2;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "Jayyid"))
+                    {
+                        arrayIntegerGrades[i] = 3;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "Maqbul"))
+                    {
+                        arrayIntegerGrades[i] = 4;
+                    }
+                    else if(Objects.equals(arrayStringGrades[i], "Rasib"))
+                    {
+                        arrayIntegerGrades[i] = 5;
+                    }
+                }
+            }
+            break;
+        }
     }
 
     @Override
@@ -544,13 +837,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean checkSecondQualificationError(String spmOLevelQualification,
-                                      String secondMath,
-                                      String secondEng,
-                                      String secondAddMath,
-                                      String secondBahasaMalaysia,
-                                      String scienceTechnicalVocationalGrade,
-                                      String qualificationLevel)
+    private boolean checkSecondQualificationError(String spmOLevelQualification, String secondMath, String secondEng, String secondAddMath, String secondBahasaMalaysia, String scienceTechnicalVocationalGrade, String qualificationLevel)
     {
         if(Objects.equals(qualificationLevel, "STPM") || Objects.equals(qualificationLevel, "STAM") || Objects.equals(qualificationLevel, "A-Level"))
         {
@@ -619,7 +906,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         subjectsAutoCompleteTextView.setEnabled(false);
                         gradesSpinner.setEnabled(false);
                         addNewField.setEnabled(false);
-                        addNewField.setTextColor(Color.GRAY);
+                        deleteFieldText.setEnabled(false);
                         subjectsText.setTextColor(Color.GRAY);
                         gradesText.setTextColor(Color.GRAY);
                     }
@@ -832,7 +1119,6 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     }
                     break;
                 }
-                Log.d("position", "onItemSelected: " + position);
             }
             break;
 
@@ -1029,7 +1315,6 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 subjectsAutoCompleteTextView.setEnabled(true);
                 gradesSpinner.setEnabled(true);
                 addNewField.setEnabled(true);
-                addNewField.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 subjectsText.setTextColor(getResources().getColor(R.color.colorAccent));
                 gradesText.setTextColor(getResources().getColor(R.color.colorAccent));
                 subjectsAutoCompleteTextView.setText("");
@@ -1043,7 +1328,6 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 if(parentLinearLayout.getChildCount() != 12 ) // if added new view
                 {
                     deleteFieldText.setEnabled(false);
-                    deleteFieldText.setTextColor(Color.GRAY);
                     for(int i = parentLinearLayout.getChildCount(); i != 12; i--)  // if switch result, reset back to default
                     {
                         parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 10);

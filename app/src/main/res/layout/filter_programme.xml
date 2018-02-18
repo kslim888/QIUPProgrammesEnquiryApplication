@@ -21,7 +21,7 @@
             app:ms_baseColor="@color/colorAccent"
             app:ms_errorColor="@color/colorAccent"
             app:ms_floatingLabelColor="@color/colorAccent"
-            app:ms_hint="Qualification Level"
+            app:ms_hint="Select Current Qualification Level"
             app:ms_hintTextSize="15sp"
             app:ms_hintColor="@android:color/darker_gray"
             />
@@ -75,31 +75,29 @@
                 android:layout_alignParentTop="true" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/addNewSpinnerText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="10dp"
-                android:text="@string/add_more_dropdown"
-                android:textAlignment="center"
-                android:textSize="12sp" />
-
-            <TextView
+            <Button
                 android:id="@+id/deleteFieldText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/addNewSpinnerText"
-                android:layout_below="@+id/addNewSpinnerText"
+                android:layout_height="35dp"
                 android:text="@string/delete_dropdown"
-                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:layout_marginStart="30dp"
                 android:textSize="12sp" />
 
-        </RelativeLayout>
+            <Button
+                android:id="@+id/addNewSpinnerText"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="@string/add_more_dropdown"
+                android:layout_marginStart="45dp"
+                android:textAllCaps="false"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -233,7 +231,7 @@
                 android:id="@+id/addMathText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="19dp"
                 android:text="@string/additional_mathematics"
                 android:textSize="12sp"
                 android:layout_marginTop="30dp" />

@@ -9,11 +9,11 @@ import org.jeasy.rules.annotation.Rule;
 
 import java.util.Objects;
 
-@Rule(name = "BBA_HospitalityTourismManagement", description = "Entry rule to join BBA in Hospitality & Tourism Management")
-public class BBA_HospitalityTourismManagement
+@Rule(name = "BHT", description = "Entry rule to join BBA in Hospitality & Tourism Management")
+public class BHT
 {
     private static RuleAttribute bbaOtherRuleAttribute;
-    public BBA_HospitalityTourismManagement() {
+    public BHT() {
         bbaOtherRuleAttribute = new RuleAttribute();
     }
 

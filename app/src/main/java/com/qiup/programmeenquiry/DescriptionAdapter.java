@@ -26,7 +26,7 @@ public class DescriptionAdapter extends ArrayAdapter<String>
     public DescriptionAdapter(@NonNull Context context, List<String> programmesDescriptionList,
                               String qualificationLevel, boolean eligibility, String programmeLevel, String[] subjects)
     {
-        super(context, R.layout.dialog_programmes_list_description, programmesDescriptionList);
+        super(context, R.layout.dialog_programmes_list_description);
         this.context = context;
         this.qualificationLevel = qualificationLevel;
         this.eligibility = eligibility;
@@ -62,13 +62,13 @@ public class DescriptionAdapter extends ArrayAdapter<String>
     {
         if(Objects.equals(programmeLevel, "Diploma in Environmental Technology"))
         {
-            if(!Arrays.asList(subjects).contains("Science")) // Non-science stream
-            {
-                descriptionPosition = 1;
-            }
-            else
+            if(!Arrays.asList(subjects).contains("Science")) // is Science stream
             {
                 descriptionPosition = 0;
+            }
+            else // not science stream
+            {
+                descriptionPosition = 1;
             }
         }
         else if(programmeLevel.contains("Foundation"))
@@ -114,6 +114,10 @@ public class DescriptionAdapter extends ArrayAdapter<String>
             descriptionPosition = 3;
         }
     }
+
+
+    @Override
+    public int getCount() { return programmesDescriptionList.size(); }
 
     @NonNull
     @Override

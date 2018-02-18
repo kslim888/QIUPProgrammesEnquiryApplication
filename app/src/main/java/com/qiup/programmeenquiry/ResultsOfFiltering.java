@@ -1,7 +1,5 @@
 package com.qiup.programmeenquiry;
 
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
@@ -16,7 +14,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.qiup.entryrules.BAC;
 import com.qiup.entryrules.BBA;
-import com.qiup.entryrules.BBA_HospitalityTourismManagement;
+import com.qiup.entryrules.BHT;
 import com.qiup.entryrules.BBS;
 import com.qiup.entryrules.BCE;
 import com.qiup.entryrules.BCS;
@@ -38,7 +36,7 @@ import com.qiup.entryrules.DIS;
 import com.qiup.entryrules.DIT;
 import com.qiup.entryrules.DME;
 import com.qiup.entryrules.ElectronicsCommunicationsEngineering;
-import com.qiup.entryrules.FIBFIA;
+import com.qiup.entryrules.FIA;
 import com.qiup.entryrules.FIS;
 import com.qiup.entryrules.MBBS;
 import com.qiup.entryrules.MassCommAdvertising;
@@ -51,6 +49,7 @@ import java.util.Objects;
 
 public class ResultsOfFiltering extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
+    MenuItem eligibleIcon, notEligibleIcon;
     ListView eligibleListView, notEligibleListView;
     List<String> eligibleProgrammesList, notEligibleProgrammesList,
             //Requirements Description
@@ -77,12 +76,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        eligibleTextView = findViewById(R.id.eligibleTextView);
-        notEligibleTextView = findViewById(R.id.notEligibleTextView);
-        eligibleListView = findViewById(R.id.eligibleProgrammesList);
-        notEligibleListView = findViewById(R.id.notEligibleProgrammesList);
-
-        //get student's academic data
+        // Get student's academic data
         extras = getIntent().getExtras();
         qualificationLevel = extras.getString("QUALIFICATION_LEVEL");
         isGotInterestedProgramme = extras.getBoolean("STUDENT_IS_GOT_INTERESTED_PROGRAMME");
@@ -91,10 +85,16 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
         otherInterestedProgramme = extras.getString("STUDENT_OTHER_INTERESTED_PROGRAMME");
 
-        //Foundation
+        // Reference to view
+        eligibleTextView = findViewById(R.id.eligibleTextView);
+        notEligibleTextView = findViewById(R.id.notEligibleTextView);
+        eligibleListView = findViewById(R.id.eligibleProgrammesList);
+        notEligibleListView = findViewById(R.id.notEligibleProgrammesList);
+
+        // Foundation
         fibfiaRequirements = new ArrayList<>();
         fisRequirements = new ArrayList<>();
-        //Diploma
+        // Diploma
         dbmRequirements = new ArrayList<>();
         dhmRequirements = new ArrayList<>();
         dacRequirements = new ArrayList<>();
@@ -103,7 +103,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         disRequirements = new ArrayList<>();
         dmeRequirements = new ArrayList<>();
         detRequirements = new ArrayList<>();
-        //Degree
+        // Degree
         bbaRequirements = new ArrayList<>();
         bbaHospitalityRequirements = new ArrayList<>();
         bacRequirements = new ArrayList<>();
@@ -147,6 +147,8 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        eligibleIcon = menu.findItem(R.id.eligibleIcon);
+        notEligibleIcon = menu.findItem(R.id.notEligibleIcon);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -154,7 +156,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId())
         {
-            case android.R.id.home:
+            case android.R.id.home: // for back arrow
             {
                 this.finish();
             }
@@ -258,26 +260,25 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 materialDialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
             }
             break;
-            case  R.id.switchEligibility:
+            // Switching between not eligible and eligible programme
+            case R.id.eligibleIcon: // switch to eligible
             {
-                // switching between not eligible and eligible programme
-                // using Eligible TextView as indicator
-                if(eligibleTextView.getVisibility() == View.VISIBLE) // switch to not eligible
-                {
-                    eligibleTextView.setVisibility(View.GONE);
-                    eligibleListView.setVisibility(View.GONE);
-                    notEligibleTextView.setVisibility(View.VISIBLE);
-                    notEligibleListView.setVisibility(View.VISIBLE);
-                    item.getIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.MULTIPLY); // set the icon color to gray
-                }
-                else if(eligibleTextView.getVisibility() == View.GONE) // switch to eligible
-                {
-                    eligibleTextView.setVisibility(View.VISIBLE);
-                    eligibleListView.setVisibility(View.VISIBLE);
-                    notEligibleTextView.setVisibility(View.GONE);
-                    notEligibleListView.setVisibility(View.GONE);
-                    item.getIcon().clearColorFilter(); // set back the icon to normal color
-                }
+                eligibleTextView.setVisibility(View.VISIBLE);
+                eligibleListView.setVisibility(View.VISIBLE);
+                notEligibleTextView.setVisibility(View.GONE);
+                notEligibleListView.setVisibility(View.GONE);
+                eligibleIcon.setVisible(false);
+                notEligibleIcon.setVisible(true);
+            }
+            break;
+            case R.id.notEligibleIcon: // switch to not eligible
+            {
+                eligibleTextView.setVisibility(View.GONE);
+                eligibleListView.setVisibility(View.GONE);
+                notEligibleTextView.setVisibility(View.VISIBLE);
+                notEligibleListView.setVisibility(View.VISIBLE);
+                notEligibleIcon.setVisible(false);
+                eligibleIcon.setVisible(true);
             }
             break;
         }
@@ -289,14 +290,14 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         // If no interest programme, do checking for all programmes
         if(!isGotInterestedProgramme)
         {
-            // for SPM and O-Level add programme
+            // For SPM and O-Level add programme
             if(Objects.equals(qualificationLevel, "SPM") || Objects.equals(qualificationLevel, "O-Level"))
             {
                 addFoundationJoinProgramme();
                 addDiplomaJoinProgramme();
             }
 
-            // for STPM, A-Level, STAM add programme
+            // For STPM, A-Level, STAM add programme
             if(!Objects.equals(qualificationLevel, "SPM")
                     && !Objects.equals(qualificationLevel, "O-Level")
                     && !Objects.equals(qualificationLevel, "UEC"))
@@ -305,7 +306,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 addDegreeJoinProgramme();
             }
 
-            // for UEC add programme
+            // For UEC add programme
             if(Objects.equals(qualificationLevel, "UEC"))
             {
                 addFoundationJoinProgramme();
@@ -313,9 +314,9 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 addDegreeJoinProgramme();
             }
         }
-        else //got interested programme
+        else // Got interested programme
         {
-            enquiryInterestedProgramme();
+            enquiryInterestedProgramme(); // Add the programme name into List item
         }
     }
 
@@ -329,7 +330,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 // Foundation
                 case "Foundation in Arts":
                 {
-                    if(FIBFIA.isJoinProgramme())
+                    if(FIA.isJoinProgramme())
                     {
                         eligibleProgrammesList.add("Foundation in Arts");
                     }
@@ -341,7 +342,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 break;
                 case "Foundation in Business":
                 {
-                    if(FIBFIA.isJoinProgramme())
+                    if(FIA.isJoinProgramme())
                     {
                         eligibleProgrammesList.add("Foundation in Business");
                     }
@@ -477,7 +478,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 break;
                 case "BBA (Hons) in Hospitality & Tourism Management":
                 {
-                    if(BBA_HospitalityTourismManagement.isJoinProgramme())
+                    if(BHT.isJoinProgramme())
                     {
                         eligibleProgrammesList.add("BBA (Hons) in Hospitality & Tourism Management");
                     }
@@ -718,7 +719,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         }
     }
 
-    // For List View Listener
+    // For List View Listener to show Material Dialog for the requirements description
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
@@ -1037,7 +1038,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 listView.setAdapter(descriptionAdapter);
                 materialDialog.show();
                 materialDialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                materialDialog.getWindow().setLayout(1000, 700);
+                materialDialog.getWindow().setLayout(1000, 750);
             }
             break;
             case R.id.notEligibleProgrammesList:
@@ -1353,7 +1354,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 listView.setAdapter(descriptionAdapter);
                 materialDialog.show();
                 materialDialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                materialDialog.getWindow().setLayout(1000, 700);
+                materialDialog.getWindow().setLayout(1000, 750);
             }
             break;
         }
@@ -1693,7 +1694,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
 
     private void addFoundationJoinProgramme()
     {
-        if(FIBFIA.isJoinProgramme())
+        if(FIA.isJoinProgramme())
         {
             eligibleProgrammesList.add("Foundation in Arts");
             eligibleProgrammesList.add("Foundation in Business");
@@ -1800,7 +1801,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
             notEligibleProgrammesList.add("Bachelor of Business Administration (Hons)");
         }
 
-        if(BBA_HospitalityTourismManagement.isJoinProgramme())
+        if(BHT.isJoinProgramme())
         {
             eligibleProgrammesList.add("BBA (Hons) in Hospitality & Tourism Management");
         }

@@ -110,17 +110,6 @@ public class DME
         {
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics D"))
-                {
-                    if(!Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "E")
-                            && !Objects.equals(studentGrades[i], "F")
-                            && !Objects.equals(studentGrades[i], "G")
-                            && !Objects.equals(studentGrades[i], "U"))
-                    {
-                        dmeRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                }
                 if(Objects.equals(studentSubjects[i], "Mathematics"))
                 {
                     if(!Objects.equals(studentGrades[i], "D")

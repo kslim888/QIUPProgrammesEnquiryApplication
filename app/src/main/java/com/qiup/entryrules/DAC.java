@@ -82,8 +82,7 @@ public class DAC
                         dacRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
-                if(Objects.equals(studentSubjects[i], "English Language")
-                        || Objects.equals(studentSubjects[i], "English - First Language"))
+                if(Objects.equals(studentSubjects[i], "English"))
                 {
                     if(!Objects.equals(studentGrades[i], "U"))
                     {
@@ -349,7 +348,7 @@ public class DAC
                         dacRuleAttribute.setGotMathSubjectAndCredit();
                     }
                 }
-                if( Objects.equals(studentSubjects[i], "English"))
+                if(Objects.equals(studentSubjects[i], "English"))
                 {
                     if(!Objects.equals(studentGrades[i], "C7")
                             && !Objects.equals(studentGrades[i], "C8")
@@ -392,7 +391,7 @@ public class DAC
                 return true;
             }
         }
-        // If requirements not satisfy, retuen false
+        // If requirements not satisfy, return false
         return false;
     }
 

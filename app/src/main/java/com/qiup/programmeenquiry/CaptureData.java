@@ -83,14 +83,7 @@ public class CaptureData extends AppCompatActivity
     {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if(netInfo != null && netInfo.isConnected() && netInfo.isAvailable())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return netInfo != null && netInfo.isConnected() && netInfo.isAvailable();
     }
 
     public void findResourceID()
@@ -230,7 +223,7 @@ public class CaptureData extends AppCompatActivity
         return valid;
     }
 
-    //button submit post to google spreadsheets
+    // Button submit post to google spreadsheets
     public void submitData(View view)
     {
         if(!isOnline())
@@ -244,7 +237,7 @@ public class CaptureData extends AppCompatActivity
 
         validateIC();
         if (!getValid())
-          //  return;
+            //return;
 
         validateContactNumber();
         if (!getValid())
@@ -255,23 +248,23 @@ public class CaptureData extends AppCompatActivity
            // return;
 
         validateSchoolName();
-       // if (!getValid())
-          //  return;
+      //  if (!getValid())
+           // return;
 
         Bundle bundle = new Bundle();
 
-        //get the input text
+        // Get the input text
         String nameInput = editName.getText().toString(); // Name
         String icInput = editIC.getText().toString(); // IC
         String schoolNameInput = editSchool.getText().toString(); // School Name
         String contactNumber = editContactNumber.getText().toString();
         if(contactNumber.contains("-"))
         {
-        //    contactNumber =  contactNumber.replace('-', ' ');
+          //  contactNumber =  contactNumber.replace('-', ' ');
         }
         else
         {
-//            contactNumber = contactNumber.substring(0, 3) + " " +  contactNumber.substring(3, contactNumber.length());
+           // contactNumber = contactNumber.substring(0, 3) + " " +  contactNumber.substring(3, contactNumber.length());
         }
         String emailInput = editEmail.getText().toString(); // Email
         String remarkInput = editRemark.getText().toString(); // Remark
@@ -284,12 +277,12 @@ public class CaptureData extends AppCompatActivity
         bundle.putString("REMARK", remarkInput);
 
         // Clear text field upon successful submit
-        //editName.setText("");
-        //editIC.setText("");
-        //editContactNumber.setText("");
-        //editEmail.setText("");
-        //editRemark.setText("");
-        //editSchool.setText("");
+        editName.setText("");
+        editIC.setText("");
+        editContactNumber.setText("");
+        editEmail.setText("");
+        editRemark.setText("");
+        editSchool.setText("");
         Intent nextActivity = new Intent(CaptureData.this, FilterProgrammes.class);
         nextActivity.putExtras(bundle);
         startActivity(nextActivity);
@@ -305,16 +298,10 @@ public class CaptureData extends AppCompatActivity
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after)
-        {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count)
-        {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
         @Override
         public void afterTextChanged(Editable text)
@@ -326,12 +313,10 @@ public class CaptureData extends AppCompatActivity
                     inputLayoutName.setErrorEnabled(false);
                 }
                 break;
-
                 case R.id.editIC:
                 {
                     inputLayoutIC.setErrorEnabled(false);
                 }
-
                 break;
                 case R.id.editContactNumber:
                 {

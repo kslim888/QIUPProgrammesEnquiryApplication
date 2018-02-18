@@ -6,15 +6,21 @@
     tools:context="com.qiup.programmeenquiry.qiupprogrammesenquiryapplication.com.qiup.programmeenquiry.ResultsOfFiltering">
 
     <item
-        android:id="@+id/switchEligibility"
-        android:title="Switch Eligibility"
-        android:icon="@drawable/ic_library_books_white_24dp"
-        app:showAsAction="always"
-        />
+        android:id="@+id/notEligibleIcon"
+        android:icon="@drawable/ic_clear_white_24dp"
+        android:title="@string/view_not_eligible"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/eligibleIcon"
+        android:title="@string/view_eligible"
+        android:icon="@drawable/ic_check_white_24dp"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
 
     <item
         android:id="@+id/studentsAcademicQualification"
-        android:title="Student's Academic Qualification"
+        android:title="@string/student_s_academic_qualification"
         android:icon="@drawable/ic_description_white_24dp"
         app:showAsAction="always"
         />

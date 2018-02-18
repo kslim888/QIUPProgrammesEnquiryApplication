@@ -1,10 +1,9 @@
 package com.qiup.programmeenquiry;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,38 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.qiup.entryrules.BAC;
-import com.qiup.entryrules.BBA;
-import com.qiup.entryrules.BBA_HospitalityTourismManagement;
-import com.qiup.entryrules.BBS;
-import com.qiup.entryrules.BCE;
-import com.qiup.entryrules.BCS;
-import com.qiup.entryrules.BEM;
-import com.qiup.entryrules.BET;
-import com.qiup.entryrules.BFI;
-import com.qiup.entryrules.BIS;
-import com.qiup.entryrules.BIT;
-import com.qiup.entryrules.BSNE;
-import com.qiup.entryrules.BS_ActuarialSciences;
-import com.qiup.entryrules.BioTech;
-import com.qiup.entryrules.CorporateComm;
-import com.qiup.entryrules.DAC;
-import com.qiup.entryrules.DBM;
-import com.qiup.entryrules.DCE;
-import com.qiup.entryrules.DET;
-import com.qiup.entryrules.DHM;
-import com.qiup.entryrules.DIS;
-import com.qiup.entryrules.DIT;
-import com.qiup.entryrules.DME;
-import com.qiup.entryrules.ElectronicsCommunicationsEngineering;
-import com.qiup.entryrules.FIBFIA;
-import com.qiup.entryrules.FIS;
-import com.qiup.entryrules.MBBS;
-import com.qiup.entryrules.MassCommAdvertising;
-import com.qiup.entryrules.MassCommJournalism;
-import com.qiup.entryrules.Pharmacy;
-import com.qiup.entryrules.TESL;
+import com.google.gson.Gson;
+import com.qiup.POJO.RulePojo;
+import com.qiup.entryrules.FIA;
+import com.qiup.entryrules.FIB;
 
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rules;
@@ -67,12 +38,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class InterestProgramme extends AppCompatActivity
 {
-    TextView addInterestedProgramme, deleteInterestedProgramme, maxTextView;
+    TextView maxTextView;
     AutoCompleteTextView interestedProgrammeAutoComplete, newInterestedProgrammeAutoComplete;
-    Button generateButton;
+    Button generateButton, addInterestedProgramme, deleteInterestedProgramme;
     EditText editOtherProgramme;
     CheckBox interestCheckBox;
     LinearLayout interestProgrammeParentLayout;
@@ -80,7 +52,6 @@ public class InterestProgramme extends AppCompatActivity
     Bundle extras;
     boolean flagForNewField;
     String[] arrayOfProgramme;
-    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -91,7 +62,6 @@ public class InterestProgramme extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         extras = getIntent().getExtras();
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this); // obtain firebase instances
         addInterestedProgramme = findViewById(R.id.addInterestedProgrammeText);
         deleteInterestedProgramme = findViewById(R.id.deleteInterestedProgrammeText);
         maxTextView = findViewById(R.id.maxTextView);
@@ -101,7 +71,7 @@ public class InterestProgramme extends AppCompatActivity
         editOtherProgramme = findViewById(R.id.editOtherProgramme);
         interestCheckBox = findViewById(R.id.interestCheckBox);
 
-        // setting the list of programmes array adapter
+        // Setting the list of programmes array adapter
         arrayOfProgramme = getResources().getStringArray(R.array.programme_list);
         programmeListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, arrayOfProgramme);
 
@@ -126,16 +96,12 @@ public class InterestProgramme extends AppCompatActivity
                     }
 
                     maxTextView.setTextColor(getResources().getColor(android.R.color.darker_gray));
-                    addInterestedProgramme.setTextColor(getResources().getColor(android.R.color.darker_gray));
-                    deleteInterestedProgramme.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 }
                 else
                 {
                     maxTextView.setTextColor(getResources().getColor(R.color.colorAccent));
                     addInterestedProgramme.setEnabled(true);
-                    addInterestedProgramme.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                     deleteInterestedProgramme.setEnabled(false);
-                    deleteInterestedProgramme.setTextColor(getResources().getColor(android.R.color.darker_gray));
                     interestedProgrammeAutoComplete.setEnabled(true);
                     editOtherProgramme.setEnabled(true);
                 }
@@ -155,16 +121,14 @@ public class InterestProgramme extends AppCompatActivity
                 if(interestProgrammeParentLayout.getChildCount() != 6) // if added new field, make the delete field text enable
                 {
                     deleteInterestedProgramme.setEnabled(true);
-                    deleteInterestedProgramme.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 }
                 if(interestProgrammeParentLayout.getChildCount() == 8) // max 3 interested programmes // if got Other = 10
                 {
                     addInterestedProgramme.setEnabled(false);
-                    addInterestedProgramme.setTextColor(Color.GRAY);
                 }
 
                 try {
-                    loadSpinnerData(newInterestedProgrammeAutoComplete);
+                    loadAutoCompleteData(newInterestedProgrammeAutoComplete);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -179,12 +143,10 @@ public class InterestProgramme extends AppCompatActivity
                 {
                     interestProgrammeParentLayout.removeViewAt(interestProgrammeParentLayout.getChildCount() - 4);
                     addInterestedProgramme.setEnabled(true);
-                    addInterestedProgramme.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
                 }
                 if(interestProgrammeParentLayout.getChildCount() == 6) // if deleted and back to original layout // if Other 8
                 {
                     deleteInterestedProgramme.setEnabled(false);
-                    deleteInterestedProgramme.setTextColor(Color.GRAY);
                     flagForNewField = false;
                 }
             }
@@ -223,18 +185,9 @@ public class InterestProgramme extends AppCompatActivity
                     {
                         arrayOfProgramme[i] = arrayOfProgramme[i].toUpperCase();
                     }
-                    for(int i = 0; i < 3; i++)
-                    {
-                        foundationArray[i] = arrayOfProgramme[i];
-                    }
-                    for(int i = 0; i < 8; i++)
-                    {
-                        diplomaArray[i] = arrayOfProgramme[i+3];
-                    }
-                    for(int i = 0; i < 21; i++)
-                    {
-                        degreeArray[i] = arrayOfProgramme[i+11];
-                    }
+                    System.arraycopy(arrayOfProgramme, 0, foundationArray, 0, 3);
+                    System.arraycopy(arrayOfProgramme, 3, diplomaArray, 0, 8);
+                    System.arraycopy(arrayOfProgramme, 11, degreeArray, 0, 21);
 
                     // Check interested programme is blank or not. If blank then return
                     if(Objects.equals(interestedProgrammeAutoComplete.getText().toString().trim(), ""))
@@ -409,65 +362,56 @@ public class InterestProgramme extends AppCompatActivity
                     extras.putBoolean("STUDENT_IS_GOT_INTERESTED_PROGRAMME", false);
                 }
 
-                // Create facts
-                Facts facts = new Facts();
-                facts.put("Qualification Level",  extras.getString("QUALIFICATION_LEVEL"));
-                facts.put("Student's Subjects", extras.getStringArray("STUDENT_SUBJECTS_LIST"));
-                facts.put("Student's Grades",extras.getStringArray("STUDENT_GRADES_LIST"));
-                facts.put("Student's SPM or O-Level", extras.getString("STUDENT_SECONDARY_QUALIFICATION"));
-                facts.put("Student's Bahasa Malaysia", extras.getString("STUDENT_SECONDARY_BM"));
-                facts.put("Student's Mathematics", extras.getString("STUDENT_SECONDARY_MATH"));
-                facts.put("Student's English", extras.getString("STUDENT_SECONDARY_ENG"));
-                facts.put("Student's Additional Mathematics", extras.getString("STUDENT_SECONDARY_ADDMATH"));
-                facts.put("Student's Science/Technical/Vocational Subject", extras.getString("STUDENT_STV_SUBJECT"));
-                facts.put("Student's Science/Technical/Vocational Grade", extras.getString("STUDENT_STV_GRADE"));
 
-                // Create and define rules
-                Rules rules = new Rules(
-                        new FIS(),
-                        new FIBFIA(),
-                        new BBA(),
-                        new BBA_HospitalityTourismManagement(),
-                        new BFI(),
-                        new BAC(),
-                        new TESL(),
-                        new CorporateComm(),
-                        new MassCommAdvertising(),
-                        new MassCommJournalism(),
-                        new BCE(),
-                        new BSNE(),
-                        new BIS(),
-                        new BCS(),
-                        new ElectronicsCommunicationsEngineering(),
-                        new BioTech(),
-                        new BEM(),
-                        new BET(),
-                        new BIT(),
-                        new BS_ActuarialSciences(),
-                        new BBS(),
-                        new MBBS(),
-                        new Pharmacy(),
-                        new DHM(),
-                        new DBM(),
-                        new DAC(),
-                        new DCE(),
-                        new DIS(),
-                        new DET(),
-                        new DME(),
-                        new DIT()
-                );
+                final String baseURL = "https://kslim5703.000webhostapp.com";
+                Retrofit ruleRetrofit = new Retrofit.Builder()
+                        .baseUrl(baseURL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
 
-                // Create a rules engine and fire rules on known facts
-                RulesEngine rulesEngine = new DefaultRulesEngine();
-                rulesEngine.fire(rules, facts);
+                final GetRuleAPI getRule_api = ruleRetrofit.create(GetRuleAPI.class);
+                Call<RulePojo> call = getRule_api.getRule();
+                call.enqueue(new Callback<RulePojo>() {
+                    @Override
+                    public void onResponse(Call<RulePojo> call, Response<RulePojo> response) {
+                        Log.d("Call request", call.request().toString());
+                        Log.d("Call request header", call.request().headers().toString());
+                        Log.d("Response raw header", response.headers().toString());
+                        Log.d("Response raw", String.valueOf(response.raw().body()));
+                        Log.d("Response code", String.valueOf(response.code()));
 
+                        Gson gson = new Gson();
+                        //Log.d("JSON", gson.toJson(response.body()));
+                        new RulePojo(response);
+
+                       // Log.d("FIA Amount of credit", "onResponse: " + rulePojo.getAllProgramme().getFIA().getSPM().getAmountOfCreditRequired());
+                        //Log.d("FIB Amount of credit", "onResponse: " + rulePojo.getAllProgramme().getFIB().getSPM().getAmountOfCreditRequired());
+                        //Log.d("FIS", "onResponse: " + rulePojo.getAllProgramme().getFIS().getSPM().getWhatSubjectRequired().toString());
+
+                        //Log.d("credit grade", "onResponse: " + rulePojo.getFIA().getSPM().getMinimumCreditGrade());
+                        //Log.d("is Required subject", "onResponse: " + rulePojo.getFIA().getSPM().isGotRequiredSubject());
+                        //Log.d("Subject required", "onResponse: " + rulePojo.getFIA().getSPM().getWhatSubjectRequired().getSubject());
+                        //Log.d("is need supportive", "onResponse: " + rulePojo.getFIA().getSPM().isNeedSupportiveQualification());
+                       // Log.d("what supportive level", "onResponse: " + rulePojo.getFIA().getSPM().getWhatSupportiveQualification());
+                        //Log.d("supportive subjects", "onResponse: " + rulePojo.getFIA().getSPM().getWhatSupportiveSubject().getSubject());
+                        //Log.d("supportive grade", "onResponse: " + rulePojo.getFIA().getSPM().getWhatSupportiveGrade().getGrade());
+                        fireRule();
+                    }
+
+                    @Override
+                    public void onFailure(Call<RulePojo> call, Throwable t) {
+
+                    }
+                });
+
+                /*
                 // Use Retrofit library to make post
                 // Post to capture students info spreadsheet
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("https://docs.google.com/forms/u/1/d/e/")
                         .build();
-                final SpreadsheetsAPI spreadsheetWebService = retrofit.create(SpreadsheetsAPI.class);
-                Call<Void> postToSpreadsheetsCall = spreadsheetWebService.postToSpreadsheets(
+                final SpreadsheetsAPI mainSpreadsheetAPI = retrofit.create(SpreadsheetsAPI.class);
+                Call<Void> postToMainSpreadsheet = mainSpreadsheetAPI.postToMainSpreadsheet(
                         extras.getString("NAME"),
                         extras.getString("IC"),
                         extras.getString("SCHOOL_NAME"),
@@ -477,13 +421,9 @@ public class InterestProgramme extends AppCompatActivity
                         allInterestedProgramme.toString(),
                         extras.getString("REMARK")
                 );
-                postToSpreadsheetsCall.enqueue(new EmptyCallback<Void>());
+                postToMainSpreadsheet.enqueue(new EmptyCallback<Void>()); */
 
-                // Post to SPM spreadsheet
-                Retrofit spmRetrofit = new Retrofit.Builder()
-                        .baseUrl("https://docs.google.com/forms/d/e/")
-                        .build();
-
+                // Reset back to default upon click the button
                 editOtherProgramme.setText("");
                 editOtherProgramme.clearFocus();
                 while(interestProgrammeParentLayout.getChildCount() != 6)
@@ -492,14 +432,6 @@ public class InterestProgramme extends AppCompatActivity
                 }
                 interestCheckBox.setChecked(true);
                 interestedProgrammeAutoComplete.setText("");
-
-                Bundle firebaseBundle = new Bundle();
-                firebaseBundle.putInt("GENERATE_BUTTON_ID", generateButton.getId());
-                firebaseAnalytics.logEvent("EnquiryProgramme", firebaseBundle);
-
-                Intent resultsOfFiltering = new Intent(InterestProgramme.this, ResultsOfFiltering.class);
-                resultsOfFiltering.putExtras(extras);
-                startActivity(resultsOfFiltering);
             }
         });
 
@@ -513,12 +445,45 @@ public class InterestProgramme extends AppCompatActivity
         deleteInterestedProgramme.setEnabled(false);
     }
 
-    private void loadSpinnerData(AutoCompleteTextView programme) throws IOException
-    {
+    private void fireRule() {
+        // Create facts
+        Facts facts = new Facts();
+        facts.put("Qualification Level",  extras.getString("QUALIFICATION_LEVEL"));
+        facts.put("Student's Subjects", extras.getStringArray("STUDENT_SUBJECTS_LIST"));
+        facts.put("Student's Grades",extras.getIntArray("STUDENT_GRADES_LIST"));
+       // facts.put("Student's SPM or O-Level", extras.getString("STUDENT_SECONDARY_QUALIFICATION"));
+       // facts.put("Student's Bahasa Malaysia", extras.getString("STUDENT_SECONDARY_BM"));
+       // facts.put("Student's Mathematics", extras.getString("STUDENT_SECONDARY_MATH"));
+       // facts.put("Student's English", extras.getString("STUDENT_SECONDARY_ENG"));
+        //facts.put("Student's Additional Mathematics", extras.getString("STUDENT_SECONDARY_ADDMATH"));
+       // facts.put("Student's Science/Technical/Vocational Subject", extras.getString("STUDENT_STV_SUBJECT"));
+        //facts.put("Student's Science/Technical/Vocational Grade", extras.getString("STUDENT_STV_GRADE"));
+
+        // Create and define rules
+        Rules rules = new Rules(//new FIS()
+                 new FIA(), new FIB()
+                //, new BBA(), new BHT()
+                //, new BFI(), new BAC(), new TESL(), new CorporateComm(), new MassCommAdvertising()
+                //, new MassCommJournalism(), new BCE(), new BSNE(), new BIS(), new BCS()
+                //, new ElectronicsCommunicationsEngineering(), new BioTech(), new BEM(), new BET(), new BIT()
+                //, new BS_ActuarialSciences(), new BBS(), new MBBS(), new Pharmacy()
+                //, new DHM(), new DBM(), new DAC(), new DCE(), new DIS(), new DET(), new DME(), new DIT()
+        );
+
+        // Create a rules engine and fire rules on known facts
+        RulesEngine rulesEngine = new DefaultRulesEngine();
+        rulesEngine.fire(rules, facts);
+
+        //Intent resultsOfFiltering = new Intent(InterestProgramme.this, ResultsOfFiltering.class);
+        //resultsOfFiltering.putExtras(extras);
+       // startActivity(resultsOfFiltering);
+    }
+
+    private void loadAutoCompleteData(AutoCompleteTextView programme) throws IOException {
         programme.setAdapter(programmeListAdapter);
     }
 
-    // for back arrow button
+    // For back arrow button
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -526,17 +491,14 @@ public class InterestProgramme extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
     public class EmptyCallback<T> implements Callback<T> {
-
         @Override
         public void onResponse(Call<T> call, Response<T> response) { }
-
         @Override
         public void onFailure(Call<T> call, Throwable t) { }
     }

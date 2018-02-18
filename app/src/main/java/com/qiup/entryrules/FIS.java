@@ -21,9 +21,9 @@ public class FIS
     @Condition
     public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
                                @Fact("Student's Subjects")String[] studentSubjects,
-                               @Fact("Student's Grades")String[] studentGrades)
+                               @Fact("Student's Grades")int[] studentGrades)
     {
-        if(Objects.equals(qualificationLevel, "SPM")) // if qualification level is SPM
+        if(Objects.equals(qualificationLevel, "SPM")) // If qualification level is SPM
         {
             // Checking the students is science stream or not
             for(int i = 0; i < studentSubjects.length; i++)
@@ -108,10 +108,9 @@ public class FIS
             // If either eng or bm fail, return false straight away
             for(int i = 0; i < studentSubjects.length; i++) {
                 if (Objects.equals(studentSubjects[i], "English")
-                        || Objects.equals(studentSubjects[i], "English - First Language")
                         || Objects.equals(studentSubjects[i], "Malay - Foreign Language"))
                 {
-                    if (Objects.equals(studentGrades[i], "G"))
+                    if (Objects.equals(studentGrades[i], "U"))
                     {
                         return false;
                     }

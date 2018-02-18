@@ -16,6 +16,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http"
+                    android:host="qiup.edu.my"
+                    android:pathPrefix="/study/programmes" />
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -26,10 +35,6 @@
         <activity
             android:name="com.qiup.programmeenquiry.ResultsOfFiltering"
             android:label="Eligibility Result" />
-
-        <activity
-            android:name="com.qiup.programmeenquiry.InterestedProgrammeAndEnglishProficiency"
-            android:label="Programmes Enquiry" />
 
         <activity
             android:name="com.qiup.programmeenquiry.InterestProgramme"

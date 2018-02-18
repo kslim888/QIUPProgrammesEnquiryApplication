@@ -57,14 +57,14 @@ public class BCS
 
             // If STPM got add math subject but not credit, or no add math subject at STPM
             // Check SPM / O-Level got maths subject is credit or not
-            if(bcsRuleAttribute.isGotMathSubjectAndCredit())
+            if(!bcsRuleAttribute.isGotMathSubjectAndCredit())
             {
                 if(Objects.equals(studentSPMOLevel, "SPM"))
                 {
                     if(!Objects.equals(studentAddMathGrade, "None")
                             && !Objects.equals(studentAddMathGrade, "D")
-                            && Objects.equals(studentAddMathGrade, "E")
-                            && Objects.equals(studentAddMathGrade, "G"))
+                            && !Objects.equals(studentAddMathGrade, "E")
+                            && !Objects.equals(studentAddMathGrade, "G"))
                     {
                         bcsRuleAttribute.setGotMathSubjectAndCredit();
                     }
@@ -191,9 +191,9 @@ public class BCS
                 }
             }
         }
-        else // Foundation / Program Asasi / Asas / Matriculation / Diploma
+        else // Foundation / Matriculation / Diploma
         {
-            // TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
+            // TODO Foundation / Matriculation / Diploma
         }
 
         // Check enough credit or not. If is enough credit, check add maths is credit or not

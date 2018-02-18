@@ -11,7 +11,7 @@ public interface SpreadsheetsAPI
     @POST("1FAIpQLSc-YHeXIpLuul0aNmOwhk7JuBQfc0RGN9hP-N3wl1UZ9yAIHw/formResponse")
 
     @FormUrlEncoded
-    Call<Void> postToSpreadsheets(
+    Call<Void> postToMainSpreadsheet(
             @Field("entry.1397369254") String Name,
             @Field("entry.502184134") String IC,
             @Field("entry.636103052") String schoolName,

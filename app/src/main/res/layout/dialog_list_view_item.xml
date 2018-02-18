@@ -6,7 +6,7 @@
     android:padding="5dip">
 
     <TextView
-        android:id="@+id/subjectsTextDIalog"
+        android:id="@+id/subjectsTextDialog"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingEnd="10dp"

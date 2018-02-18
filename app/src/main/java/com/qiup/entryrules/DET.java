@@ -23,27 +23,47 @@ public class DET
                                @Fact("Student's Subjects")String[] studentSubjects,
                                @Fact("Student's Grades")String[] studentGrades)
     {
-        // First, check whether the student is science stream or not.
-        // If the student is not taking general science, he is science stream
-        if(!Arrays.asList(studentSubjects).contains("Science"))
-        {
-            detRuleAttribute.setScienceStreamTrue();
-        }
-
         // Start validating condition
         if(Objects.equals(qualificationLevel, "SPM")) // if is SPM qualification
         {
-            for(int i = 0; i < studentSubjects.length; i++)
+            // First, check whether the student is science stream or not.
+            // If the student is not taking general science, the student is science stream
+            if(!Arrays.asList(studentSubjects).contains("Science"))
             {
-                // Check Biology, Physics, Chemistry, Science is pass or not
-                if(Objects.equals(studentSubjects[i], "Biology")
-                        || Objects.equals(studentSubjects[i], "Physics")
-                        || Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Science"))
+                detRuleAttribute.setScienceStreamTrue();
+            }
+
+            // If is science stream student
+            if(detRuleAttribute.isScienceStream())
+            {
+                for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(!Objects.equals(studentGrades[i], "G"))
+                    // Check Biology, Physics, Chemistry, Science is pass or not
+                    if(Objects.equals(studentSubjects[i], "Biology")
+                            || Objects.equals(studentSubjects[i], "Physics")
+                            || Objects.equals(studentSubjects[i], "Chemistry"))
                     {
-                        detRuleAttribute.incrementCountPassScienceSubjects();
+                        if(!Objects.equals(studentGrades[i], "G"))
+                        {
+                            detRuleAttribute.incrementCountPassScienceSubjects();
+                        }
+                    }
+                }
+            }
+            else // is not science stream
+            {
+                for(int i = 0; i < studentSubjects.length; i++)
+                {
+                    // Check Biology, Physics, Chemistry, Science is pass or not
+                    if(Objects.equals(studentSubjects[i], "Science")
+                            || Objects.equals(studentSubjects[i], "Additional Science"))
+                    {
+                        if(!Objects.equals(studentGrades[i], "D")
+                                && !Objects.equals(studentGrades[i], "E")
+                                && !Objects.equals(studentGrades[i], "G"))
+                        {
+                            detRuleAttribute.setGotScienceSubjectsCredit();
+                        }
                     }
                 }
             }
@@ -62,19 +82,46 @@ public class DET
         }
         else if(Objects.equals(qualificationLevel, "O-Level")) // if is O-Level qualification
         {
-            // Check Sciences Subject is pass or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // First, check whether the student is science stream or not.
+            // If the student is not taking general science, the student is science stream
+            if(!Arrays.asList(studentSubjects).contains("Science - Combined"))
             {
-                if(Objects.equals(studentSubjects[i], "Biology")
-                        || Objects.equals(studentSubjects[i], "Physics")
-                        || Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Science - Combined")
-                        || Objects.equals(studentSubjects[i], "Physical Science")
-                        || Objects.equals(studentSubjects[i], "Sciences - Co-ordinated (Double)"))
+                detRuleAttribute.setScienceStreamTrue();
+            }
+
+            // If is science stream student
+            if(detRuleAttribute.isScienceStream())
+            {
+                // Check Sciences Subject is pass or not
+                for(int i = 0; i < studentSubjects.length; i++)
                 {
-                    if(!Objects.equals(studentGrades[i], "U"))
+                    if(Objects.equals(studentSubjects[i], "Biology")
+                            || Objects.equals(studentSubjects[i], "Physics")
+                            || Objects.equals(studentSubjects[i], "Chemistry"))
                     {
-                        detRuleAttribute.incrementCountPassScienceSubjects();
+                        if(!Objects.equals(studentGrades[i], "U"))
+                        {
+                            detRuleAttribute.incrementCountPassScienceSubjects();
+                        }
+                    }
+                }
+            }
+            else // is not science stream
+            {
+                for(int i = 0; i < studentSubjects.length; i++)
+                {
+                    // Check Biology, Physics, Chemistry, Science is pass or not
+                    if(Objects.equals(studentSubjects[i], "Science - Combined")
+                            || Objects.equals(studentSubjects[i], "Sciences - Co-ordinated (Double)"))
+                    {
+                        if(!Objects.equals(studentGrades[i], "D")
+                                && !Objects.equals(studentGrades[i], "E")
+                                && !Objects.equals(studentGrades[i], "F")
+                                && !Objects.equals(studentGrades[i], "G")
+                                && !Objects.equals(studentGrades[i], "U"))
+                        {
+                            detRuleAttribute.setGotScienceSubjectsCredit();
+                        }
                     }
                 }
             }
@@ -105,6 +152,7 @@ public class DET
                         && !Objects.equals(studentGrades[i], "F"))
                 {
                     detRuleAttribute.incrementSTPMCredit();
+                    Log.d("hello", "allowToJoin: " + 1);
                 }
             }
         }
@@ -169,17 +217,27 @@ public class DET
             // TODO SKM level 3
         }
 
-        // If is science stream
-        if(detRuleAttribute.isScienceStream())
+
+        // If is UEC, check minimum credit got 3 or not
+        if(detRuleAttribute.getUecCredit() >= 3)
         {
-            // Check enough credit or not
-            if(detRuleAttribute.getSpmCredit() >= 3
-                    || detRuleAttribute.getoLevelCredit() >= 3
-                    || detRuleAttribute.getUecCredit() >= 3)
+            // Dont care is from science stream or what,
+            // Minimum get 1 credit in sciences subject then return true
+            if(detRuleAttribute.getCountPassScienceSubjects() >= 1)
+            {
+                return true;
+            }
+        }
+
+        // If is not UEC, check other qualification level.
+        if(detRuleAttribute.isScienceStream()) // If is science stream.
+        {
+            // Check enough credit or not for SPM and O-Level
+            if(detRuleAttribute.getSpmCredit() >= 3 || detRuleAttribute.getoLevelCredit() >= 3)
             {
                 // If enough credit, check number of pass science subject is at least 2 or not
                 // If 2 or more, return true as all requirements satisfy
-                if( detRuleAttribute.getCountPassScienceSubjects() >= 2)
+                if(detRuleAttribute.getCountPassScienceSubjects() >= 2)
                 {
                     return true;
                 }
@@ -188,17 +246,16 @@ public class DET
         else // is not science stream
         {
             // Check enough credit or not
-            if(detRuleAttribute.getSpmCredit() >= 3
-                    || detRuleAttribute.getoLevelCredit() >= 3
-                    || detRuleAttribute.getUecCredit() >= 3)
+            if(detRuleAttribute.getSpmCredit() >= 3 || detRuleAttribute.getoLevelCredit() >= 3)
             {
-                // If enough credit, check number of pass science subject is at least 2 or not
-                // If 2 or more, return true as all requirements satisfy
-                if( detRuleAttribute.getCountPassScienceSubjects() >= 1)
+                // If enough credit, check science subject is credit or not
+                // If is credit, return true as all requirements satisfy
+                if(detRuleAttribute.isGotScienceSubjectsCredit())
                 {
                     return true;
                 }
             }
+
             // If is not science stream but is STAM, STPM or A-Level
             // Check enough credit or not. If enough return true as all requirements satisfy
             if(detRuleAttribute.getStamCredit() >= 1

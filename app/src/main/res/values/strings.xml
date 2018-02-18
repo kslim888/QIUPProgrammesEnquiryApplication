@@ -19,7 +19,7 @@
     <string name="no_interest_programme">No Interest Programme</string>
     <string name="choose_interested_programmes_max_3">Choose Interested Programmes (Max 3)</string>
     <string name="if_other_programme_please_specify">If other programme, please specify…</string>
-    <string name="add_more_interest_programme">Add more interest programme</string>
+    <string name="add_more_interest_programme">Add more Interest Programme</string>
     <string name="delete_interest_programme">Delete interest programme</string>
     <string name="generate">Generate</string>
     <string name="qualification_level">Qualification Level :</string>
@@ -39,6 +39,9 @@
     <string name="choose_spm_or_o_level">Choose SPM or O-Level</string>
     <string name="any_science_technical_vocational_subject">Any Science/Technical/Vocational subject</string>
     <string name="next">Next</string>
+    <string name="student_s_academic_qualification">Student\'s Academic Qualification</string>
+    <string name="view_not_eligible">View Not Eligible</string>
+    <string name="view_eligible">View Eligible</string>
 
     <string-array name="spm_or_oLevel_type">
         <item> </item>
@@ -108,8 +111,7 @@
         <item> STAM </item>
         <item> Foundation </item>
         <item> Matriculation </item>
-        <item> Diploma </item>
-        <item> Sijil Kemahiran Malaysia </item>
+        <item> AUSmath </item>
     </string-array>
 
     <!-- SPM -->
@@ -214,7 +216,7 @@
         <item> Kesusasteraan Melayu Komunikatif </item>
         <item> Sejarah </item>
         <item> Matematik (M) </item>
-        <item> Matematik (T)</item>
+        <item> Matematik (T) </item>
         <item> Geografi </item>
         <item> Fizik </item>
         <item> Kimia </item> <!--chemistry -->
@@ -249,8 +251,10 @@
         <item> Bahasa Malaysia </item>
         <item> Chinese </item>
         <item> English Language </item>
-        <item> Advanced Mathematics </item>
         <item> Mathematics </item>
+        <item> Advanced Mathematics I </item>
+        <item> Advanced Mathematics II </item>
+        <item> Advanced Mathematics </item>
         <item> Arts </item>
         <item> History </item>
         <item> Geography </item>
