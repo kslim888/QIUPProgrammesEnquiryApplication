@@ -2,12 +2,13 @@ package com.qiup.entryrules;
 
 import android.util.Log;
 
+import com.qiup.POJO.RulePojo;
+
 import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 @Rule(name = "FIS", description = "Entry rule to join Foundation in Sciences")
@@ -17,267 +18,147 @@ public class FIS
 
     public FIS() { fisRuleAttribute = new RuleAttribute(); }
 
-    // when
     @Condition
-    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
-                               @Fact("Student's Subjects")String[] studentSubjects,
-                               @Fact("Student's Grades")int[] studentGrades)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel
+            , @Fact("Student's Subjects") String[] studentSubjects
+            , @Fact("Student's Grades") int[] studentGrades)
     {
-        if(Objects.equals(qualificationLevel, "SPM")) // If qualification level is SPM
-        {
-            // Checking the students is science stream or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if (Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Biology")
-                        || Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    fisRuleAttribute.incrementCountRequiredScienceSubject();
-                }
-                if(fisRuleAttribute.getCountRequiredScienceSubject() > 2) // means max 3
-                {
-                    break;
-                }
-            }
+        setJSONAttribute(qualificationLevel); // First set json attribute to the rule
 
-            if(fisRuleAttribute.getCountRequiredScienceSubject() >= 2)
+        // First check got required subject or not.
+        if (fisRuleAttribute.isGotRequiredSubject())
+        {
+            // Check whether the subject's grade is smaller or equal to the required subject's grade
+            for (int i = 0; i < studentSubjects.length; i++)
             {
-                // Here increment count pass means credit
-                for(int i = 0; i < studentSubjects.length; i++)
+                for (int j = 0; j < fisRuleAttribute.getSubjectRequired().size(); j++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Chemistry")
-                            || Objects.equals(studentSubjects[i], "Biology")
-                            || Objects.equals(studentSubjects[i], "Physics"))
+                    if (Objects.equals(studentSubjects[i], fisRuleAttribute.getSubjectRequired().get(j)))
                     {
-                        if(!Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "G"))
+                        if (studentGrades[i] <= fisRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
                         {
-                            fisRuleAttribute.incrementCountPassScienceSubjects();
+                            fisRuleAttribute.incrementCountCorrectSubjectRequired();
                         }
                     }
                 }
             }
-
-            // If either eng or bm fail, return false straight away
-            for(int i = 0; i < studentSubjects.length; i++) {
-                if (Objects.equals(studentSubjects[i], "English")
-                        || Objects.equals(studentSubjects[i], "Bahasa Malaysia"))
-                {
-                    if (Objects.equals(studentGrades[i], "G"))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            for(int i = 0; i < studentSubjects.length; i++) {
-                // Check add maths or maths got credit or not
-                if (Objects.equals(studentSubjects[i], "Additional Mathematics")
-                        || Objects.equals(studentSubjects[i], "Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "E")
-                            && !Objects.equals(studentGrades[i], "G"))
-                    {
-                        fisRuleAttribute.setGotMathSubjectAndCredit();
-                        break;
-                    }
-                }
-            }
-
-            // Check all grades. Only C and above increment credit
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "G"))
-                {
-                    fisRuleAttribute.incrementFoundationCredit();
-                }
-            }
         }
-        else if(Objects.equals(qualificationLevel, "O-Level")) // If qualification level is O-Level
+
+        // Check got required science subject or not.
+        // If got then check student's subject's grade whether it fulfill the grade or not
+        if(fisRuleAttribute.getMinimumRequiredScienceSubject() != 0)
         {
-            // Must got Malay at O-Level
-            if(!Arrays.asList(studentSubjects).contains("Malay - Foreign Language"))
-            {
-                return false;
-            }
-
-            // If either eng or bm fail, return false straight away
-            for(int i = 0; i < studentSubjects.length; i++) {
-                if (Objects.equals(studentSubjects[i], "English")
-                        || Objects.equals(studentSubjects[i], "Malay - Foreign Language"))
-                {
-                    if (Objects.equals(studentGrades[i], "U"))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            // Checking the students is science stream or not
             for(int i = 0; i < studentSubjects.length; i++)
             {
-                if (Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Biology")
-                        || Objects.equals(studentSubjects[i], "Physics"))
+                for(int j = 0; j < fisRuleAttribute.getScienceSubjectRequired().size(); j++)
                 {
-                    fisRuleAttribute.incrementCountRequiredScienceSubject();
-                }
-                if(fisRuleAttribute.getCountRequiredScienceSubject() > 2) // means max 3
-                {
-                    break;
-                }
-            }
-
-            if(fisRuleAttribute.getCountRequiredScienceSubject() >= 2)
-            {
-                // Here increment count pass means credit
-                for(int i = 0; i < studentSubjects.length; i++)
-                {
-                    if (Objects.equals(studentSubjects[i], "Chemistry")
-                            || Objects.equals(studentSubjects[i], "Biology")
-                            || Objects.equals(studentSubjects[i], "Physics"))
+                    if(Objects.equals(studentSubjects[i], fisRuleAttribute.getScienceSubjectRequired().get(j)))
                     {
-                        if(!Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "F")
-                                && !Objects.equals(studentGrades[i], "G")
-                                && !Objects.equals(studentGrades[i], "U"))
+                        if (studentGrades[i] <= fisRuleAttribute.getMinimumScienceSubjectGradeRequired().get(j))
                         {
-                            fisRuleAttribute.incrementCountPassScienceSubjects();
+                            fisRuleAttribute.incrementCountCorrectRequiredScienceSubject();
                         }
                     }
                 }
             }
-
-            for(int i = 0; i < studentSubjects.length; i++) {
-                // Check add maths or maths got credit or not
-                if (Objects.equals(studentSubjects[i], "Mathematics - Additional")
-                        || Objects.equals(studentSubjects[i], "Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "E")
-                            && !Objects.equals(studentGrades[i], "F")
-                            && !Objects.equals(studentGrades[i], "G")
-                            && !Objects.equals(studentGrades[i], "U"))
-                    {
-                        fisRuleAttribute.setGotMathSubjectAndCredit();
-                        break;
-                    }
-                }
-            }
-
-            // Check all grades. Only C and above increment credit
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "F")
-                        && !Objects.equals(studentGrades[i], "G")
-                        && !Objects.equals(studentGrades[i], "U"))
-                {
-                    fisRuleAttribute.incrementFoundationCredit();
-                }
-            }
         }
-        else if(Objects.equals(qualificationLevel, "UEC")) // If qualification level is UEC
+
+        // For every grade, check whether the grade is smaller or equal to minimum credit grade
+        // Smaller the number the better the grade
+        for (int i = 0; i < studentGrades.length; i++) {
+            if (studentGrades[i] <= fisRuleAttribute.getMinimumCreditGrade())
+                fisRuleAttribute.incrementCountCredit();
+        }
+
+        // Checking Requirements see whether can return true or not
+        if (fisRuleAttribute.isGotRequiredSubject())
         {
-            // For all students subject check got mathematics, physic, chemi, bio subject or not
-            // Add maths is advanced maths
-            for(int i = 0; i < studentSubjects.length; i++)
+            // Check subject required is fulfill or not
+            if(fisRuleAttribute.getCountCorrectSubjectRequired() >= fisRuleAttribute.getSubjectRequired().size())
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Additional Mathematics"))
+                // Check enough amount of credit or not
+                if(fisRuleAttribute.getCountCredit() >= fisRuleAttribute.getAmountOfCreditRequired())
                 {
-                    fisRuleAttribute.setGotMathSubject();
-                }
-                if(Objects.equals(studentSubjects[i], "Chemistry"))
-                {
-                    fisRuleAttribute.setGotChemi();
-                }
-                if(Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    fisRuleAttribute.setGotBio();
-                }
-                if(Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    fisRuleAttribute.setGotPhysics();
-                }
-            }
-
-            // if no chemi and bio, straight return false
-            // if no Physics and Mathematics, return false. If either 1 got, then continue...
-            if(!fisRuleAttribute.isGotChemi()
-                    || !fisRuleAttribute.isGotBio()
-                    || (!fisRuleAttribute.isGotMathSubject() && !fisRuleAttribute.isGotChemi()))
-            {
-                return false;
-            }
-
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Additional Mathematics")
-                        || Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Biology")
-                        || Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    if(Objects.equals(studentGrades[i], "A1")
-                            || Objects.equals(studentGrades[i], "A2")
-                            || Objects.equals(studentGrades[i], "B3")
-                            || Objects.equals(studentGrades[i], "B4"))
+                    // If got / no required science subject, check count required subject correct enough or not
+                    if(fisRuleAttribute.getCountCorrectRequiredScienceSubject() >= fisRuleAttribute.getMinimumRequiredScienceSubject())
                     {
-                        fisRuleAttribute.incrementFoundationCredit();
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
         }
-
-        // For UEC, credit required is 3 only
-        if(Objects.equals(qualificationLevel, "UEC"))
+        else // no subject required
         {
-            if(fisRuleAttribute.getFoundationCredit() >= 3)
+            // Check enough amount of credit or not
+            if(fisRuleAttribute.getCountCredit() >= fisRuleAttribute.getAmountOfCreditRequired())
             {
-                return true;
-            }
-        }
-        else // is SPM or O-Level
-        {
-            // For both SPM or O-Level, check credit is at least 5 or not
-            if(fisRuleAttribute.getFoundationCredit() >= 5)
-            {
-                // If credit is at least 5, check required subject got at least 2 or not
-                if(fisRuleAttribute.getCountRequiredScienceSubject() >= 2)
-                {
-                    // If required subject got at least 2, check it math is credit or not
-                    // and Science subject is at least 2 credit or not
-                    // If all true, return true as requirements satisfied
-                    if(fisRuleAttribute.getCountPassScienceSubjects() >= 2
-                            && fisRuleAttribute.isGotMathSubjectAndCredit())
-                    {
-                        return true;
-                    }
+                // If got / no required science subject, check count required subject correct enough or not
+                if(fisRuleAttribute.getCountCorrectRequiredScienceSubject() >= fisRuleAttribute.getMinimumRequiredScienceSubject()) {
+                    return true; // return true as requirements is satisfied
                 }
             }
         }
-        // Return false as requirements not satiesfied
+
+        // Return false as requirements not satisfied
         return false;
     }
 
-    //then
     @Action
-    public void joinProgramme() throws Exception
-    {
-        // If rule is statisfied (return true), this action will be executed
+    public void joinProgramme() throws Exception {
+        // If rule is satisfied (return true), this action will be executed
         fisRuleAttribute.setJoinProgrammeTrue();
-        Log.d("FISjoinProgramme", "Joined");
+        Log.d("FIS joinProgramme", "Joined");
     }
 
-    public static boolean isJoinProgramme()
-    {
+    public static boolean isJoinProgramme() {
         return fisRuleAttribute.isJoinProgramme();
+    }
+
+    private void setJSONAttribute(String qualificationLevel) {
+        switch(qualificationLevel) {
+            case "SPM":
+            {
+                fisRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().getAmountOfCreditRequired());
+                fisRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().getMinimumCreditGrade());
+                fisRuleAttribute.setMinimumRequiredScienceSubject(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().getMinimumRequiredScienceSubject());
+                fisRuleAttribute.setScienceSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().getWhatScienceSubjectRequired().getSubject());
+                fisRuleAttribute.setMinimumScienceSubjectGradeRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().getMinimumScienceSubjectGrade().getGrade());
+                fisRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().isGotRequiredSubject());
+                if(fisRuleAttribute.isGotRequiredSubject())
+                {
+                    fisRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().getWhatSubjectRequired().getSubject());
+                    fisRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().getMinimumSubjectRequiredGrade().getGrade());
+                }
+            }
+            break;
+            case "O-Level":
+            {
+                fisRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().getAmountOfCreditRequired());
+                fisRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().getMinimumCreditGrade());
+                fisRuleAttribute.setMinimumRequiredScienceSubject(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().getMinimumRequiredScienceSubject());
+                fisRuleAttribute.setScienceSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().getWhatScienceSubjectRequired().getSubject());
+                fisRuleAttribute.setMinimumScienceSubjectGradeRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().getMinimumScienceSubjectGrade().getGrade());
+                fisRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().isGotRequiredSubject());
+                if(fisRuleAttribute.isGotRequiredSubject())
+                {
+                    fisRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().getWhatSubjectRequired().getSubject());
+                    fisRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().getMinimumSubjectRequiredGrade().getGrade());
+                }
+            }
+            break;
+            case "UEC":
+            {
+                fisRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().getAmountOfCreditRequired());
+                fisRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().getMinimumCreditGrade());
+
+
+                fisRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().isGotRequiredSubject());
+                if(fisRuleAttribute.isGotRequiredSubject())
+                {
+                    fisRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().getWhatSubjectRequired().getSubject());
+                    fisRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().getMinimumSubjectRequiredGrade().getGrade());
+                }
+            }
+        }
     }
 }

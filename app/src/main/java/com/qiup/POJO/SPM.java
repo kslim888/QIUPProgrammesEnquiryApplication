@@ -46,6 +46,15 @@ public class SPM{
 	@SerializedName("NotScienceStream")
 	private NotScienceStream notScienceStream;
 
+	@SerializedName("amount_of_subject_required")
+	private int amountOfSubjectRequired;
+
+	@SerializedName("amount_of_supportive_subject_required")
+	private int amountOfSupportiveSubjectRequired;
+
+	@SerializedName("exempted")
+	private boolean exempted;
+
 	public IsScienceStream getIsScienceStream() {
 		return isScienceStream;
 	}
@@ -102,5 +111,9 @@ public class SPM{
 		return needSupportiveQualification;
 	}
 
+	public int getAmountOfSubjectRequired() { return amountOfSubjectRequired; }
 
+	public int getAmountOfSupportiveSubjectRequired() { return amountOfSupportiveSubjectRequired; }
+
+	public boolean isExempted() { return exempted; }
 }

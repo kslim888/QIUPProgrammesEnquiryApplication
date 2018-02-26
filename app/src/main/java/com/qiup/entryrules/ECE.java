@@ -1,5 +1,6 @@
 package com.qiup.entryrules;
 
+
 import android.util.Log;
 
 import com.qiup.POJO.RulePojo;
@@ -14,18 +15,16 @@ import org.jeasy.rules.annotation.Rule;
 import java.util.Arrays;
 import java.util.Objects;
 
-@Rule(name = "BSNE", description = "Entry rule to join Bachelor of Special Needs Education")
-public class BSNE
+@Rule(name = "ECE", description = "Entry rule to join Bachelor of Bachelor of Engineering Electronics & Communications Engineering")
+public class ECE
 {
-    private static RuleAttribute bsneRuleAttribute;
+    private static RuleAttribute eceRuleAttribute;
 
-    public BSNE() {
-        bsneRuleAttribute = new RuleAttribute();
-    }
+    public ECE() { eceRuleAttribute = new RuleAttribute(); }
     
     @Condition
     public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel
-            , @Fact("Student's Subjects") String[] studentSubjects
+            , @Fact("Student's Subjects")String[] studentSubjects
             , @Fact("Student's Grades") int[] studentGrades
             , @Fact("Student's SPM or O-Level") String supportiveQualificationLevel
             , @Fact("Student's Supportive Grades") int[] supportiveGrades)
@@ -33,40 +32,40 @@ public class BSNE
         setJSONAttribute(qualificationLevel, supportiveQualificationLevel); // First set json attribute to the rule
 
         // Check got required subject or not.
-        if (bsneRuleAttribute.isGotRequiredSubject())
+        if (eceRuleAttribute.isGotRequiredSubject())
         {
             // If got, check whether the subject's grade is smaller or equal to the required subject's grade
-            for (int i = 0; i < bsneRuleAttribute.getSubjectRequired().size(); i++)
+            for (int i = 0; i < eceRuleAttribute.getSubjectRequired().size(); i++)
             {
                 for (int j = 0; j < studentSubjects.length; j++)
                 {
-                    if (Objects.equals(studentSubjects[j], bsneRuleAttribute.getSubjectRequired().get(i)))
+                    if (Objects.equals(studentSubjects[j], eceRuleAttribute.getSubjectRequired().get(i)))
                     {
-                        if (studentGrades[j] <= bsneRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                        if (studentGrades[j] <= eceRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
                         {
-                            bsneRuleAttribute.incrementCountCorrectSubjectRequired();
+                            eceRuleAttribute.incrementCountCorrectSubjectRequired();
                         }
                     }
-                    if (Objects.equals("Mathematics", bsneRuleAttribute.getSubjectRequired().get(i)))
+                    if (Objects.equals("Mathematics", eceRuleAttribute.getSubjectRequired().get(i)))
                     {
                         if(Arrays.asList(studentSubjects).contains("Additional Mathematics"))
                         {
                             for(int k = 0; k < studentSubjects.length; k++)
                             {
-                                if(studentGrades[k] <= bsneRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                                if(studentGrades[k] <= eceRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
                                 {
-                                    bsneRuleAttribute.incrementCountCorrectSubjectRequired();
+                                    eceRuleAttribute.incrementCountCorrectSubjectRequired();
                                 }
                             }
                         }
                     }
-                    if (Objects.equals("Science / Technical / Vocational", bsneRuleAttribute.getSubjectRequired().get(i)))
+                    if (Objects.equals("Science / Technical / Vocational", eceRuleAttribute.getSubjectRequired().get(i)))
                     {
-                        if (Arrays.asList(bsneRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[j]))
+                        if (Arrays.asList(eceRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[j]))
                         {
-                            if (studentGrades[j] <= bsneRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                            if (studentGrades[j] <= eceRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
                             {
-                                bsneRuleAttribute.incrementCountCorrectSubjectRequired();
+                                eceRuleAttribute.incrementCountCorrectSubjectRequired();
                             }
                         }
                     }
@@ -75,50 +74,50 @@ public class BSNE
         }
 
         // Check need supportive qualification or not
-        if(bsneRuleAttribute.isNeedSupportiveQualification())
+        if(eceRuleAttribute.isNeedSupportiveQualification())
         {
             // If need, check whether the supportive subject's grade is smaller or equal to the required supportive subject's grade
-            for (int j = 0; j < bsneRuleAttribute.getSupportiveSubjectRequired().size(); j++)
+            for (int j = 0; j < eceRuleAttribute.getSupportiveSubjectRequired().size(); j++)
             {
-                switch(bsneRuleAttribute.getSupportiveSubjectRequired().get(j))
+                switch(eceRuleAttribute.getSupportiveSubjectRequired().get(j))
                 {
                     case "Bahasa Malaysia":
                     {
-                        if (supportiveGrades[0] <= bsneRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        if (supportiveGrades[0] <= eceRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                         }
                     }
                     break;
                     case "English":
                     {
-                        if (supportiveGrades[1] <= bsneRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        if (supportiveGrades[1] <= eceRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                         }
                     }
                     break;
                     case "Mathematics":
                     {
-                        if (supportiveGrades[2] <= bsneRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        if (supportiveGrades[2] <= eceRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                         }
                     }
                     break;
                     case "Additional Mathematics":
                     {
-                        if (supportiveGrades[3] <= bsneRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        if (supportiveGrades[3] <= eceRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                         }
                     }
                     break;
                     case "Science / Technical / Vocational":
                     {
-                        if (supportiveGrades[4] <= bsneRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        if (supportiveGrades[4] <= eceRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                         }
                     }
                     break;
@@ -127,15 +126,15 @@ public class BSNE
         }
 
         // If can see higher qualification to waive subject or not
-        if(bsneRuleAttribute.isExempted())
+        if(eceRuleAttribute.isExempted())
         {
-            for(int i = 0; i < bsneRuleAttribute.getSupportiveSubjectRequired().size(); i++)
+            for(int i = 0; i < eceRuleAttribute.getSupportiveSubjectRequired().size(); i++)
             {
-                switch(bsneRuleAttribute.getSupportiveSubjectRequired().get(i))
+                switch(eceRuleAttribute.getSupportiveSubjectRequired().get(i))
                 {
                     case "English":
                     {
-                        if(Objects.equals(bsneRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        if(Objects.equals(eceRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
                         {
                             if(Objects.equals(qualificationLevel, "STPM"))
                             {
@@ -145,7 +144,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 10) // stpm pass grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -158,7 +157,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 6) // a-level pass grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -174,7 +173,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 7) // stpm credit grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -187,7 +186,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 4) // a-level credit grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -197,7 +196,7 @@ public class BSNE
                     break;
                     case "Mathematics":
                     {
-                        if(Objects.equals(bsneRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        if(Objects.equals(eceRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
                         {
                             if(Objects.equals(qualificationLevel, "STPM"))
                             {
@@ -207,7 +206,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 10) // stpm pass grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -220,7 +219,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 6) // a-level pass grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -236,7 +235,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 7) // stpm credit grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -249,7 +248,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 4) // a-level credit grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -259,7 +258,7 @@ public class BSNE
                     break;
                     case "Additional Mathematics":
                     {
-                        if(Objects.equals(bsneRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        if(Objects.equals(eceRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
                         {
                             if(Objects.equals(qualificationLevel, "STPM"))
                             {
@@ -269,7 +268,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 10) // stpm pass grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -282,7 +281,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 6) // a-level pass grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -298,7 +297,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 7) // stpm credit grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -311,7 +310,7 @@ public class BSNE
                                     {
                                         if(studentGrades[j] <= 4) // a-level credit grade
                                         {
-                                            bsneRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            eceRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -326,24 +325,24 @@ public class BSNE
         // For every grade, check whether the grade is smaller or equal to minimum credit grade
         // Smaller the number the better the grade
         for (int i = 0; i < studentGrades.length; i++) {
-            if (studentGrades[i] <= bsneRuleAttribute.getMinimumCreditGrade())
-                bsneRuleAttribute.incrementCountCredit();
+            if (studentGrades[i] <= eceRuleAttribute.getMinimumCreditGrade())
+                eceRuleAttribute.incrementCountCredit();
         }
 
         // Checking Requirements see whether can return true or not
-        if (bsneRuleAttribute.isGotRequiredSubject())
+        if (eceRuleAttribute.isGotRequiredSubject())
         {
             // Check subject required is fulfill or not
-            if(bsneRuleAttribute.getCountCorrectSubjectRequired() >= bsneRuleAttribute.getAmountOfSubjectRequired())
+            if(eceRuleAttribute.getCountCorrectSubjectRequired() >= eceRuleAttribute.getAmountOfSubjectRequired())
             {
                 // Check need supportive qualification or not
-                if(bsneRuleAttribute.isNeedSupportiveQualification())
+                if(eceRuleAttribute.isNeedSupportiveQualification())
                 {
                     // If need, check whether it fulfill the supportive grade or not
-                    if(bsneRuleAttribute.getCountSupportiveSubjectRequired() >= bsneRuleAttribute.getAmountOfSupportiveSubjectRequired())
+                    if(eceRuleAttribute.getCountSupportiveSubjectRequired() >= eceRuleAttribute.getAmountOfSupportiveSubjectRequired())
                     {
                         // Check enough amount of credit or not
-                        if(bsneRuleAttribute.getCountCredit() >= bsneRuleAttribute.getAmountOfCreditRequired())
+                        if(eceRuleAttribute.getCountCredit() >= eceRuleAttribute.getAmountOfCreditRequired())
                         {
                             return true; // return true as requirements is satisfied
                         }
@@ -352,7 +351,7 @@ public class BSNE
                 else
                 {
                     // Check enough amount of credit or not
-                    if(bsneRuleAttribute.getCountCredit() >= bsneRuleAttribute.getAmountOfCreditRequired())
+                    if(eceRuleAttribute.getCountCredit() >= eceRuleAttribute.getAmountOfCreditRequired())
                     {
                         return true; // return true as requirements is satisfied
                     }
@@ -362,13 +361,13 @@ public class BSNE
         else // No subject required
         {
             // Check need supportive qualification or not
-            if(bsneRuleAttribute.isNeedSupportiveQualification())
+            if(eceRuleAttribute.isNeedSupportiveQualification())
             {
                 // If need, check whether it fulfill the supportive grade or not
-                if(bsneRuleAttribute.getCountSupportiveSubjectRequired() >= bsneRuleAttribute.getAmountOfSupportiveSubjectRequired())
+                if(eceRuleAttribute.getCountSupportiveSubjectRequired() >= eceRuleAttribute.getAmountOfSupportiveSubjectRequired())
                 {
                     // Check enough amount of credit or not
-                    if(bsneRuleAttribute.getCountCredit() >= bsneRuleAttribute.getAmountOfCreditRequired())
+                    if(eceRuleAttribute.getCountCredit() >= eceRuleAttribute.getAmountOfCreditRequired())
                     {
                         return true; // return true as requirements is satisfied
                     }
@@ -377,120 +376,90 @@ public class BSNE
             else
             {
                 // Check enough amount of credit or not
-                if(bsneRuleAttribute.getCountCredit() >= bsneRuleAttribute.getAmountOfCreditRequired())
+                if(eceRuleAttribute.getCountCredit() >= eceRuleAttribute.getAmountOfCreditRequired())
                 {
                     return true; // return true as requirements is satisfied
                 }
             }
         }
-
         // Return false as requirements not satisfied
         return false;
     }
-    
+
     @Action
-    public void joinProgramme() throws Exception  {
-        // if rule is satisfied (return true), this action will be executed
-        bsneRuleAttribute.setJoinProgrammeTrue();
-        Log.d("SpecialNeedsEdu", "Joined");
+    public void joinProgramme() throws Exception {
+        // If rule is satisfied (return true), this action will be executed
+        eceRuleAttribute.setJoinProgrammeTrue();
+        Log.d("ECEjoinProgramme", "Joined");
     }
 
-    public static boolean isJoinProgramme()
-    {
-        return bsneRuleAttribute.isJoinProgramme();
-    }
+    public static boolean isJoinProgramme() { return eceRuleAttribute.isJoinProgramme(); }
 
     private void setJSONAttribute(String mainQualificationLevel, String supportiveQualificationLevel) {
         switch(mainQualificationLevel)
         {
             case "UEC":
             {
-                bsneRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getUEC().getAmountOfCreditRequired());
-                bsneRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBsne().getUEC().getMinimumCreditGrade());
-                bsneRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBsne().getUEC().isGotRequiredSubject());
+                eceRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getUEC().getAmountOfCreditRequired());
+                eceRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getEce().getUEC().getMinimumCreditGrade());
+                eceRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getEce().getUEC().isGotRequiredSubject());
 
-                if(bsneRuleAttribute.isGotRequiredSubject()) {
-                    bsneRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getUEC().getWhatSubjectRequired().getSubject());
-                    bsneRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBsne().getUEC().getMinimumSubjectRequiredGrade().getGrade());
-                    bsneRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
-                    bsneRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getUEC().getAmountOfSubjectRequired());
+                if(eceRuleAttribute.isGotRequiredSubject()) {
+                    eceRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getUEC().getWhatSubjectRequired().getSubject());
+                    eceRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getEce().getUEC().getMinimumSubjectRequiredGrade().getGrade());
+                    eceRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
+                    eceRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getUEC().getAmountOfSubjectRequired());
                 }
             }
             case "STPM":
             {
-                bsneRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().getAmountOfCreditRequired());
-                bsneRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().getMinimumCreditGrade());
-                bsneRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().isGotRequiredSubject());
-                bsneRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().isExempted());
+                eceRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().getAmountOfCreditRequired());
+                eceRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().getMinimumCreditGrade());
+                eceRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().isGotRequiredSubject());
+                eceRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().isExempted());
 
-                if(bsneRuleAttribute.isGotRequiredSubject()) {
-                    bsneRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().getWhatSubjectRequired().getSubject());
-                    bsneRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().getMinimumSubjectRequiredGrade().getGrade());
-                    bsneRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().getAmountOfSubjectRequired());
+                if(eceRuleAttribute.isGotRequiredSubject()) {
+                    eceRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().getWhatSubjectRequired().getSubject());
+                    eceRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().getMinimumSubjectRequiredGrade().getGrade());
+                    eceRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().getAmountOfSubjectRequired());
                 }
 
                 // Get supportive things
-                bsneRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().isNeedSupportiveQualification());
-                if(bsneRuleAttribute.isNeedSupportiveQualification()) {
-                    bsneRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().getWhatSupportiveSubject().getSubject());
-                    bsneRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().getWhatSupportiveGrade().getGrade());
-                    bsneRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTPM().getAmountOfSupportiveSubjectRequired());
+                eceRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().isNeedSupportiveQualification());
+                if(eceRuleAttribute.isNeedSupportiveQualification()) {
+                    eceRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().getWhatSupportiveSubject().getSubject());
+                    eceRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().getWhatSupportiveGrade().getGrade());
+                    eceRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getSTPM().getAmountOfSupportiveSubjectRequired());
 
                     // Convert supportive grade to Integer
-                    bsneRuleAttribute.initializeIntegerSupportiveGrade();
-                    bsneRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bsneRuleAttribute.getSupportiveGradeRequired());
+                    eceRuleAttribute.initializeIntegerSupportiveGrade();
+                    eceRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, eceRuleAttribute.getSupportiveGradeRequired());
                 }
             }
             break;
             case "A-Level":
             {
-                bsneRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().getAmountOfCreditRequired());
-                bsneRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().getMinimumCreditGrade());
-                bsneRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().isGotRequiredSubject());
-                bsneRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().isExempted());
+                eceRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().getAmountOfCreditRequired());
+                eceRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().getMinimumCreditGrade());
+                eceRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().isGotRequiredSubject());
+                eceRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().isExempted());
 
-                if(bsneRuleAttribute.isGotRequiredSubject()) {
-                    bsneRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().getWhatSubjectRequired().getSubject());
-                    bsneRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().getMinimumSubjectRequiredGrade().getGrade());
-                    bsneRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().getAmountOfSubjectRequired());
+                if(eceRuleAttribute.isGotRequiredSubject()) {
+                    eceRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().getWhatSubjectRequired().getSubject());
+                    eceRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().getMinimumSubjectRequiredGrade().getGrade());
+                    eceRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().getAmountOfSubjectRequired());
                 }
 
                 // Get supportive things
-                bsneRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().isNeedSupportiveQualification());
-                if(bsneRuleAttribute.isNeedSupportiveQualification()) {
-                    bsneRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().getWhatSupportiveSubject().getSubject());
-                    bsneRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().getWhatSupportiveGrade().getGrade());
+                eceRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().isNeedSupportiveQualification());
+                if(eceRuleAttribute.isNeedSupportiveQualification()) {
+                    eceRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().getWhatSupportiveSubject().getSubject());
+                    eceRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().getWhatSupportiveGrade().getGrade());
 
                     // Convert supportive grade to Integer
-                    bsneRuleAttribute.initializeIntegerSupportiveGrade();
-                    bsneRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bsneRuleAttribute.getSupportiveGradeRequired());
-                    bsneRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getALevel().getAmountOfSupportiveSubjectRequired());
-                }
-            }
-            break;
-            case "STAM":
-            {
-                bsneRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().getAmountOfCreditRequired());
-                bsneRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().getMinimumCreditGrade());
-                bsneRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().isGotRequiredSubject());
-                bsneRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().isExempted());
-
-                if(bsneRuleAttribute.isGotRequiredSubject()) {
-                    bsneRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().getWhatSubjectRequired().getSubject());
-                    bsneRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().getMinimumSubjectRequiredGrade().getGrade());
-                    bsneRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().getAmountOfSubjectRequired());
-                }
-
-                // Get supportive things
-                bsneRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().isNeedSupportiveQualification());
-                if(bsneRuleAttribute.isNeedSupportiveQualification()) {
-                    bsneRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().getWhatSupportiveSubject().getSubject());
-                    bsneRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().getWhatSupportiveGrade().getGrade());
-
-                    // Convert supportive grade to Integer
-                    bsneRuleAttribute.initializeIntegerSupportiveGrade();
-                    bsneRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bsneRuleAttribute.getSupportiveGradeRequired());
-                    bsneRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBsne().getSTAM().getAmountOfSupportiveSubjectRequired());
+                    eceRuleAttribute.initializeIntegerSupportiveGrade();
+                    eceRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, eceRuleAttribute.getSupportiveGradeRequired());
+                    eceRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getEce().getALevel().getAmountOfSupportiveSubjectRequired());
                 }
             }
             break;

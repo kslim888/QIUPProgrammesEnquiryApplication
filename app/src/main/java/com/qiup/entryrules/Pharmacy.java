@@ -2,364 +2,466 @@ package com.qiup.entryrules;
 
 import android.util.Log;
 
+import com.qiup.POJO.RulePojo;
+import com.qiup.programmeenquiry.MyContext;
+import com.qiup.programmeenquiry.R;
+
 import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 @Rule(name = "Pharmacy", description = "Entry rule to join Bachelor of Pharmacy")
 public class Pharmacy
 {
-    // Advanced math is additional maths
     private static RuleAttribute pharmacyRuleAttribute;
 
     public Pharmacy() { pharmacyRuleAttribute = new RuleAttribute(); }
-
-    // when
+    
     @Condition
-    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
-                               @Fact("Student's Subjects")String[] studentSubjects,
-                               @Fact("Student's Grades")String[] studentGrades,
-                               @Fact("Student's SPM or O-Level") String studentSPMOLevel,
-                               @Fact("Student's English") String studentEnglishGrade,
-                               @Fact("Student's Bahasa Malaysia") String studentBahasaMalaysiaGrade
-                               //@Fact("Student's English Proficiency Test Name") String studentEnglishProficiencyTestName,
-                               /*@Fact("Student's English Proficiency Level") String studentEnglishProficiencyLevel*/)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel
+            , @Fact("Student's Subjects")String[] studentSubjects
+            , @Fact("Student's Grades") int[] studentGrades
+            , @Fact("Student's SPM or O-Level") String supportiveQualificationLevel
+            , @Fact("Student's Supportive Grades") int[] supportiveGrades)
     {
-        if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
+        setJSONAttribute(qualificationLevel, supportiveQualificationLevel); // First set json attribute to the rule
+
+        // Check got required subject or not.
+        if (pharmacyRuleAttribute.isGotRequiredSubject())
         {
-            //check got bio chemi math physic or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // If got, check whether the subject's grade is smaller or equal to the required subject's grade
+            for (int i = 0; i < pharmacyRuleAttribute.getSubjectRequired().size(); i++)
             {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)") || Objects.equals(studentSubjects[i], "Matematik (T)"))
+                for (int j = 0; j < studentSubjects.length; j++)
                 {
-                    pharmacyRuleAttribute.setGotMathSubject();
-                }
-                if( Objects.equals(studentSubjects[i], "Fizik"))
-                {
-                    pharmacyRuleAttribute.setGotPhysics();
-                }
-                if( Objects.equals(studentSubjects[i], "Kimia"))
-                {
-                    pharmacyRuleAttribute.setGotChemi();
-                }
-                if( Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    pharmacyRuleAttribute.setGotBio();
-                }
-            }
-
-            // if no chemi and bio, straight return false
-            // if no Physics and Mathematics, return false. If either 1 got, then continue...
-            if(!pharmacyRuleAttribute.isGotChemi()
-                    || !pharmacyRuleAttribute.isGotBio()
-                    || (!pharmacyRuleAttribute.isGotMathSubject() && !pharmacyRuleAttribute.isGotPhysics()))
-            {
-                return false;
-            }
-
-            // For all students subject check math, Bio, Chemi, physics / math
-            // Grades BBB, ABC or AAC
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)")
-                        || Objects.equals(studentSubjects[i], "Matematik (T)")
-                        || Objects.equals(studentSubjects[i], "Fizik"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C-")
-                            && !Objects.equals(studentGrades[i], "D+")
-                            && !Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "F"))
+                    if (Objects.equals(studentSubjects[j], pharmacyRuleAttribute.getSubjectRequired().get(i)))
                     {
-                        pharmacyRuleAttribute.incrementSTPMCredit();
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Kimia")
-                        || Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    if(Objects.equals(studentGrades[i], "A")
-                            || Objects.equals(studentGrades[i], "A-")
-                            || Objects.equals(studentGrades[i], "B+")
-                            || Objects.equals(studentGrades[i], "B"))
-                    {
-                        pharmacyRuleAttribute.incrementSTPMCredit();
-                    }
-                }
-            }
-
-            // If got enough credit,
-            // Check SPM / o level BM and english got at least credit or not
-            if(pharmacyRuleAttribute.getStpmCredit() >= 3)
-            {
-                if(Objects.equals(studentSPMOLevel, "SPM"))
-                {
-                    if(!Objects.equals(studentBahasaMalaysiaGrade, "D")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "E")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "G"))
-                    {
-                        if(!Objects.equals(studentEnglishGrade, "D")
-                                && !Objects.equals(studentEnglishGrade, "E")
-                                && !Objects.equals(studentEnglishGrade, "G"))
+                        if (studentGrades[j] <= pharmacyRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
                         {
-                            // SPM BM and english got at least credit, check english proficiency level
-                           // if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
-                            //{
-                                return true;
-                            //}
+                            pharmacyRuleAttribute.incrementCountCorrectSubjectRequired();
                         }
                     }
-                }
-                else if(Objects.equals(studentSPMOLevel, "O-Level"))
-                {
-                    if(!Objects.equals(studentBahasaMalaysiaGrade, "D")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "E")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "F")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "G")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "U"))
+                    if (Objects.equals("Mathematics", pharmacyRuleAttribute.getSubjectRequired().get(i)))
                     {
-                        if(!Objects.equals(studentEnglishGrade, "D")
-                                && !Objects.equals(studentEnglishGrade, "E")
-                                && !Objects.equals(studentEnglishGrade, "F")
-                                && !Objects.equals(studentEnglishGrade, "G")
-                                && !Objects.equals(studentEnglishGrade, "U"))
+                        if(Arrays.asList(studentSubjects).contains("Additional Mathematics"))
                         {
-                            // o level BM and english got at least credit, check english proficiency level
-                            //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
-                            //{
-                                return true;
-                            //}
+                            for(int k = 0; k < studentSubjects.length; k++)
+                            {
+                                if(studentGrades[k] <= pharmacyRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                                {
+                                    pharmacyRuleAttribute.incrementCountCorrectSubjectRequired();
+                                }
+                            }
+                        }
+                    }
+                    if (Objects.equals("Science / Technical / Vocational", pharmacyRuleAttribute.getSubjectRequired().get(i)))
+                    {
+                        if (Arrays.asList(pharmacyRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[j]))
+                        {
+                            if (studentGrades[j] <= pharmacyRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                            {
+                                pharmacyRuleAttribute.incrementCountCorrectSubjectRequired();
+                            }
                         }
                     }
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
+
+        // Check need supportive qualification or not
+        if(pharmacyRuleAttribute.isNeedSupportiveQualification())
         {
-            // check got bio chemi math or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // If need, check whether the supportive subject's grade is smaller or equal to the required supportive subject's grade
+            for (int j = 0; j < pharmacyRuleAttribute.getSupportiveSubjectRequired().size(); j++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                switch(pharmacyRuleAttribute.getSupportiveSubjectRequired().get(j))
                 {
-                    pharmacyRuleAttribute.setGotMathSubject();
-                }
-                if( Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    pharmacyRuleAttribute.setGotPhysics();
-                }
-                if( Objects.equals(studentSubjects[i], "Chemistry"))
-                {
-                    pharmacyRuleAttribute.setGotChemi();
-                }
-                if( Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    pharmacyRuleAttribute.setGotBio();
-                }
-            }
-
-            // if no chemi and bio, straight return false
-            // if no Physics and Mathematics, return false
-            if(!pharmacyRuleAttribute.isGotChemi()
-                    || !pharmacyRuleAttribute.isGotBio()
-                    || (!pharmacyRuleAttribute.isGotMathSubject() && !pharmacyRuleAttribute.isGotPhysics()))
-            {
-                return false;
-            }
-
-            // For all students subject check math, Bio, Chemi, Physics / Math
-            // Grades BBB, ABC or AAC
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Further Mathematics")
-                        || Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    if(Objects.equals(studentGrades[i], "A*")
-                            || Objects.equals(studentGrades[i], "A")
-                            || Objects.equals(studentGrades[i], "B")
-                            || Objects.equals(studentGrades[i], "C"))
+                    case "Bahasa Malaysia":
                     {
-                        pharmacyRuleAttribute.incrementALevelCredit();
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    if(Objects.equals(studentGrades[i], "A*")
-                            || Objects.equals(studentGrades[i], "A")
-                            || Objects.equals(studentGrades[i], "B"))
-                    {
-                        pharmacyRuleAttribute.incrementALevelCredit();
-                    }
-                }
-            }
-
-            // if got enough credit, check SPM / o level BM and english got at least credit or not
-            if(pharmacyRuleAttribute.getALevelCredit() >= 3)
-            {
-                if(Objects.equals(studentSPMOLevel, "SPM"))
-                {
-                    if(!Objects.equals(studentBahasaMalaysiaGrade, "D")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "E")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "G"))
-                    {
-                        if(!Objects.equals(studentEnglishGrade, "D")
-                                && !Objects.equals(studentEnglishGrade, "E")
-                                && !Objects.equals(studentEnglishGrade, "G"))
+                        if (supportiveGrades[0] <= pharmacyRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            // SPM BM and english got at least credit, check english proficiency level
-                           // if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
-                            //{
-                                return true;
-                           // }
+                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "English":
+                    {
+                        if (supportiveGrades[1] <= pharmacyRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Mathematics":
+                    {
+                        if (supportiveGrades[2] <= pharmacyRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if (supportiveGrades[3] <= pharmacyRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Science / Technical / Vocational":
+                    {
+                        if (supportiveGrades[4] <= pharmacyRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        // If can see higher qualification to waive subject or not
+        if(pharmacyRuleAttribute.isExempted())
+        {
+            for(int i = 0; i < pharmacyRuleAttribute.getSupportiveSubjectRequired().size(); i++)
+            {
+                switch(pharmacyRuleAttribute.getSupportiveSubjectRequired().get(i))
+                {
+                    case "English":
+                    {
+                        if(Objects.equals(pharmacyRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                    case "Mathematics":
+                    {
+                        if(Objects.equals(pharmacyRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if(Objects.equals(pharmacyRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            pharmacyRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        // For every grade, check whether the grade is smaller or equal to minimum credit grade
+        // Smaller the number the better the grade
+        for (int i = 0; i < studentGrades.length; i++) {
+            if (studentGrades[i] <= pharmacyRuleAttribute.getMinimumCreditGrade())
+                pharmacyRuleAttribute.incrementCountCredit();
+        }
+
+        // Checking Requirements see whether can return true or not
+        if (pharmacyRuleAttribute.isGotRequiredSubject())
+        {
+            // Check subject required is fulfill or not
+            if(pharmacyRuleAttribute.getCountCorrectSubjectRequired() >= pharmacyRuleAttribute.getAmountOfSubjectRequired())
+            {
+                // Check need supportive qualification or not
+                if(pharmacyRuleAttribute.isNeedSupportiveQualification())
+                {
+                    // If need, check whether it fulfill the supportive grade or not
+                    if(pharmacyRuleAttribute.getCountSupportiveSubjectRequired() >= pharmacyRuleAttribute.getAmountOfSupportiveSubjectRequired())
+                    {
+                        // Check enough amount of credit or not
+                        if(pharmacyRuleAttribute.getCountCredit() >= pharmacyRuleAttribute.getAmountOfCreditRequired())
+                        {
+                            return true; // return true as requirements is satisfied
                         }
                     }
                 }
-                else if(Objects.equals(studentSPMOLevel, "O-Level"))
+                else
                 {
-                    if(!Objects.equals(studentBahasaMalaysiaGrade, "D")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "E")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "F")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "G")
-                            && !Objects.equals(studentBahasaMalaysiaGrade, "U"))
+                    // Check enough amount of credit or not
+                    if(pharmacyRuleAttribute.getCountCredit() >= pharmacyRuleAttribute.getAmountOfCreditRequired())
                     {
-                        if(!Objects.equals(studentEnglishGrade, "D")
-                                && !Objects.equals(studentEnglishGrade, "E")
-                                && !Objects.equals(studentEnglishGrade, "F")
-                                && !Objects.equals(studentEnglishGrade, "G")
-                                && !Objects.equals(studentEnglishGrade, "U"))
-                        {
-                            // o level BM and english got at least credit, check english proficiency level
-                           // if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
-                           // {
-                                return true;
-                           // }
-                        }
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
+        else // No subject required
         {
-            // For all students subject check got mathematics, physic, chemi, bio subject or not
-            // Add maths is advanced maths
-            for(int i = 0; i < studentSubjects.length; i++)
+            // Check need supportive qualification or not
+            if(pharmacyRuleAttribute.isNeedSupportiveQualification())
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
+                // If need, check whether it fulfill the supportive grade or not
+                if(pharmacyRuleAttribute.getCountSupportiveSubjectRequired() >= pharmacyRuleAttribute.getAmountOfSupportiveSubjectRequired())
                 {
-                    pharmacyRuleAttribute.setGotAddMaths();
-                }
-                if(Objects.equals(studentSubjects[i], "Mathematics"))
-                {
-                    pharmacyRuleAttribute.setGotMathSubject();
-                }
-                if(Objects.equals(studentSubjects[i], "Chemistry"))
-                {
-                    pharmacyRuleAttribute.setGotChemi();
-                }
-                if(Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    pharmacyRuleAttribute.setGotBio();
-                }
-                if(Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    pharmacyRuleAttribute.setGotPhysics();
-                }
-            }
-
-            // If either chemi bio physic maths or add maths no, return false
-            if(!pharmacyRuleAttribute.isGotChemi()
-                    || !pharmacyRuleAttribute.isGotBio()
-                    || !pharmacyRuleAttribute.isGotPhysics()
-                    || !pharmacyRuleAttribute.isGotMathSubject()
-                    || !pharmacyRuleAttribute.isGotAddMaths())
-            {
-                return false;
-            }
-
-            // For all subject check other subject is at least B4 or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Additional Mathematics")
-                        || Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Biology")
-                        || Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    if(Objects.equals(studentGrades[i], "A1")
-                            || Objects.equals(studentGrades[i], "A2")
-                            || Objects.equals(studentGrades[i], "B3")
-                            || Objects.equals(studentGrades[i], "B4"))
+                    // Check enough amount of credit or not
+                    if(pharmacyRuleAttribute.getCountCredit() >= pharmacyRuleAttribute.getAmountOfCreditRequired())
                     {
-                        pharmacyRuleAttribute.incrementUECCredit();
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
-
-            if(pharmacyRuleAttribute.getUecCredit() >= 5)
+            else
             {
-                return true;
+                // Check enough amount of credit or not
+                if(pharmacyRuleAttribute.getCountCredit() >= pharmacyRuleAttribute.getAmountOfCreditRequired())
+                {
+                    return true; // return true as requirements is satisfied
+                }
             }
         }
-        else // Foundation / Program Asasi / Asas / Matriculation / Diploma
-        {
-            // TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
-        }
-        // If requirements not satisfied, return false
+        // Return false as requirements not satisfied
         return false;
     }
 
-    //then
     @Action
-    public void joinProgramme() throws Exception
-    {
-        // If rule is statisfied (return true), this action will be executed
+    public void joinProgramme() throws Exception {
+        // If rule is satisfied (return true), this action will be executed
         pharmacyRuleAttribute.setJoinProgrammeTrue();
         Log.d("Pharmacy", "Joined");
     }
 
-    public static boolean isJoinProgramme()
-    {
-        return pharmacyRuleAttribute.isJoinProgramme();
-    }
+    public static boolean isJoinProgramme() { return pharmacyRuleAttribute.isJoinProgramme(); }
 
-    private boolean isEnglishProficiencyPass(String studentEnglishProficiencyTestName, String studentEnglishProficiencyLevel)
-    {
-        double proficiencyNumber;
-        if(Objects.equals(studentEnglishProficiencyTestName, "MUET"))
+    private void setJSONAttribute(String mainQualificationLevel, String supportiveQualificationLevel) {
+        switch(mainQualificationLevel)
         {
-            // At least band 3
-            if(!Objects.equals(studentEnglishProficiencyLevel, "Band 2")
-                    && !Objects.equals(studentEnglishProficiencyLevel, "Band 1"))
+            case "UEC":
             {
-                return true;
+                pharmacyRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getUEC().getAmountOfCreditRequired());
+                pharmacyRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getUEC().getMinimumCreditGrade());
+                pharmacyRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getUEC().isGotRequiredSubject());
+
+                if(pharmacyRuleAttribute.isGotRequiredSubject()) {
+                    pharmacyRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getUEC().getWhatSubjectRequired().getSubject());
+                    pharmacyRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getUEC().getMinimumSubjectRequiredGrade().getGrade());
+                    pharmacyRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
+                    pharmacyRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getUEC().getAmountOfSubjectRequired());
+                }
             }
-        }
-        else if(Objects.equals(studentEnglishProficiencyTestName, "IELTS"))
-        {
-            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
-            if(proficiencyNumber >= 6.0 )
+            case "STPM":
             {
-                return true;
+                pharmacyRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().getAmountOfCreditRequired());
+                pharmacyRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().getMinimumCreditGrade());
+                pharmacyRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().isGotRequiredSubject());
+                pharmacyRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().isExempted());
+
+                if(pharmacyRuleAttribute.isGotRequiredSubject()) {
+                    pharmacyRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().getWhatSubjectRequired().getSubject());
+                    pharmacyRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().getMinimumSubjectRequiredGrade().getGrade());
+                    pharmacyRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                pharmacyRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().isNeedSupportiveQualification());
+                if(pharmacyRuleAttribute.isNeedSupportiveQualification()) {
+                    pharmacyRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().getWhatSupportiveSubject().getSubject());
+                    pharmacyRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().getWhatSupportiveGrade().getGrade());
+                    pharmacyRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getSTPM().getAmountOfSupportiveSubjectRequired());
+
+                    // Convert supportive grade to Integer
+                    pharmacyRuleAttribute.initializeIntegerSupportiveGrade();
+                    pharmacyRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, pharmacyRuleAttribute.getSupportiveGradeRequired());
+                }
             }
-        }
-        else if(Objects.equals(studentEnglishProficiencyTestName, "TOEFL (Paper-Based Test)"))
-        {
-            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
-            if(proficiencyNumber >= 550)
+            break;
+            case "A-Level":
             {
-                return true;
+                pharmacyRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().getAmountOfCreditRequired());
+                pharmacyRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().getMinimumCreditGrade());
+                pharmacyRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().isGotRequiredSubject());
+                pharmacyRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().isExempted());
+
+                if(pharmacyRuleAttribute.isGotRequiredSubject()) {
+                    pharmacyRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().getWhatSubjectRequired().getSubject());
+                    pharmacyRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().getMinimumSubjectRequiredGrade().getGrade());
+                    pharmacyRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                pharmacyRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().isNeedSupportiveQualification());
+                if(pharmacyRuleAttribute.isNeedSupportiveQualification()) {
+                    pharmacyRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().getWhatSupportiveSubject().getSubject());
+                    pharmacyRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    pharmacyRuleAttribute.initializeIntegerSupportiveGrade();
+                    pharmacyRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, pharmacyRuleAttribute.getSupportiveGradeRequired());
+                    pharmacyRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getPharmacy().getALevel().getAmountOfSupportiveSubjectRequired());
+                }
             }
+            break;
         }
-        else if(Objects.equals(studentEnglishProficiencyTestName, "TOEFL (Internet-Based Test)"))
-        {
-            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
-            if(proficiencyNumber >= 79)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }

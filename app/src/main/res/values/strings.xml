@@ -101,6 +101,19 @@
         <item> Sciences - Co-ordinated (Double) </item>
     </string-array>
 
+    <string-array name="uecLevel_science_technical_vocational_subject">
+        <item> Digital Logic </item>
+        <item> Basic Circuit Theory </item>
+        <item> Principal Electronic </item>
+        <item> Fundamentals of Electrical Engineering </item>
+        <item> Physics </item>
+        <item> Chemistry </item>
+        <item> Biology </item>
+        <item> Industrial English </item>
+        <item> Car Repairing </item>
+        <item> Industrial Arts </item>
+    </string-array>
+
     <string-array name="qualification_type">
         <item> </item>
         <item> SPM </item>
@@ -551,11 +564,12 @@
         <item> 2.5 </item>
     </string-array>
 
-    <!--Total 31 programme exclude master and degree chemistry-->
+    <!--Total 32 programme exclude master and degree chemistry-->
     <string-array name="programme_list">
         <item> Foundation in Arts </item>
         <item> Foundation in Business </item>
         <item> Foundation in Sciences </item>
+        <!--diploma-->
         <item> Diploma in Business Management </item>
         <item> Diploma in Hotel Management </item>
         <item> Diploma of Accountancy </item>
@@ -564,6 +578,7 @@
         <item> Diploma in Business Information System </item>
         <item> Diploma in Mechatronics Engineering </item>
         <item> Diploma in Environmental Technology </item>
+        <!--degree-->
         <item> Bachelor of Business Administration (Hons) </item>
         <item> BBA (Hons) in Hospitality &amp; Tourism Management </item>
         <item> Bachelor of Accountancy (Hons) </item>

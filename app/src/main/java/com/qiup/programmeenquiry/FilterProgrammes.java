@@ -220,8 +220,10 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             public void onClick(View view) {
                 ArrayList<String> addedSubjectsList = new ArrayList<>();
                 ArrayList<TextView> addedGradesList = new ArrayList<>();
+                String[] supportiveStringGrade = new String[5];
                 String spmOLevelString="", mathematicsGrade="", englishGrade="",
                         addMathGrade="", bahasaMalaysiaGrade="", scienceTechnicalVocationalGrade = "";
+                boolean isSupportive = false;
 
                 // Validate Subjects First
                 // first convert all the subjects into UpperCase for case-insensitive validation
@@ -373,20 +375,41 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 {
                     if(Objects.equals(arrayStringSubjects[i], "Bahasa Inggeris")
                             || Objects.equals(arrayStringSubjects[i], "English Language")
-                            || Objects.equals(arrayStringSubjects[i], "English - First Language"))
+                            || Objects.equals(arrayStringSubjects[i], "English - First Language")
+                            || Objects.equals(arrayStringSubjects[i], "English - Literature")
+                            || Objects.equals(arrayStringSubjects[i], "Kesusasteraan Inggeris")
+                            || Objects.equals(arrayStringSubjects[i], "Literature in English"))
                     {
                         arrayStringSubjects[i] = "English";
                     }
-                    if(Objects.equals(arrayStringSubjects[i], "Advanced Mathematics")
-                    	|| Objects.equals(arrayStringSubjects[i], "Advanced Mathematics I")
-                    	|| Objects.equals(arrayStringSubjects[i], "Advanced Mathematics II"))
+                    if(Objects.equals(arrayStringSubjects[i], "Mathematics - Additional")
+                            || Objects.equals(arrayStringSubjects[i], "Advanced Mathematics")
+                            || Objects.equals(arrayStringSubjects[i], "Advanced Mathematics I")
+                            || Objects.equals(arrayStringSubjects[i], "Advanced Mathematics II")
+                            || Objects.equals(arrayStringSubjects[i], "Matematik (T)")
+                            || Objects.equals(arrayStringSubjects[i], "Further Mathematics"))
                     {
                         arrayStringSubjects[i] = "Additional Mathematics";
                     }
                     if(Objects.equals(arrayStringSubjects[i], "Mathematics D")
-                            || Objects.equals(arrayStringSubjects[i], "International Mathematics"))
+                            || Objects.equals(arrayStringSubjects[i], "International Mathematics")
+                            || Objects.equals(arrayStringSubjects[i], "Matematik (M)"))
                     {
                         arrayStringSubjects[i] = "Mathematics";
+                    }
+                    if(Objects.equals(arrayStringSubjects[i], "Science - Combined")
+                            || Objects.equals(arrayStringSubjects[i], "Sciences - Co-ordinated (Double)")
+                            || Objects.equals(arrayStringSubjects[i], "Additional Science"))
+                    {
+                        arrayStringSubjects[i] = "Science";
+                    }
+                    if(Objects.equals(arrayStringSubjects[i], "Fizik"))
+                    {
+                        arrayStringSubjects[i] = "Physics";
+                    }
+                    if(Objects.equals(arrayStringSubjects[i], "Kimia"))
+                    {
+                        arrayStringSubjects[i] = "Chemistry";
                     }
                 }
 
@@ -400,55 +423,57 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     }
                 }
 
-                //spm or o-level
-                if(spmOLevelSpinner.getSelectedView() != null)
-                {
+                // Spm or o-level
+                if(spmOLevelSpinner.getSelectedView() != null) {
+                    isSupportive = true;
                     TextView spmOLevelText = (TextView)spmOLevelSpinner.getSelectedView();
                     spmOLevelString = spmOLevelText.getText().toString();
                 }
 
-                //bahasa malaysia
-                if(bahasaMalaysiaSpinner.getSelectedView() != null)
-                {
-                    TextView bahasaMalaysiaText = (TextView)bahasaMalaysiaSpinner.getSelectedView();
-                    bahasaMalaysiaGrade = bahasaMalaysiaText.getText().toString();
+                if(isSupportive) {
+                    // Bahasa malaysia
+                    if(bahasaMalaysiaSpinner.getSelectedView() != null) {
+                        TextView bahasaMalaysiaText = (TextView)bahasaMalaysiaSpinner.getSelectedView();
+                        bahasaMalaysiaGrade = bahasaMalaysiaText.getText().toString();
+                    }
+
+                    // English
+                    if(englishSpinner.getSelectedView() != null) {
+                        TextView englishText = (TextView)englishSpinner.getSelectedView();
+                        englishGrade = englishText.getText().toString();
+                    }
+
+                    // Maths
+                    if(mathematicsSpinner.getSelectedView() != null) {
+                        TextView mathematicsText = (TextView)mathematicsSpinner.getSelectedView();
+                        mathematicsGrade = mathematicsText.getText().toString();
+                    }
+
+                    // Add maths
+                    if(addMathSpinner.getSelectedView() != null) {
+                        TextView addMathText = (TextView)addMathSpinner.getSelectedView();
+                        addMathGrade = addMathText.getText().toString();
+                    }
+
+                    // Science technical vocational grade
+                    if(scienceTechnicalVocationalGradeSpinner.getSelectedView() != null) {
+                        TextView scienceTechnicalVocationalGradeSelectedView = (TextView)scienceTechnicalVocationalGradeSpinner.getSelectedView();
+                        scienceTechnicalVocationalGrade = scienceTechnicalVocationalGradeSelectedView.getText().toString();
+                    }
+
+                    // Check second qualification grades error if the qualification is STPM, STAM or A-Level
+                    if(checkSecondQualificationError(spmOLevelString, mathematicsGrade, englishGrade, addMathGrade, bahasaMalaysiaGrade, scienceTechnicalVocationalGrade, selectedItem))
+                        return; // if error is true, dont do anything
+
+                    supportiveStringGrade[0] = bahasaMalaysiaGrade;
+                    supportiveStringGrade[1] = englishGrade;
+                    supportiveStringGrade[2] = mathematicsGrade;
+                    supportiveStringGrade[3] = addMathGrade;
+                    supportiveStringGrade[4] = scienceTechnicalVocationalGrade;
                 }
-
-                //maths
-                if(mathematicsSpinner.getSelectedView() != null)
-                {
-                    TextView mathematicsText = (TextView)mathematicsSpinner.getSelectedView();
-                    mathematicsGrade = mathematicsText.getText().toString();
-                }
-
-                //english
-                if(englishSpinner.getSelectedView() != null)
-                {
-                    TextView englishText = (TextView)englishSpinner.getSelectedView();
-                    englishGrade = englishText.getText().toString();
-                }
-
-                //add math
-                if(addMathSpinner.getSelectedView() != null)
-                {
-                    TextView addMathText = (TextView)addMathSpinner.getSelectedView();
-                    addMathGrade = addMathText.getText().toString();
-                }
-
-                //science technical vocational grade
-                if(scienceTechnicalVocationalGradeSpinner.getSelectedView() != null)
-                {
-                    TextView scienceTechnicalVocationalGradeSelectedView = (TextView)scienceTechnicalVocationalGradeSpinner.getSelectedView();
-                    scienceTechnicalVocationalGrade = scienceTechnicalVocationalGradeSelectedView.getText().toString();
-                }
-
-                //check second qualification grades error if the qualification is STPM, STAM or A-Level
-                if(checkSecondQualificationError(spmOLevelString, mathematicsGrade, englishGrade, addMathGrade, bahasaMalaysiaGrade, scienceTechnicalVocationalGrade, selectedItem))
-                    return; // if error is true, dont do anything
-
 
                 // Validate minimum input subjects
-                /*
+
                 if(Objects.equals(selectedItem, "SPM"))
                 {
                     if(parentLinearLayout.getChildCount() < 18) // min 7
@@ -488,26 +513,29 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         Toast.makeText(FilterProgrammes.this, "Need minimum 8 subjects UEC", Toast.LENGTH_LONG).show();
                         return;
                     }
-                } */
+                }
 
                 // Change grade to number
-                int[] arrayIntegerGrades = new int[arrayStringGrades.length];
+                int[] arrayIntegerGrades = new int[arrayStringGrades.length], arraySupportiveGrade = new int[5];
                 convertToIntegerGrade(selectedItem, arrayIntegerGrades, arrayStringGrades);
+                convertSupportiveGradeToInteger(spmOLevelString, arraySupportiveGrade, supportiveStringGrade);
 
                 // Put together with previous activity's data and send to next activity
                 extras.putString("QUALIFICATION_LEVEL", selectedItem);
                 extras.putStringArray("STUDENT_SUBJECTS_LIST", arrayStringSubjects);
+                extras.putStringArray("STUDENT_STRING_GRADES_LIST", arrayStringGrades);
                 extras.putIntArray("STUDENT_GRADES_LIST", arrayIntegerGrades);
+
                 extras.putString("STUDENT_SECONDARY_QUALIFICATION", spmOLevelString);
-                extras.putString("STUDENT_SECONDARY_MATH", mathematicsGrade);
-                extras.putString("STUDENT_SECONDARY_ENG", englishGrade);
-                extras.putString("STUDENT_SECONDARY_ADDMATH", addMathGrade);
-                extras.putString("STUDENT_SECONDARY_BM", bahasaMalaysiaGrade);
                 extras.putString("STUDENT_STV_SUBJECT", scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim());
-                extras.putString("STUDENT_STV_GRADE", scienceTechnicalVocationalGrade);
+                extras.putString("STUDENT_SECONDARY_BM", supportiveStringGrade[0]);
+                extras.putString("STUDENT_SECONDARY_ENG", supportiveStringGrade[1]);
+                extras.putString("STUDENT_SECONDARY_MATH", supportiveStringGrade[2]);
+                extras.putString("STUDENT_SECONDARY_ADDMATH", supportiveStringGrade[3]);
+                extras.putString("STUDENT_STV_GRADE", supportiveStringGrade[4]);
 
                 // Upon submit, reset back to default
-                /*qualificationSpinner.setSelection(0);
+                qualificationSpinner.setSelection(0);
                 while ( parentLinearLayout.getChildCount() != 12)
                 {
                     parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 10);
@@ -547,13 +575,115 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 addMathSpinner.setEnabled(false);
                 scienceTechnicalVocationalAutoCompleteTextView.setEnabled(false);
                 scienceTechnicalVocationalGradeSpinner.setEnabled(false);
-                filterButton.setEnabled(false); */
+                filterButton.setEnabled(false);
 
                 Intent nextActivity = new Intent(FilterProgrammes.this, InterestProgramme.class);
                 nextActivity.putExtras(extras);
                 startActivity(nextActivity);
             }
         });
+    }
+
+    private void convertSupportiveGradeToInteger(String supportiveQualificationLevel, int[] supportiveIntegerGrade, String[] supportiveStringGrade)
+    {
+        switch(supportiveQualificationLevel)
+        {
+            case "SPM":
+            {
+                for(int i = 0; i < supportiveStringGrade.length; i++)
+                {
+                    if(Objects.equals(supportiveStringGrade[i], "A+"))
+                    {
+                        supportiveIntegerGrade[i] = 1;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "A"))
+                    {
+                        supportiveIntegerGrade[i] = 2;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "A-"))
+                    {
+                        supportiveIntegerGrade[i] = 3;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "B+"))
+                    {
+                        supportiveIntegerGrade[i] = 4;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "B"))
+                    {
+                        supportiveIntegerGrade[i] = 5;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "C+"))
+                    {
+                        supportiveIntegerGrade[i] = 6;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "C"))
+                    {
+                        supportiveIntegerGrade[i] = 7;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "D"))
+                    {
+                        supportiveIntegerGrade[i] = 8;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "E"))
+                    {
+                        supportiveIntegerGrade[i] = 9;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "G"))
+                    {
+                        supportiveIntegerGrade[i] = 10;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "None"))
+                    {
+                        supportiveIntegerGrade[i] = 100; // For indicate as error
+                    }
+                }
+            }
+            break;
+            case "O-Level":
+            {
+                for(int i = 0; i < supportiveStringGrade.length; i++)
+                {
+                    if(Objects.equals(supportiveStringGrade[i], "A"))
+                    {
+                        supportiveIntegerGrade[i] = 1;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "B"))
+                    {
+                        supportiveIntegerGrade[i] = 2;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "C"))
+                    {
+                        supportiveIntegerGrade[i] = 3;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "D"))
+                    {
+                        supportiveIntegerGrade[i] = 4;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "E"))
+                    {
+                        supportiveIntegerGrade[i] = 5;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "F"))
+                    {
+                        supportiveIntegerGrade[i] = 6;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "G"))
+                    {
+                        supportiveIntegerGrade[i] = 7;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "U"))
+                    {
+                        supportiveIntegerGrade[i] = 8;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "None"))
+                    {
+                        supportiveIntegerGrade[i] = 100; // For indicate as error
+                    }
+                }
+            }
+            break;
+        }
+        extras.putIntArray("STUDENT_SUPPORTIVE_GRADES_LIST", supportiveIntegerGrade);
     }
 
     private void initializeLayoutItem() {
@@ -847,8 +977,14 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 return true;
             }
 
+            if(scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim().isEmpty())
+            {
+                Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " Science/Technical/Vocational subject", Toast.LENGTH_LONG).show();
+                return true;
+            }
+
             if(Objects.equals(scienceTechnicalVocationalGrade, "")
-                    && !Objects.equals(scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim(), ""))
+                    && scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim().isEmpty())
             {
                 Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " Science/Technical/Vocational grade", Toast.LENGTH_LONG).show();
                 return true;
@@ -880,8 +1016,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         return false;
     }
 
-    private void loadSpinnerData(AutoCompleteTextView subject, MaterialSpinner grade) throws IOException
-    {
+    private void loadSpinnerData(AutoCompleteTextView subject, MaterialSpinner grade) throws IOException {
         subject.setAdapter(subjectsAdapter);
         grade.setAdapter(gradesAdapter);
         flagForNewField = true; // to only set spinner scrollbar for newly added field
@@ -890,16 +1025,12 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
     //results and SPMOLevel spinner listener
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l)
-    {
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
         String [] gradesList;
 
-        switch(adapterView.getId())
-        {
-            case R.id.qualificationSpinner:
-            {
-                switch(position)
-                {
+        switch(adapterView.getId()) {
+            case R.id.qualificationSpinner: {
+                switch(position) {
                     case -1: // if select back to hint
                     {
                         filterButton.setEnabled(false);
@@ -921,11 +1052,9 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
-                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                        {
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList) {
                             @Override
-                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
-                            {
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
                                 View v;
                                 if (position == 0) {
                                     CheckedTextView tv = new CheckedTextView(getContext());
@@ -955,11 +1084,9 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
-                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                        {
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList) {
                             @Override
-                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
-                            {
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
                                 View v;
                                 if (position == 0) {
                                     TextView tv = new TextView(getContext());
@@ -967,8 +1094,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                                     tv.setVisibility(View.GONE);
                                     v = tv;
                                 }
-                                else
-                                {
+                                else {
                                     v = super.getDropDownView(position, null, parent);
                                 }
                                 return v;
@@ -990,14 +1116,11 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
-                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                        {
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList) {
                             @Override
-                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
-                            {
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
                                 View v;
-                                if (position == 0)
-                                {
+                                if (position == 0) {
                                     TextView tv = new TextView(getContext());
                                     tv.setHeight(0);
                                     tv.setVisibility(View.GONE);
@@ -1025,11 +1148,9 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
-                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                        {
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList) {
                             @Override
-                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
-                            {
+                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
                                 View v;
                                 if (position == 0) {
                                     TextView tv = new TextView(getContext());
@@ -1059,8 +1180,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
-                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                        {
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList) {
                             @Override
                             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
@@ -1071,8 +1191,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                                     tv.setVisibility(View.GONE);
                                     v = tv;
                                 }
-                                else
-                                {
+                                else {
                                     v = super.getDropDownView(position, null, parent);
                                 }
                                 return v;
@@ -1094,8 +1213,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         subjectsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, subjectsList);
 
                         //grade list
-                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                        {
+                        gradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList) {
                             @Override
                             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
@@ -1127,8 +1245,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 ArrayAdapter<String> spmOLevelGradesAdapter, spmOLevelAddMathGradesAdapter, scienceTechnicalVocationalAdapter;
                 String [] addMathGradeList;
 
-                switch(position)
-                {
+                switch(position) {
                     case 1: // spm
                     {
                         gradesList = getResources().getStringArray(R.array.spm_grades);
@@ -1136,8 +1253,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         scienceTechnicalVocationalSubjectArrays = getResources().getStringArray(R.array.spm_science_technical_vocational_subject);
 
                         //grade list
-                        spmOLevelGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, gradesList)
-                        {
+                        spmOLevelGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, gradesList) {
                             @Override
                             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
@@ -1154,8 +1270,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                                 return v;
                             }
                         };
-                        spmOLevelAddMathGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, addMathGradeList)
-                        {
+                        spmOLevelAddMathGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, addMathGradeList) {
                             @Override
                             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
@@ -1192,8 +1307,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         scienceTechnicalVocationalSubjectArrays = getResources().getStringArray(R.array.oLevel_science_technical_vocational_subject);
 
                         //grade list
-                        spmOLevelGradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList)
-                        {
+                        spmOLevelGradesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_text, gradesList) {
                             @Override
                             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
@@ -1210,8 +1324,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                                 return v;
                             }
                         };
-                        spmOLevelAddMathGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, addMathGradeList)
-                        {
+                        spmOLevelAddMathGradesAdapter = new ArrayAdapter<String>(FilterProgrammes.this, R.layout.spinner_text, addMathGradeList) {
                             @Override
                             public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent)
                             {
@@ -1245,10 +1358,9 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             break;
         }
 
-        if(adapterView.getId() == R.id.qualificationSpinner)
-        {
-            if(position == 2 || position == 5 || position == 6)
-            {
+        if(adapterView.getId() == R.id.qualificationSpinner) {
+
+            if(position == 2 || position == 5 || position == 6) {
                 spmOlevelText.setVisibility(View.VISIBLE);
                 spmOLevelSpinner.setVisibility(View.VISIBLE);
                 englishText.setVisibility(View.VISIBLE);
@@ -1268,8 +1380,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 scienceTechnicalVocationalAutoCompleteTextView.setEnabled(false);
                 scienceTechnicalVocationalGradeSpinner.setEnabled(false);
             }
-            else
-            {
+            else {
                 addMathText.setVisibility(View.GONE);
                 addMathSpinner.setVisibility(View.GONE);
                 englishText.setVisibility(View.GONE);
@@ -1290,10 +1401,9 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 scienceTechnicalVocationalGradeSpinner.setEnabled(false);
             }
         }
-        else if(adapterView.getId() == R.id.spmOLevelSpinner)
-        {
-            if(position != 0)
-            {
+        else if(adapterView.getId() == R.id.spmOLevelSpinner) {
+
+            if(position != 0) {
                 scienceTechnicalVocationalAutoCompleteTextView.setEnabled(true);
                 scienceTechnicalVocationalGradeSpinner.setEnabled(true);
                 mathematicsSpinner.setEnabled(true);
@@ -1307,10 +1417,9 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
         // after choose results type and set the adapters, make subjects and grades spinner enable
         // if both subject and grades spinner is disabled, make them both enable back
-        if(adapterView.getId() == R.id.qualificationSpinner)
-        {
-            if(position != -1)
-            {
+        if(adapterView.getId() == R.id.qualificationSpinner) {
+
+            if(position != -1) {
                 filterButton.setEnabled(true);
                 subjectsAutoCompleteTextView.setEnabled(true);
                 gradesSpinner.setEnabled(true);
@@ -1373,4 +1482,5 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
             e.printStackTrace();
         }
     }
+
 }

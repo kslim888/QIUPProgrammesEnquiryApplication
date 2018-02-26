@@ -13,9 +13,7 @@ public class RulePojo{
 
 	public RulePojo(Response response) { rulePojo = (RulePojo) response.body(); }
 
-	public AllProgramme getAllProgramme(){
-		return allProgramme;
-	}
+	public AllProgramme getAllProgramme(){ return allProgramme; }
 
 	public static RulePojo getRulePojo() {
 		return rulePojo;

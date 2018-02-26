@@ -2,295 +2,466 @@ package com.qiup.entryrules;
 
 import android.util.Log;
 
+import com.qiup.POJO.RulePojo;
+import com.qiup.programmeenquiry.MyContext;
+import com.qiup.programmeenquiry.R;
+
 import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 @Rule(name = "MBBS", description = "Entry rule to join Bachelor of Medicine & Bachelor of Surgery ")
 public class MBBS
 {
-    // advanced math is additional maths
     private static RuleAttribute mbbsRuleAttribute;
 
     public MBBS() { mbbsRuleAttribute = new RuleAttribute(); }
-
-    // when
+    
     @Condition
-    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
-                               @Fact("Student's Subjects")String[] studentSubjects,
-                               @Fact("Student's Grades")String[] studentGrades
-                               //@Fact("Student's English Proficiency Test Name") String studentEnglishProficiencyTestName,
-                               /*@Fact("Student's English Proficiency Level") String studentEnglishProficiencyLevel*/)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel
+            , @Fact("Student's Subjects")String[] studentSubjects
+            , @Fact("Student's Grades") int[] studentGrades
+            , @Fact("Student's SPM or O-Level") String supportiveQualificationLevel
+            , @Fact("Student's Supportive Grades") int[] supportiveGrades)
     {
-        if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
+        setJSONAttribute(qualificationLevel, supportiveQualificationLevel); // First set json attribute to the rule
+
+        // Check got required subject or not.
+        if (mbbsRuleAttribute.isGotRequiredSubject())
         {
-            // Check got bio chemi math or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // If got, check whether the subject's grade is smaller or equal to the required subject's grade
+            for (int i = 0; i < mbbsRuleAttribute.getSubjectRequired().size(); i++)
             {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)")
-                        || Objects.equals(studentSubjects[i], "Matematik (T)"))
+                for (int j = 0; j < studentSubjects.length; j++)
                 {
-                    mbbsRuleAttribute.setGotMathSubject();
-                }
-                if( Objects.equals(studentSubjects[i], "Fizik"))
-                {
-                    mbbsRuleAttribute.setGotPhysics();
-                }
-                if( Objects.equals(studentSubjects[i], "Kimia"))
-                {
-                    mbbsRuleAttribute.setGotChemi();
-                }
-                if( Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    mbbsRuleAttribute.setGotBio();
-                }
-            }
-
-            // If no chemi and bio, straight return false
-            // If no Physics and Mathematics, return false. Either 1 got continue
-            if(!mbbsRuleAttribute.isGotChemi()
-                    || !mbbsRuleAttribute.isGotBio()
-                    || (!mbbsRuleAttribute.isGotMathSubject() && !mbbsRuleAttribute.isGotPhysics()))
-            {
-                return false;
-            }
-
-            // For all students subject check math, Bio, Chemi, physics / math
-            // Grades BBB, ABC or AAC
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)")
-                        || Objects.equals(studentSubjects[i], "Matematik (T)")
-                        || Objects.equals(studentSubjects[i], "Fizik"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C-")
-                            && !Objects.equals(studentGrades[i], "D+")
-                            && !Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "F"))
+                    if (Objects.equals(studentSubjects[j], mbbsRuleAttribute.getSubjectRequired().get(i)))
                     {
-                        mbbsRuleAttribute.incrementSTPMCredit();
+                        if (studentGrades[j] <= mbbsRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                        {
+                            mbbsRuleAttribute.incrementCountCorrectSubjectRequired();
+                        }
+                    }
+                    if (Objects.equals("Mathematics", mbbsRuleAttribute.getSubjectRequired().get(i)))
+                    {
+                        if(Arrays.asList(studentSubjects).contains("Additional Mathematics"))
+                        {
+                            for(int k = 0; k < studentSubjects.length; k++)
+                            {
+                                if(studentGrades[k] <= mbbsRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                                {
+                                    mbbsRuleAttribute.incrementCountCorrectSubjectRequired();
+                                }
+                            }
+                        }
+                    }
+                    if (Objects.equals("Science / Technical / Vocational", mbbsRuleAttribute.getSubjectRequired().get(i)))
+                    {
+                        if (Arrays.asList(mbbsRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[j]))
+                        {
+                            if (studentGrades[j] <= mbbsRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                            {
+                                mbbsRuleAttribute.incrementCountCorrectSubjectRequired();
+                            }
+                        }
                     }
                 }
-                if(Objects.equals(studentSubjects[i], "Kimia")
-                        || Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    if(Objects.equals(studentGrades[i], "A")
-                            || Objects.equals(studentGrades[i], "A-")
-                            || Objects.equals(studentGrades[i], "B+")
-                            || Objects.equals(studentGrades[i], "B"))
-                    {
-                        mbbsRuleAttribute.incrementSTPMCredit();
-                    }
-                }
-            }
-
-            // If credit is enough, return true
-            if(mbbsRuleAttribute.getStpmCredit() >= 3)
-            {
-                //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
-                //{
-                    return true;
-                //}
             }
         }
-        else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
+
+        // Check need supportive qualification or not
+        if(mbbsRuleAttribute.isNeedSupportiveQualification())
         {
-            // check got bio chemi math or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // If need, check whether the supportive subject's grade is smaller or equal to the required supportive subject's grade
+            for (int j = 0; j < mbbsRuleAttribute.getSupportiveSubjectRequired().size(); j++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics") || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                switch(mbbsRuleAttribute.getSupportiveSubjectRequired().get(j))
                 {
-                    mbbsRuleAttribute.setGotMathSubject();
-                }
-                if( Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    mbbsRuleAttribute.setGotPhysics();
-                }
-                if( Objects.equals(studentSubjects[i], "Chemistry"))
-                {
-                    mbbsRuleAttribute.setGotChemi();
-                }
-                if( Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    mbbsRuleAttribute.setGotBio();
-                }
-            }
-
-            // if no chemi and bio, straight return false
-            // if no Physics and Mathematics, return false. If either 1 got then continue...
-            if(!mbbsRuleAttribute.isGotChemi()
-                    || !mbbsRuleAttribute.isGotBio()
-                    || (!mbbsRuleAttribute.isGotMathSubject() && !mbbsRuleAttribute.isGotPhysics()))
-            {
-                return false;
-            }
-
-            // For all students subject check math, Bio, Chemi, physics / math
-            // Grades BBB, ABC or AAC
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Further Mathematics")
-                        || Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    if(Objects.equals(studentGrades[i], "A*")
-                            || Objects.equals(studentGrades[i], "A")
-                            || Objects.equals(studentGrades[i], "B")
-                            || Objects.equals(studentGrades[i], "C"))
+                    case "Bahasa Malaysia":
                     {
-                        mbbsRuleAttribute.incrementALevelCredit();
+                        if (supportiveGrades[0] <= mbbsRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
                     }
-                }
-                if(Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    if(Objects.equals(studentGrades[i], "A*")
-                            || Objects.equals(studentGrades[i], "A")
-                            || Objects.equals(studentGrades[i], "B"))
+                    break;
+                    case "English":
                     {
-                        mbbsRuleAttribute.incrementALevelCredit();
+                        if (supportiveGrades[1] <= mbbsRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
                     }
+                    break;
+                    case "Mathematics":
+                    {
+                        if (supportiveGrades[2] <= mbbsRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if (supportiveGrades[3] <= mbbsRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Science / Technical / Vocational":
+                    {
+                        if (supportiveGrades[4] <= mbbsRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
                 }
-            }
-
-            // If credit is enough, return true
-            if(mbbsRuleAttribute.getALevelCredit() >= 3)
-            {
-                //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
-                //{
-                    return true;
-                //}
             }
         }
-        else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
+
+        // If can see higher qualification to waive subject or not
+        if(mbbsRuleAttribute.isExempted())
         {
-            // For all students subject check got mathematics, physic, chemi, bio subject or not
-            // Add maths is advanced maths
-            for(int i = 0; i < studentSubjects.length; i++)
+            for(int i = 0; i < mbbsRuleAttribute.getSupportiveSubjectRequired().size(); i++)
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics"))
+                switch(mbbsRuleAttribute.getSupportiveSubjectRequired().get(i))
                 {
-                    mbbsRuleAttribute.setGotAddMaths();
-                }
-                if(Objects.equals(studentSubjects[i], "Mathematics"))
-                {
-                    mbbsRuleAttribute.setGotMathSubject();
-                }
-                if(Objects.equals(studentSubjects[i], "Chemistry"))
-                {
-                    mbbsRuleAttribute.setGotChemi();
-                }
-                if(Objects.equals(studentSubjects[i], "Biology"))
-                {
-                    mbbsRuleAttribute.setGotBio();
-                }
-                if(Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    mbbsRuleAttribute.setGotPhysics();
-                }
-            }
-
-            // If either chemi bio physic maths or add maths no, return false
-            if(!mbbsRuleAttribute.isGotChemi()
-                    || !mbbsRuleAttribute.isGotBio()
-                    || !mbbsRuleAttribute.isGotPhysics()
-                    || !mbbsRuleAttribute.isGotMathSubject()
-                    || !mbbsRuleAttribute.isGotAddMaths())
-            {
-                return false;
-            }
-
-            // For all chemi bio physic maths and add maths
-            // Check is at least grade B4 or not.
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Additional Mathematics")
-                        || Objects.equals(studentSubjects[i], "Chemistry")
-                        || Objects.equals(studentSubjects[i], "Biology")
-                        || Objects.equals(studentSubjects[i], "Physics"))
-                {
-                    if(Objects.equals(studentGrades[i], "A1")
-                            || Objects.equals(studentGrades[i], "A2")
-                            || Objects.equals(studentGrades[i], "B3")
-                            || Objects.equals(studentGrades[i], "B4"))
+                    case "English":
                     {
-                        mbbsRuleAttribute.incrementUECCredit();
+                        if(Objects.equals(mbbsRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                    case "Mathematics":
+                    {
+                        if(Objects.equals(mbbsRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if(Objects.equals(mbbsRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            mbbsRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        // For every grade, check whether the grade is smaller or equal to minimum credit grade
+        // Smaller the number the better the grade
+        for (int i = 0; i < studentGrades.length; i++) {
+            if (studentGrades[i] <= mbbsRuleAttribute.getMinimumCreditGrade())
+                mbbsRuleAttribute.incrementCountCredit();
+        }
+
+        // Checking Requirements see whether can return true or not
+        if (mbbsRuleAttribute.isGotRequiredSubject())
+        {
+            // Check subject required is fulfill or not
+            if(mbbsRuleAttribute.getCountCorrectSubjectRequired() >= mbbsRuleAttribute.getAmountOfSubjectRequired())
+            {
+                // Check need supportive qualification or not
+                if(mbbsRuleAttribute.isNeedSupportiveQualification())
+                {
+                    // If need, check whether it fulfill the supportive grade or not
+                    if(mbbsRuleAttribute.getCountSupportiveSubjectRequired() >= mbbsRuleAttribute.getAmountOfSupportiveSubjectRequired())
+                    {
+                        // Check enough amount of credit or not
+                        if(mbbsRuleAttribute.getCountCredit() >= mbbsRuleAttribute.getAmountOfCreditRequired())
+                        {
+                            return true; // return true as requirements is satisfied
+                        }
+                    }
+                }
+                else
+                {
+                    // Check enough amount of credit or not
+                    if(mbbsRuleAttribute.getCountCredit() >= mbbsRuleAttribute.getAmountOfCreditRequired())
+                    {
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
-
-            // If enough credit, return true
-            if(mbbsRuleAttribute.getUecCredit() >= 5)
+        }
+        else // No subject required
+        {
+            // Check need supportive qualification or not
+            if(mbbsRuleAttribute.isNeedSupportiveQualification())
             {
-                //if(isEnglishProficiencyPass(studentEnglishProficiencyTestName, studentEnglishProficiencyLevel))
-                //{
-                    return true;
-               // }
+                // If need, check whether it fulfill the supportive grade or not
+                if(mbbsRuleAttribute.getCountSupportiveSubjectRequired() >= mbbsRuleAttribute.getAmountOfSupportiveSubjectRequired())
+                {
+                    // Check enough amount of credit or not
+                    if(mbbsRuleAttribute.getCountCredit() >= mbbsRuleAttribute.getAmountOfCreditRequired())
+                    {
+                        return true; // return true as requirements is satisfied
+                    }
+                }
+            }
+            else
+            {
+                // Check enough amount of credit or not
+                if(mbbsRuleAttribute.getCountCredit() >= mbbsRuleAttribute.getAmountOfCreditRequired())
+                {
+                    return true; // return true as requirements is satisfied
+                }
             }
         }
-        else // Foundation / Program Asasi / Asas / Matriculation / Diploma
-        {
-            // TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
-        }
-        // If requirements is not satisfied, return false
+        // Return false as requirements not satisfied
         return false;
     }
-
-    //then
+    
     @Action
-    public void joinProgramme() throws Exception
-    {
-        // if rule is statisfied (return true), this action will be executed
+    public void joinProgramme() throws Exception {
+        // if rule is satisfied (return true), this action will be executed
         mbbsRuleAttribute.setJoinProgrammeTrue();
         Log.d("MBBS", "Joined");
     }
 
-    public static boolean isJoinProgramme()
-    {
-        return mbbsRuleAttribute.isJoinProgramme();
-    }
+    public static boolean isJoinProgramme() { return mbbsRuleAttribute.isJoinProgramme(); }
 
-    private boolean isEnglishProficiencyPass(String studentEnglishProficiencyTestName, String studentEnglishProficiencyLevel)
-    {
-        double proficiencyNumber;
-        if(Objects.equals(studentEnglishProficiencyTestName, "MUET"))
+    private void setJSONAttribute(String mainQualificationLevel, String supportiveQualificationLevel) {
+        switch(mainQualificationLevel)
         {
-            // at least band 4
-            if(!Objects.equals(studentEnglishProficiencyLevel, "Band 3")
-                    && !Objects.equals(studentEnglishProficiencyLevel, "Band 2")
-                    && !Objects.equals(studentEnglishProficiencyLevel, "Band 1"))
+            case "UEC":
             {
-                return true;
+                mbbsRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getUEC().getAmountOfCreditRequired());
+                mbbsRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getMbbs().getUEC().getMinimumCreditGrade());
+                mbbsRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getMbbs().getUEC().isGotRequiredSubject());
+
+                if(mbbsRuleAttribute.isGotRequiredSubject()) {
+                    mbbsRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getUEC().getWhatSubjectRequired().getSubject());
+                    mbbsRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getMbbs().getUEC().getMinimumSubjectRequiredGrade().getGrade());
+                    mbbsRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
+                    mbbsRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getUEC().getAmountOfSubjectRequired());
+                }
             }
-        }
-        else if(Objects.equals(studentEnglishProficiencyTestName, "IELTS"))
-        {
-            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
-            if(proficiencyNumber >= 5.0 )
+            case "STPM":
             {
-                return true;
+                mbbsRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().getAmountOfCreditRequired());
+                mbbsRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().getMinimumCreditGrade());
+                mbbsRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().isGotRequiredSubject());
+                mbbsRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().isExempted());
+
+                if(mbbsRuleAttribute.isGotRequiredSubject()) {
+                    mbbsRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().getWhatSubjectRequired().getSubject());
+                    mbbsRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().getMinimumSubjectRequiredGrade().getGrade());
+                    mbbsRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                mbbsRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().isNeedSupportiveQualification());
+                if(mbbsRuleAttribute.isNeedSupportiveQualification()) {
+                    mbbsRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().getWhatSupportiveSubject().getSubject());
+                    mbbsRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().getWhatSupportiveGrade().getGrade());
+                    mbbsRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getSTPM().getAmountOfSupportiveSubjectRequired());
+
+                    // Convert supportive grade to Integer
+                    mbbsRuleAttribute.initializeIntegerSupportiveGrade();
+                    mbbsRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, mbbsRuleAttribute.getSupportiveGradeRequired());
+                }
             }
-        }
-        else if(Objects.equals(studentEnglishProficiencyTestName, "TOEFL (Paper-Based Test)"))
-        {
-            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
-            if(proficiencyNumber >= 410)
+            break;
+            case "A-Level":
             {
-                return true;
+                mbbsRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().getAmountOfCreditRequired());
+                mbbsRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().getMinimumCreditGrade());
+                mbbsRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().isGotRequiredSubject());
+                mbbsRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().isExempted());
+
+                if(mbbsRuleAttribute.isGotRequiredSubject()) {
+                    mbbsRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().getWhatSubjectRequired().getSubject());
+                    mbbsRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().getMinimumSubjectRequiredGrade().getGrade());
+                    mbbsRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                mbbsRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().isNeedSupportiveQualification());
+                if(mbbsRuleAttribute.isNeedSupportiveQualification()) {
+                    mbbsRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().getWhatSupportiveSubject().getSubject());
+                    mbbsRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    mbbsRuleAttribute.initializeIntegerSupportiveGrade();
+                    mbbsRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, mbbsRuleAttribute.getSupportiveGradeRequired());
+                    mbbsRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getMbbs().getALevel().getAmountOfSupportiveSubjectRequired());
+                }
             }
+            break;
         }
-        else if(Objects.equals(studentEnglishProficiencyTestName, "TOEFL (Internet-Based Test)"))
-        {
-            proficiencyNumber = Double.parseDouble(studentEnglishProficiencyLevel);
-            if(proficiencyNumber >= 34)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }

@@ -37,9 +37,16 @@ public class UEC {
 	@SerializedName("NotScienceStream")
 	private NotScienceStream notScienceStream;
 
-	public IsScienceStream getIsScienceStream() {
-		return isScienceStream;
-	}
+	@SerializedName("amount_of_subject_required")
+	private int amountOfSubjectRequired;
+
+	@SerializedName("amount_of_supportive_subject_required")
+	private int amountOfSupportiveSubjectRequired;
+
+	@SerializedName("exempted")
+	private boolean exempted;
+
+	public IsScienceStream getIsScienceStream() { return isScienceStream; }
 
 	public NotScienceStream getNotScienceStream() {
 		return notScienceStream;
@@ -81,4 +88,11 @@ public class UEC {
 		return needSupportiveQualification;
 	}
 
+	public int getAmountOfSubjectRequired() { return amountOfSubjectRequired; }
+
+	public int getAmountOfSupportiveSubjectRequired() {
+		return amountOfSupportiveSubjectRequired;
+	}
+
+	public boolean isExempted() { return exempted; }
 }

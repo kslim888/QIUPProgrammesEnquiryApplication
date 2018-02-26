@@ -2,11 +2,16 @@ package com.qiup.entryrules;
 
 import android.util.Log;
 
+import com.qiup.POJO.RulePojo;
+import com.qiup.programmeenquiry.MyContext;
+import com.qiup.programmeenquiry.R;
+
 import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 @Rule(name = "DIS", description = "Entry rule to join Diploma in Business Information System")
@@ -16,341 +21,182 @@ public class DIS
 
     public DIS() { disRuleAttribute = new RuleAttribute(); }
 
-    // when
     @Condition
-    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
-                               @Fact("Student's Subjects")String[] studentSubjects,
-                               @Fact("Student's Grades")String[] studentGrades,
-                               @Fact("Student's SPM or O-Level") String studentSPMOLevel,
-                               @Fact("Student's Mathematics") String studentMathematicsGrade,
-                               @Fact("Student's Additional Mathematics") String studentAddMathGrade,
-                               @Fact("Student's English") String studentEnglishGrade)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel
+            , @Fact("Student's Subjects")String[] studentSubjects
+            , @Fact("Student's Grades") int[] studentGrades
+            , @Fact("Student's SPM or O-Level") String supportiveQualificationLevel
+            , @Fact("Student's Supportive Grades") int[] supportiveGrades)
     {
-        if(Objects.equals(qualificationLevel, "SPM")) // if is SPM qualification
+        setJSONAttribute(qualificationLevel, supportiveQualificationLevel); // First set json attribute to the rule
+
+        // Check got required subject or not.
+        if (disRuleAttribute.isGotRequiredSubject())
         {
-            // Check math subject got credit or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // If got, check whether the subject's grade is smaller or equal to the required subject's grade
+            for (int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
-                        || Objects.equals(studentSubjects[i], "Mathematics"))
+                for (int j = 0; j < disRuleAttribute.getSubjectRequired().size(); j++)
                 {
-                    if(!Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "E")
-                            && !Objects.equals(studentGrades[i], "G"))
+                    if (Objects.equals(studentSubjects[i], disRuleAttribute.getSubjectRequired().get(j)))
                     {
-                        disRuleAttribute.setGotMathSubjectAndCredit();
+                        if (studentGrades[i] <= disRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
+                        {
+                            disRuleAttribute.incrementCountCorrectSubjectRequired();
+                        }
+                    }
+                    if (Objects.equals("Mathematics", disRuleAttribute.getSubjectRequired().get(j)))
+                    {
+                        if(Arrays.asList(studentSubjects).contains("Additional Mathematics"))
+                        {
+                            for(int k = 0; k < studentSubjects.length; k++)
+                            {
+                                if(studentGrades[k] <= disRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
+                                {
+                                    disRuleAttribute.incrementCountCorrectSubjectRequired();
+                                }
+                            }
+                        }
+                    }
+                    if (Objects.equals("Science / Technical / Vocational", disRuleAttribute.getSubjectRequired().get(j)))
+                    {
+                        if (Arrays.asList(disRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[i]))
+                        {
+                            if (studentGrades[i] <= disRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
+                            {
+                                disRuleAttribute.incrementCountCorrectSubjectRequired();
+                            }
+                        }
                     }
                 }
             }
+        }
 
-            // For all student's subject, check got minimum grade C or not
-            // If is minimum grade C, then increment
-            for(int i = 0; i < studentGrades.length; i++)
+        // Check need supportive qualification or not
+        if(disRuleAttribute.isNeedSupportiveQualification())
+        {
+            // If need, check whether the supportive subject's grade is smaller or equal to the required supportive subject's grade
+            for (int j = 0; j < disRuleAttribute.getSupportiveSubjectRequired().size(); j++)
             {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "G"))
+                switch(disRuleAttribute.getSupportiveSubjectRequired().get(j))
                 {
-                    disRuleAttribute.incrementSPMCredit();
+                    case "Bahasa Malaysia":
+                    {
+                        if (supportiveGrades[0] <= disRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            disRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "English":
+                    {
+                        if (supportiveGrades[1] <= disRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            disRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Mathematics":
+                    {
+                        if (supportiveGrades[2] <= disRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            disRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                        else if (supportiveGrades[3] <= disRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            disRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if (supportiveGrades[3] <= disRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            disRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Science / Technical / Vocational":
+                    {
+                        if (supportiveGrades[4] <= disRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            disRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
                 }
             }
+
         }
-        else if(Objects.equals(qualificationLevel, "O-Level")) // if is O Level qualification
+
+        // For every grade, check whether the grade is smaller or equal to minimum credit grade
+        // Smaller the number the better the grade
+        for (int i = 0; i < studentGrades.length; i++) {
+            if (studentGrades[i] <= disRuleAttribute.getMinimumCreditGrade())
+                disRuleAttribute.incrementCountCredit();
+        }
+
+        // Checking Requirements see whether can return true or not
+        if (disRuleAttribute.isGotRequiredSubject())
         {
-            // Check math subject got credit or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // Check subject required is fulfill or not
+            if(disRuleAttribute.getCountCorrectSubjectRequired() >= disRuleAttribute.getAmountOfSubjectRequired())
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics - Additional")
-                        || Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Mathematics D")
-                        || Objects.equals(studentSubjects[i], "International Mathematics"))
+                // Check need supportive qualification or not
+                if(disRuleAttribute.isNeedSupportiveQualification())
                 {
-                    if(!Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "E")
-                            && !Objects.equals(studentGrades[i], "F")
-                            && !Objects.equals(studentGrades[i], "G")
-                            && !Objects.equals(studentGrades[i], "U"))
+                    // If need, check whether it fulfill the supportive grade or not
+                    if(disRuleAttribute.getCountSupportiveSubjectRequired() >= disRuleAttribute.getAmountOfSupportiveSubjectRequired())
                     {
-                        disRuleAttribute.setGotMathSubjectAndCredit();
+                        // Check enough amount of credit or not
+                        if(disRuleAttribute.getCountCredit() >= disRuleAttribute.getAmountOfCreditRequired())
+                        {
+                            return true; // return true as requirements is satisfied
+                        }
+                    }
+                }
+                else
+                {
+                    // Check enough amount of credit or not
+                    if(disRuleAttribute.getCountCredit() >= disRuleAttribute.getAmountOfCreditRequired())
+                    {
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
-
-            // For all student's subject, check got minimum grade C or not
-            // If is minimum grade C, then increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "F")
-                        && !Objects.equals(studentGrades[i], "G")
-                        && !Objects.equals(studentGrades[i], "U"))
-                {
-                    disRuleAttribute.incrementOLevelCredit();
-                }
-            }
         }
-        else if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
+        else // No subject required
         {
-            // check whether got credit in Mathematics and English pass at SPM / O-level
-            if(Objects.equals(studentSPMOLevel, "SPM"))
+            // Check need supportive qualification or not
+            if(disRuleAttribute.isNeedSupportiveQualification())
             {
-                //check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "G"))
+                // If need, check whether it fulfill the supportive grade or not
+                if(disRuleAttribute.getCountSupportiveSubjectRequired() >= disRuleAttribute.getAmountOfSupportiveSubjectRequired())
                 {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "G"))
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check english
-                if(!Objects.equals(studentEnglishGrade, "G"))
-                {
-                    disRuleAttribute.setGotEnglishSubjectAndPass();
-                }
-            }
-            else if(Objects.equals(studentSPMOLevel, "O-Level"))
-            {
-                //check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "F")
-                        && !Objects.equals(studentMathematicsGrade, "G")
-                        && !Objects.equals(studentMathematicsGrade, "U"))
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "F")
-                        && !Objects.equals(studentAddMathGrade, "G")
-                        && !Objects.equals(studentAddMathGrade, "U"))
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check english
-                if(!Objects.equals(studentEnglishGrade, "U"))
-                {
-                    disRuleAttribute.setGotEnglishSubjectAndPass();
-                }
-            }
-
-            // For all student's subject, check got minimum grade C or not
-            // If is minimum grade C, then increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "C-")
-                        && !Objects.equals(studentGrades[i], "D+")
-                        && !Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "F"))
-                {
-                    disRuleAttribute.incrementSTPMCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
-        {
-            // check whether got credit in Mathematics and English pass at spm / o level
-            if(Objects.equals(studentSPMOLevel, "SPM"))
-            {
-                //check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "G"))
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "G"))
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check english
-                if(!Objects.equals(studentEnglishGrade, "G"))
-                {
-                    disRuleAttribute.setGotEnglishSubjectAndPass();
-                }
-            }
-            else if(Objects.equals(studentSPMOLevel, "O-Level"))
-            {
-                //check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "F")
-                        && !Objects.equals(studentMathematicsGrade, "G")
-                        && !Objects.equals(studentMathematicsGrade, "U"))
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "F")
-                        && !Objects.equals(studentAddMathGrade, "G")
-                        && !Objects.equals(studentAddMathGrade, "U"))
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check english
-                if(!Objects.equals(studentEnglishGrade, "U"))
-                {
-                    disRuleAttribute.setGotEnglishSubjectAndPass();
-                }
-            }
-
-            // For all student's subject, check got minimum grade C or not
-            // If is minimum grade C, then increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "U"))
-                {
-                    disRuleAttribute.incrementALevelCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
-        {
-            // check whether got credit in Mathematics at SPM / O Level
-            if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
-            {
-                //check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "G"))
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "G"))
-
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-            }
-            else if(Objects.equals(studentSPMOLevel, "O-Level")) // if is O-Level
-            {
-                //check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "F")
-                        && !Objects.equals(studentMathematicsGrade, "G")
-                        && !Objects.equals(studentMathematicsGrade, "U"))
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "F")
-                        && !Objects.equals(studentAddMathGrade, "G")
-                        && !Objects.equals(studentAddMathGrade, "U"))
-                {
-                    disRuleAttribute.setGotMathSubjectAndCredit();
-                }
-            }
-
-            // Minimum grade of Maqbul, only increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if( !Objects.equals(studentGrades[i], "Rasib"))
-                {
-                    disRuleAttribute.incrementSTAMCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
-        {
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Additional Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C7")
-                            && !Objects.equals(studentGrades[i], "C8")
-                            && !Objects.equals(studentGrades[i], "F9"))
+                    // Check enough amount of credit or not
+                    if(disRuleAttribute.getCountCredit() >= disRuleAttribute.getAmountOfCreditRequired())
                     {
-                        disRuleAttribute.setGotMathSubjectAndCredit();
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
-
-            // For all subject check got at least minimum grade B or not
-            for(int i = 0; i < studentGrades.length; i++)
+            else
             {
-                if(!Objects.equals(studentGrades[i], "C7")
-                        && !Objects.equals(studentGrades[i], "C8")
-                        && !Objects.equals(studentGrades[i], "F9"))
+                // Check enough amount of credit or not
+                if(disRuleAttribute.getCountCredit() >= disRuleAttribute.getAmountOfCreditRequired())
                 {
-                    disRuleAttribute.incrementUECCredit();
+                    return true; // return true as requirements is satisfied
                 }
             }
         }
-        else // SKM level 3
-        {
-            // TODO SKM level 3
-        }
 
-        // If is STPM or A-Level, check credit is at least 2 or not
-        // If is more than 2 , check math credit and english pass or not
-        // If both true, return true for all requirements satisfy
-        if(disRuleAttribute.getStpmCredit() >= 2 || disRuleAttribute.getALevelCredit() >= 2)
-        {
-            if(disRuleAttribute.isGotMathSubjectAndCredit() && disRuleAttribute.isGotEnglishSubjectAndPass())
-            {
-                return true;
-            }
-        }
-
-        // If is credit is enough, check math is credit or not
-        // If both is true, return true for all requirements satisfy
-        if(disRuleAttribute.getSpmCredit() >= 3
-                || disRuleAttribute.getoLevelCredit() >= 3
-                || disRuleAttribute.getStamCredit() >= 1
-                || disRuleAttribute.getUecCredit() >= 3)
-        {
-            if(disRuleAttribute.isGotMathSubjectAndCredit())
-            {
-                return true;
-            }
-        }
-        //if all requirements not satisfy, return false
+        // Return false as requirements not satisfied
         return false;
     }
-
-    //then
+    
     @Action
-    public void joinProgramme() throws Exception
-    {
-        // if rule is statisfied (return true), this action will be executed
+    public void joinProgramme() throws Exception {
+        // if rule is satisfied (return true), this action will be executed
         disRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplomaBusiInfoSystem", "Joined");
     }
@@ -358,5 +204,127 @@ public class DIS
     public static boolean isJoinProgramme()
     {
         return disRuleAttribute.isJoinProgramme();
+    }
+
+    private void setJSONAttribute(String mainQualificationLevel, String supportiveQualificationLevel) {
+        switch(mainQualificationLevel)
+        {
+            case "SPM":
+            {
+                disRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSPM().getAmountOfCreditRequired());
+                disRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getSPM().getMinimumCreditGrade());
+                disRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDis().getSPM().isGotRequiredSubject());
+
+                if(disRuleAttribute.isGotRequiredSubject()) {
+                    disRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSPM().getWhatSubjectRequired().getSubject());
+                    disRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getSPM().getMinimumSubjectRequiredGrade().getGrade());
+                    disRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.spm_science_technical_vocational_subject));
+                    disRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSPM().getAmountOfSubjectRequired());
+                }
+            }
+            break;
+            case "O-Level":
+            {
+                disRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getOLevel().getAmountOfCreditRequired());
+                disRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getOLevel().getMinimumCreditGrade());
+                disRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDis().getOLevel().isGotRequiredSubject());
+
+                if(disRuleAttribute.isGotRequiredSubject()) {
+                    disRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getOLevel().getWhatSubjectRequired().getSubject());
+                    disRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getOLevel().getMinimumSubjectRequiredGrade().getGrade());
+                    disRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.oLevel_science_technical_vocational_subject));
+                    disRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getOLevel().getAmountOfSubjectRequired());
+                }
+            }
+            break;
+            case "UEC":
+            {
+                disRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getUEC().getAmountOfCreditRequired());
+                disRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getUEC().getMinimumCreditGrade());
+                disRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDis().getUEC().isGotRequiredSubject());
+
+                if(disRuleAttribute.isGotRequiredSubject()) {
+                    disRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getUEC().getWhatSubjectRequired().getSubject());
+                    disRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getUEC().getMinimumSubjectRequiredGrade().getGrade());
+                    disRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
+                    disRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getUEC().getAmountOfSubjectRequired());
+                }
+            }
+            case "STPM":
+            {
+                disRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTPM().getAmountOfCreditRequired());
+                disRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getSTPM().getMinimumCreditGrade());
+                disRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDis().getSTPM().isGotRequiredSubject());
+
+                if(disRuleAttribute.isGotRequiredSubject()) {
+                    disRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTPM().getWhatSubjectRequired().getSubject());
+                    disRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getSTPM().getMinimumSubjectRequiredGrade().getGrade());
+                    disRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTPM().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                disRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getDis().getSTPM().isNeedSupportiveQualification());
+                if(disRuleAttribute.isNeedSupportiveQualification()) {
+                    disRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTPM().getWhatSupportiveSubject().getSubject());
+                    disRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTPM().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    disRuleAttribute.initializeIntegerSupportiveGrade();
+                    disRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, disRuleAttribute.getSupportiveGradeRequired());
+                    disRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTPM().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+            case "A-Level":
+            {
+                disRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getALevel().getAmountOfCreditRequired());
+                disRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getALevel().getMinimumCreditGrade());
+                disRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDis().getALevel().isGotRequiredSubject());
+
+                if(disRuleAttribute.isGotRequiredSubject()) {
+                    disRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getALevel().getWhatSubjectRequired().getSubject());
+                    disRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getALevel().getMinimumSubjectRequiredGrade().getGrade());
+                    disRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getALevel().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                disRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getDis().getALevel().isNeedSupportiveQualification());
+                if(disRuleAttribute.isNeedSupportiveQualification()) {
+                    disRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getALevel().getWhatSupportiveSubject().getSubject());
+                    disRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getALevel().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    disRuleAttribute.initializeIntegerSupportiveGrade();
+                    disRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, disRuleAttribute.getSupportiveGradeRequired());
+                    disRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getALevel().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+            case "STAM":
+            {
+                disRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTAM().getAmountOfCreditRequired());
+                disRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getSTAM().getMinimumCreditGrade());
+                disRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDis().getSTAM().isGotRequiredSubject());
+
+                if(disRuleAttribute.isGotRequiredSubject()) {
+                    disRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTAM().getWhatSubjectRequired().getSubject());
+                    disRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDis().getSTAM().getMinimumSubjectRequiredGrade().getGrade());
+                    disRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTAM().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                disRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getDis().getSTAM().isNeedSupportiveQualification());
+                if(disRuleAttribute.isNeedSupportiveQualification()) {
+                    disRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTAM().getWhatSupportiveSubject().getSubject());
+                    disRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTAM().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    disRuleAttribute.initializeIntegerSupportiveGrade();
+                    disRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, disRuleAttribute.getSupportiveGradeRequired());
+                    disRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDis().getSTAM().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+        }
     }
 }

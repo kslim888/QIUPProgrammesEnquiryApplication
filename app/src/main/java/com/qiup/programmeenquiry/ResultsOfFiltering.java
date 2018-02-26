@@ -14,13 +14,13 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.qiup.entryrules.BAC;
 import com.qiup.entryrules.BBA;
-import com.qiup.entryrules.BHT;
 import com.qiup.entryrules.BBS;
 import com.qiup.entryrules.BCE;
 import com.qiup.entryrules.BCS;
 import com.qiup.entryrules.BEM;
 import com.qiup.entryrules.BET;
 import com.qiup.entryrules.BFI;
+import com.qiup.entryrules.BHT;
 import com.qiup.entryrules.BIS;
 import com.qiup.entryrules.BIT;
 import com.qiup.entryrules.BSNE;
@@ -35,8 +35,9 @@ import com.qiup.entryrules.DHM;
 import com.qiup.entryrules.DIS;
 import com.qiup.entryrules.DIT;
 import com.qiup.entryrules.DME;
-import com.qiup.entryrules.ElectronicsCommunicationsEngineering;
+import com.qiup.entryrules.ECE;
 import com.qiup.entryrules.FIA;
+import com.qiup.entryrules.FIB;
 import com.qiup.entryrules.FIS;
 import com.qiup.entryrules.MBBS;
 import com.qiup.entryrules.MassCommAdvertising;
@@ -53,7 +54,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
     ListView eligibleListView, notEligibleListView;
     List<String> eligibleProgrammesList, notEligibleProgrammesList,
             //Requirements Description
-            fibfiaRequirements, fisRequirements,
+            fiaRequirements, fibRequirements, fisRequirements,
             dbmRequirements, dhmRequirements, dacRequirements, dceRequirements,
             ditRequirements, disRequirements, dmeRequirements, detRequirements,
             bbaRequirements, bbaHospitalityRequirements, bacRequirements, bfiRequirements, teslRequirements,
@@ -82,7 +83,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         isGotInterestedProgramme = extras.getBoolean("STUDENT_IS_GOT_INTERESTED_PROGRAMME");
         interestedProgramme = extras.getStringArray("STUDENT_INTERESTED_PROGRAMME_LIST");
         subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
-        gradesStringArray = extras.getStringArray("STUDENT_GRADES_LIST");
+        gradesStringArray = extras.getStringArray("STUDENT_STRING_GRADES_LIST");
         otherInterestedProgramme = extras.getString("STUDENT_OTHER_INTERESTED_PROGRAMME");
 
         // Reference to view
@@ -92,7 +93,8 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         notEligibleListView = findViewById(R.id.notEligibleProgrammesList);
 
         // Foundation
-        fibfiaRequirements = new ArrayList<>();
+        fiaRequirements = new ArrayList<>();
+        fibRequirements = new ArrayList<>();
         fisRequirements = new ArrayList<>();
         // Diploma
         dbmRequirements = new ArrayList<>();
@@ -179,29 +181,6 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 TextView resultTypeText = view.findViewById(R.id.resultTypeDialog);
                 resultTypeText.setText(qualificationLevel);
 
-                //reference to english proficiency FIXME DOES NOT NEED NOW. May delete
-                TextView englishProficiencyTestName = view.findViewById(R.id.dialogEnglishProficiencyTestName);
-                TextView englishProficiencyTestLevel  = view.findViewById(R.id.dialogProficiencyLevel);
-                TextView proficiencyLevelText = view.findViewById(R.id.proficiencyLevelText);
-                TextView englishProficiencyTestText = view.findViewById(R.id.englishProficiencyTestText);
-
-                englishProficiencyTestName.setText(extras.getString("STUDENT_ENGLISH_PROFICIENCY_TEST_NAME"));
-                if(!Objects.equals(englishProficiencyTestName.getText().toString(), "None"))
-                {
-                    englishProficiencyTestLevel.setText(extras.getString("STUDENT_ENGLISH_PROFICIENCY_LEVEL"));
-                }
-                else
-                {
-                    proficiencyLevelText.setVisibility(View.GONE);
-                    englishProficiencyTestLevel.setVisibility(View.GONE);
-                }
-
-                //FIXME For now, set hidden for all the proficiency related things
-                englishProficiencyTestText.setVisibility(View.GONE);
-                englishProficiencyTestName.setVisibility(View.GONE);
-                englishProficiencyTestLevel.setVisibility(View.GONE);
-                proficiencyLevelText.setVisibility(View.GONE);
-
                 //reference to the vertical bar
                 View topbar = view.findViewById(R.id.topBar);
                 View bottomBar = view.findViewById(R.id.bottomBar);
@@ -233,7 +212,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                     secondMathGrade.setText(extras.getString("STUDENT_SECONDARY_ENG"));
                     secondAddMathGrade.setText(extras.getString("STUDENT_SECONDARY_ADDMATH"));
 
-                    materialDialog.getWindow().setLayout(1000, 1200);
+                    materialDialog.getWindow().setLayout(1000, 1250);
                 }
                 else
                 {
@@ -621,7 +600,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 break;
                 case "Bachelor of Engineering (Hons) Electronics & Communications Engineering":
                 {
-                    if(ElectronicsCommunicationsEngineering.isJoinProgramme())
+                    if(ECE.isJoinProgramme())
                     {
                         eligibleProgrammesList.add("Bachelor of Engineering (Hons) Electronics & Communications Engineering");
                     }
@@ -745,7 +724,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                     case "Foundation in Arts":
                     {
                         descriptionAdapter = new DescriptionAdapter(this
-                                ,fibfiaRequirements
+                                ,fiaRequirements
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
@@ -754,7 +733,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                     case "Foundation in Business":
                     {
                         descriptionAdapter = new DescriptionAdapter(this
-                                ,fibfiaRequirements
+                                ,fibRequirements
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
@@ -1061,7 +1040,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                     case "Foundation in Arts":
                     {
                         descriptionAdapter = new DescriptionAdapter(this
-                                ,fibfiaRequirements
+                                ,fiaRequirements
                                 ,qualificationLevel
                                 ,false,
                                 selectedProgrammeFromList);
@@ -1070,7 +1049,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                     case "Foundation in Business":
                     {
                         descriptionAdapter = new DescriptionAdapter(this
-                                ,fibfiaRequirements
+                                ,fibRequirements
                                 ,qualificationLevel
                                 ,false,
                                 selectedProgrammeFromList);
@@ -1363,8 +1342,10 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
     private void initalizeProgrammesDescription()
     {
         //Foundation requirements description
-        fibfiaRequirements.add("SPM / O-Level \n Minimum 5 credits in any subjects");
-        fibfiaRequirements.add("United Examination Certificate (UEC) \n - Minimum Grade B in at least 3 subjects");
+        fiaRequirements.add("SPM / O-Level \n Minimum 5 credits in any subjects");
+        fiaRequirements.add("United Examination Certificate (UEC) \n - Minimum Grade B in at least 3 subjects");
+        fibRequirements.add("SPM / O-Level \n Minimum 5 credits in any subjects");
+        fibRequirements.add("United Examination Certificate (UEC) \n - Minimum Grade B in at least 3 subjects");
         fisRequirements.add("SPM / O-Level \n "
                 + "- Minimum 5 credits including Mathematics, two Sciences subjects and any other two subjects \n "
                 + "- Pass in Bahasa Malaysia and English Language ");
@@ -1697,11 +1678,17 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         if(FIA.isJoinProgramme())
         {
             eligibleProgrammesList.add("Foundation in Arts");
-            eligibleProgrammesList.add("Foundation in Business");
         }
         else
         {
             notEligibleProgrammesList.add("Foundation in Arts");
+        }
+        if(FIB.isJoinProgramme())
+        {
+            eligibleProgrammesList.add("Foundation in Business");
+        }
+        else
+        {
             notEligibleProgrammesList.add("Foundation in Business");
         }
         if(FIS.isJoinProgramme())
@@ -1910,7 +1897,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
             notEligibleProgrammesList.add("Bachelor of Business Information System (Hons)");
         }
 
-        if(ElectronicsCommunicationsEngineering.isJoinProgramme())
+        if(ECE.isJoinProgramme())
         {
             eligibleProgrammesList.add("Bachelor of Engineering (Hons) Electronics & Communications Engineering");
         }

@@ -2,388 +2,495 @@ package com.qiup.entryrules;
 
 import android.util.Log;
 
+import com.qiup.POJO.RulePojo;
+import com.qiup.programmeenquiry.MyContext;
+import com.qiup.programmeenquiry.R;
+
 import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 @Rule(name = "BAC", description = "Entry rule to join Bachelor of Accountancy")
 public class BAC
 {
-    // Advanced math is additional maths
-    // Here english is taken from SPM or O-level level
     private static RuleAttribute bacRuleAttribute;
 
     public BAC() { bacRuleAttribute = new RuleAttribute(); }
 
-    // when
     @Condition
-    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
-                               @Fact("Student's Subjects")String[] studentSubjects,
-                               @Fact("Student's Grades")String[] studentGrades,
-                               @Fact("Student's SPM or O-Level") String studentSPMOLevel,
-                               @Fact("Student's Mathematics") String studentMathematicsGrade,
-                               @Fact("Student's English") String studentEnglishGrade,
-                               @Fact("Student's Additional Mathematics") String studentAddMathGrade)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel
+            , @Fact("Student's Subjects")String[] studentSubjects
+            , @Fact("Student's Grades") int[] studentGrades
+            , @Fact("Student's SPM or O-Level") String supportiveQualificationLevel
+            , @Fact("Student's Supportive Grades") int[] supportiveGrades)
     {
-        if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
-        {
-            // For all students subject check got mathematics subject or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)")
-                        || Objects.equals(studentSubjects[i], "Matematik (T)"))
-                {
-                    bacRuleAttribute.setGotMathSubject();
-                    break;
-                }
-            }
+        setJSONAttribute(qualificationLevel, supportiveQualificationLevel); // First set json attribute to the rule
 
-            // If STPM got math subject, check it is credit or not
-            if(bacRuleAttribute.isGotMathSubject())
+        // Check got required subject or not.
+        if (bacRuleAttribute.isGotRequiredSubject())
+        {
+            // If got, check whether the subject's grade is smaller or equal to the required subject's grade
+            for (int i = 0; i < bacRuleAttribute.getSubjectRequired().size(); i++)
             {
-                for(int i = 0; i < studentSubjects.length; i++)
+                for (int j = 0; j < studentSubjects.length; j++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Matematik (M)")
-                            || Objects.equals(studentSubjects[i], "Matematik (T)"))
+                    if (Objects.equals(studentSubjects[j], bacRuleAttribute.getSubjectRequired().get(i)))
                     {
-                        if(!Objects.equals(studentGrades[i], "C-")
-                                && !Objects.equals(studentGrades[i], "D+")
-                                && !Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "F"))
+                        if (studentGrades[j] <= bacRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
                         {
-                            bacRuleAttribute.setGotMathSubjectAndCredit();
+                            bacRuleAttribute.incrementCountCorrectSubjectRequired();
+                        }
+                    }
+                    if (Objects.equals("Mathematics", bacRuleAttribute.getSubjectRequired().get(i)))
+                    {
+                        if(Arrays.asList(studentSubjects).contains("Additional Mathematics"))
+                        {
+                            for(int k = 0; k < studentSubjects.length; k++)
+                            {
+                                if(studentGrades[k] <= bacRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                                {
+                                    bacRuleAttribute.incrementCountCorrectSubjectRequired();
+                                }
+                            }
+                        }
+                    }
+                    if (Objects.equals("Science / Technical / Vocational", bacRuleAttribute.getSubjectRequired().get(i)))
+                    {
+                        if (Arrays.asList(bacRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[j]))
+                        {
+                            if (studentGrades[j] <= bacRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                            {
+                                bacRuleAttribute.incrementCountCorrectSubjectRequired();
+                            }
                         }
                     }
                 }
             }
-
-            // if SPM english no pass, straightaway return false
-            // if get through, means english is passed
-            if(Objects.equals(studentEnglishGrade, "G"))
-            {
-                return false;
-            }
-            // check O-level english got pass or not. if no pass return false
-            if(Objects.equals(studentEnglishGrade, "U"))
-            {
-                return false;
-            }
-
-            // if STPM got math subject but not credit, or no math subject at STPM
-            if(!bacRuleAttribute.isGotMathSubjectAndCredit())
-            {
-                // check maths and add maths got credit or not. if no credit return false
-                if(Objects.equals(studentSPMOLevel, "SPM"))
-                {
-                    if(!Objects.equals(studentAddMathGrade, "None")
-                            && !Objects.equals(studentAddMathGrade, "D")
-                            && !Objects.equals(studentAddMathGrade, "E")
-                            && !Objects.equals(studentAddMathGrade, "G"))
-                    {
-                        bacRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                    else if(!Objects.equals(studentMathematicsGrade, "D")
-                            && !Objects.equals(studentMathematicsGrade, "E")
-                            && !Objects.equals(studentMathematicsGrade, "G"))
-                    {
-                        bacRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                }
-                else // if is o-level
-                {
-                    if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "F")
-                        && !Objects.equals(studentAddMathGrade, "G")
-                        && !Objects.equals(studentAddMathGrade, "U"))
-                    {
-                        bacRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                    else if(!Objects.equals(studentMathematicsGrade, "D")
-                            && !Objects.equals(studentMathematicsGrade, "E")
-                            && !Objects.equals(studentMathematicsGrade, "F")
-                            && !Objects.equals(studentMathematicsGrade, "G")
-                            && !Objects.equals(studentMathematicsGrade, "U"))
-                    {
-                        bacRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                }
-            }
-
-            // For all students subject check got above at least C+ or not
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "C")
-                        && !Objects.equals(studentGrades[i], "C-")
-                        && !Objects.equals(studentGrades[i], "D+")
-                        && !Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "F"))
-                {
-                    bacRuleAttribute.incrementSTPMCredit();
-                }
-            }
         }
-        else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
-        {
-            // check maths and english
-            if(Objects.equals(studentSPMOLevel, "SPM"))
-            {
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "G"))
-                {
-                    bacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-                else if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "G"))
-                {
-                    bacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-            }
-            else // if is o-level
-            {
-                if(!Objects.equals(studentAddMathGrade, "None")
-                    && !Objects.equals(studentAddMathGrade, "D")
-                    && !Objects.equals(studentAddMathGrade, "E")
-                    && !Objects.equals(studentAddMathGrade, "F")
-                    && !Objects.equals(studentAddMathGrade, "G")
-                    && !Objects.equals(studentAddMathGrade, "U"))
-                {
-                    bacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-                else if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "F")
-                        && !Objects.equals(studentMathematicsGrade, "G")
-                        && !Objects.equals(studentMathematicsGrade, "U"))
-                {
-                    bacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-            }
 
-            // if SPM english no pass, straightaway return false
-            // if get through, means english is passed
-            if(Objects.equals(studentEnglishGrade, "G"))
-            {
-                return false;
-            }
-            // check O-level english got pass or not. if no pass return false
-            if(Objects.equals(studentEnglishGrade, "U"))
-            {
-                return false;
-            }
-
-            // Minimum grade of Jayyid, only increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "Maqbul") && !Objects.equals(studentGrades[i], "Rasib"))
-                {
-                    bacRuleAttribute.incrementSTAMCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
+        // Check need supportive qualification or not
+        if(bacRuleAttribute.isNeedSupportiveQualification())
         {
-            // for all students subject check got mathematics subject or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // If need, check whether the supportive subject's grade is smaller or equal to the required supportive subject's grade
+            for (int j = 0; j < bacRuleAttribute.getSupportiveSubjectRequired().size(); j++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                switch(bacRuleAttribute.getSupportiveSubjectRequired().get(j))
                 {
-                    bacRuleAttribute.setGotMathSubject();
+                    case "Bahasa Malaysia":
+                    {
+                        if (supportiveGrades[0] <= bacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "English":
+                    {
+                        if (supportiveGrades[1] <= bacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Mathematics":
+                    {
+                        if (supportiveGrades[2] <= bacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if (supportiveGrades[3] <= bacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Science / Technical / Vocational":
+                    {
+                        if (supportiveGrades[4] <= bacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
                     break;
                 }
             }
+        }
 
-            // If A-Level got math subject, check it is credit or not
-            if(bacRuleAttribute.isGotMathSubject())
+        // If can see higher qualification to waive subject or not
+        if(bacRuleAttribute.isExempted())
+        {
+            for(int i = 0; i < bacRuleAttribute.getSupportiveSubjectRequired().size(); i++)
             {
-                for(int i = 0; i < studentSubjects.length; i++)
+                switch(bacRuleAttribute.getSupportiveSubjectRequired().get(i))
                 {
-                    if(Objects.equals(studentSubjects[i], "Mathematics")
-                            || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                    case "English":
                     {
-                        if(!Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "U"))
+                        if(Objects.equals(bacRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
                         {
-                            bacRuleAttribute.setGotMathSubjectAndCredit();
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                    case "Mathematics":
+                    {
+                        if(Objects.equals(bacRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if(Objects.equals(bacRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        // For every grade, check whether the grade is smaller or equal to minimum credit grade
+        // Smaller the number the better the grade
+        for (int i = 0; i < studentGrades.length; i++) {
+            if (studentGrades[i] <= bacRuleAttribute.getMinimumCreditGrade())
+                bacRuleAttribute.incrementCountCredit();
+        }
+
+        // Checking Requirements see whether can return true or not
+        if (bacRuleAttribute.isGotRequiredSubject())
+        {
+            // Check subject required is fulfill or not
+            if(bacRuleAttribute.getCountCorrectSubjectRequired() >= bacRuleAttribute.getAmountOfSubjectRequired())
+            {
+                // Check need supportive qualification or not
+                if(bacRuleAttribute.isNeedSupportiveQualification())
+                {
+                    // If need, check whether it fulfill the supportive grade or not
+                    if(bacRuleAttribute.getCountSupportiveSubjectRequired() >= bacRuleAttribute.getAmountOfSupportiveSubjectRequired())
+                    {
+                        // Check enough amount of credit or not
+                        if(bacRuleAttribute.getCountCredit() >= bacRuleAttribute.getAmountOfCreditRequired())
+                        {
+                            return true; // return true as requirements is satisfied
                         }
                     }
                 }
-            }
-
-            // if SPM english no pass, straightaway return false
-            // if get through, means english is passed
-            if(Objects.equals(studentEnglishGrade, "G"))
-            {
-                return false;
-            }
-            // check O-level english got pass or not. if no pass return false
-            if(Objects.equals(studentEnglishGrade, "U"))
-            {
-                return false;
-            }
-
-            // if A-level got math subject but not credit, or no math subject at A-level
-            if(!bacRuleAttribute.isGotMathSubjectAndCredit())
-            {
-                // check maths and english at spm or o-level
-                if(Objects.equals(studentSPMOLevel, "SPM"))
+                else
                 {
-                    if(!Objects.equals(studentAddMathGrade, "None")
-                            && !Objects.equals(studentAddMathGrade, "D")
-                            && !Objects.equals(studentAddMathGrade, "E")
-                            && !Objects.equals(studentAddMathGrade, "G"))
+                    // Check enough amount of credit or not
+                    if(bacRuleAttribute.getCountCredit() >= bacRuleAttribute.getAmountOfCreditRequired())
                     {
-                        bacRuleAttribute.setGotMathSubjectAndCredit();
+                        return true; // return true as requirements is satisfied
                     }
-                    else if(!Objects.equals(studentMathematicsGrade, "D")
-                            && !Objects.equals(studentMathematicsGrade, "E")
-                            && !Objects.equals(studentMathematicsGrade, "G"))
-                    {
-                        bacRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                }
-                else // if is o-level
-                {
-                    if(!Objects.equals(studentAddMathGrade, "None")
-                            && !Objects.equals(studentAddMathGrade, "D")
-                            && !Objects.equals(studentAddMathGrade, "E")
-                            && !Objects.equals(studentAddMathGrade, "F")
-                            && !Objects.equals(studentAddMathGrade, "G")
-                            && !Objects.equals(studentAddMathGrade, "U"))
-
-                    {
-                        bacRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                    else if(!Objects.equals(studentMathematicsGrade, "D")
-                            && !Objects.equals(studentMathematicsGrade, "E")
-                            && !Objects.equals(studentMathematicsGrade, "F")
-                            && !Objects.equals(studentMathematicsGrade, "G")
-                            && !Objects.equals(studentMathematicsGrade, "U"))
-                    {
-                        bacRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                }
-            }
-
-            // For all student subject, check got minimum grade D or not
-            // Only minimum grade D then increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "U"))
-                {
-                    bacRuleAttribute.incrementALevelCredit();
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
+        else // No subject required
         {
-            // For all student's subject, check got maths and english subject or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // Check need supportive qualification or not
+            if(bacRuleAttribute.isNeedSupportiveQualification())
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
-                        || Objects.equals(studentSubjects[i], "Mathematics") )
+                // If need, check whether it fulfill the supportive grade or not
+                if(bacRuleAttribute.getCountSupportiveSubjectRequired() >= bacRuleAttribute.getAmountOfSupportiveSubjectRequired())
                 {
-                    bacRuleAttribute.setGotMathSubject();
-                }
-                if(Objects.equals(studentSubjects[i], "English"))
-                {
-                    bacRuleAttribute.setGotEnglishSubject();
-                }
-                if(bacRuleAttribute.isGotMathSubject() && bacRuleAttribute.isGotEnglishSubject())
-                {
-                    break;
-                }
-            }
-
-            // if either math or english subject no, return false
-            if(!bacRuleAttribute.isGotMathSubject() || !bacRuleAttribute.isGotEnglishSubject())
-            {
-                return false;
-            }
-
-            // hHre check english is at least pass(C8) or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "English"))
-                {
-                    if(Objects.equals(studentGrades[i], "F9"))
+                    // Check enough amount of credit or not
+                    if(bacRuleAttribute.getCountCredit() >= bacRuleAttribute.getAmountOfCreditRequired())
                     {
-                        return false; // if no return false means english is pass or credit
-                    }
-                    break;
-                }
-            }
-
-            // For all student subjects, check the mathematics is got credit(B6) or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
-                        || Objects.equals(studentSubjects[i], "Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C7")
-                            && !Objects.equals(studentGrades[i], "C8")
-                            && !Objects.equals(studentGrades[i], "F9"))
-                    {
-                        bacRuleAttribute.setGotMathSubjectAndCredit();
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
-
-            // For all subject check got at least minimum grade B or not
-            for(int i = 0; i < studentGrades.length; i++)
+            else
             {
-                if(!Objects.equals(studentGrades[i], "C7")
-                        && !Objects.equals(studentGrades[i], "C8")
-                        && !Objects.equals(studentGrades[i], "F9"))
+                // Check enough amount of credit or not
+                if(bacRuleAttribute.getCountCredit() >= bacRuleAttribute.getAmountOfCreditRequired())
                 {
-                    bacRuleAttribute.incrementUECCredit();
+                    return true; // return true as requirements is satisfied
                 }
             }
         }
-        else // Foundation / Program Asasi / Asas / Matriculation / Diploma
-        {
-            // TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
-        }
 
-        // Check credit is enough or not
-        if(bacRuleAttribute.getALevelCredit() >= 2
-                || bacRuleAttribute.getStamCredit() >= 1
-                || bacRuleAttribute.getStpmCredit() >= 2
-                || bacRuleAttribute.getUecCredit() >= 5)
-        {
-            // if credit is enough, check math is credit or not.
-            // If is credit then all requirements satisfied = return true
-            if(bacRuleAttribute.isGotMathSubjectAndCredit())
-            {
-                return true;
-            }
-        }
-        // If requirements not satisfied, return false
+        // Return false as requirements not satisfied
         return false;
     }
-
-    //then
+    
     @Action
-    public void joinProgramme() throws Exception
-    {
-        // if rule is statisfied (return true), this action will be executed
+    public void joinProgramme() throws Exception {
+        // if rule is satisfied (return true), this action will be executed
         bacRuleAttribute.setJoinProgrammeTrue();
         Log.d("BACjoinProgramme", "Joined");
     }
 
-    public static boolean isJoinProgramme()
-    {
+    public static boolean isJoinProgramme() {
         return bacRuleAttribute.isJoinProgramme();
+    }
+
+    private void setJSONAttribute(String mainQualificationLevel, String supportiveQualificationLevel) {
+        switch(mainQualificationLevel)
+        {
+            case "UEC":
+            {
+                bacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().getAmountOfCreditRequired());
+                bacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().getMinimumCreditGrade());
+                bacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().isGotRequiredSubject());
+
+                if(bacRuleAttribute.isGotRequiredSubject()) {
+                    bacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().getWhatSubjectRequired().getSubject());
+                    bacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().getMinimumSubjectRequiredGrade().getGrade());
+                    bacRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
+                    bacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().getAmountOfSubjectRequired());
+                }
+            }
+            case "STPM":
+            {
+                bacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getAmountOfCreditRequired());
+                bacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getMinimumCreditGrade());
+                bacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().isGotRequiredSubject());
+                bacRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().isExempted());
+
+                if(bacRuleAttribute.isGotRequiredSubject()) {
+                    bacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getWhatSubjectRequired().getSubject());
+                    bacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getMinimumSubjectRequiredGrade().getGrade());
+                    bacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                bacRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().isNeedSupportiveQualification());
+                if(bacRuleAttribute.isNeedSupportiveQualification()) {
+                    bacRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getWhatSupportiveSubject().getSubject());
+                    bacRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getWhatSupportiveGrade().getGrade());
+                    bacRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getAmountOfSupportiveSubjectRequired());
+
+                    // Convert supportive grade to Integer
+                    bacRuleAttribute.initializeIntegerSupportiveGrade();
+                    bacRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bacRuleAttribute.getSupportiveGradeRequired());
+                }
+            }
+            break;
+            case "A-Level":
+            {
+                bacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getAmountOfCreditRequired());
+                bacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getMinimumCreditGrade());
+                bacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().isGotRequiredSubject());
+                bacRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().isExempted());
+
+                if(bacRuleAttribute.isGotRequiredSubject()) {
+                    bacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getWhatSubjectRequired().getSubject());
+                    bacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getMinimumSubjectRequiredGrade().getGrade());
+                    bacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                bacRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().isNeedSupportiveQualification());
+                if(bacRuleAttribute.isNeedSupportiveQualification()) {
+                    bacRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getWhatSupportiveSubject().getSubject());
+                    bacRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    bacRuleAttribute.initializeIntegerSupportiveGrade();
+                    bacRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bacRuleAttribute.getSupportiveGradeRequired());
+                    bacRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+            case "STAM":
+            {
+                bacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getAmountOfCreditRequired());
+                bacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getMinimumCreditGrade());
+                bacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().isGotRequiredSubject());
+                bacRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().isExempted());
+
+                if(bacRuleAttribute.isGotRequiredSubject()) {
+                    bacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getWhatSubjectRequired().getSubject());
+                    bacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getMinimumSubjectRequiredGrade().getGrade());
+                    bacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                bacRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().isNeedSupportiveQualification());
+                if(bacRuleAttribute.isNeedSupportiveQualification()) {
+                    bacRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getWhatSupportiveSubject().getSubject());
+                    bacRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    bacRuleAttribute.initializeIntegerSupportiveGrade();
+                    bacRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bacRuleAttribute.getSupportiveGradeRequired());
+                    bacRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+        }
     }
 }

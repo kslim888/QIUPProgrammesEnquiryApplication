@@ -2,404 +2,197 @@ package com.qiup.entryrules;
 
 import android.util.Log;
 
+import com.qiup.POJO.RulePojo;
+import com.qiup.programmeenquiry.MyContext;
+import com.qiup.programmeenquiry.R;
+
 import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 @Rule(name = "DAC", description = "Entry rule to join Diploma in Accountancy")
 public class DAC
 {
-    // advanced math is additional maths
     private static RuleAttribute dacRuleAttribute;
 
     public DAC() { dacRuleAttribute = new RuleAttribute(); }
-
-    // when
+    
     @Condition
-    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
-                               @Fact("Student's Subjects")String[] studentSubjects,
-                               @Fact("Student's Grades")String[] studentGrades,
-                               @Fact("Student's SPM or O-Level") String studentSPMOLevel,
-                               @Fact("Student's Mathematics") String studentMathematicsGrade,
-                               @Fact("Student's Additional Mathematics") String studentAddMathGrade,
-                               @Fact("Student's English") String studentEnglishGrade)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel
+            , @Fact("Student's Subjects")String[] studentSubjects
+            , @Fact("Student's Grades") int[] studentGrades
+            , @Fact("Student's SPM or O-Level") String supportiveQualificationLevel
+            , @Fact("Student's Supportive Grades") int[] supportiveGrades)
     {
-        if(Objects.equals(qualificationLevel, "SPM")) // if is SPM qualification
+        setJSONAttribute(qualificationLevel, supportiveQualificationLevel); // First set json attribute to the rule
+
+        // Check got required subject or not.
+        if (dacRuleAttribute.isGotRequiredSubject())
         {
-            // Check maths got credit and english pass or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // If got, check whether the subject's grade is smaller or equal to the required subject's grade
+            for (int i = 0; i < studentSubjects.length; i++)
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
-                        || Objects.equals(studentSubjects[i], "Mathematics"))
+                for (int j = 0; j < dacRuleAttribute.getSubjectRequired().size(); j++)
                 {
-                    if(!Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "E")
-                            && !Objects.equals(studentGrades[i], "G"))
+                    if (Objects.equals(studentSubjects[i], dacRuleAttribute.getSubjectRequired().get(j)))
                     {
-                        dacRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                    if(Objects.equals(studentSubjects[i], "English"))
-                    {
-                        if(!Objects.equals(studentGrades[i], "G"))
+                        if (studentGrades[i] <= dacRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
                         {
-                            dacRuleAttribute.setGotEnglishSubjectAndPass();
+                            dacRuleAttribute.incrementCountCorrectSubjectRequired();
+                        }
+                    }
+                    if (Objects.equals("Mathematics", dacRuleAttribute.getSubjectRequired().get(j)))
+                    {
+                        if(Arrays.asList(studentSubjects).contains("Additional Mathematics"))
+                        {
+                            for(int k = 0; k < studentSubjects.length; k++)
+                            {
+                                if(studentGrades[k] <= dacRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
+                                {
+                                    dacRuleAttribute.incrementCountCorrectSubjectRequired();
+                                }
+                            }
+                        }
+                    }
+                    if (Objects.equals("Science / Technical / Vocational", dacRuleAttribute.getSubjectRequired().get(j)))
+                    {
+                        if (Arrays.asList(dacRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[i]))
+                        {
+                            if (studentGrades[i] <= dacRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
+                            {
+                                dacRuleAttribute.incrementCountCorrectSubjectRequired();
+                            }
                         }
                     }
                 }
             }
+        }
 
-            // For all student's subject, check got C (credit) or not
-            // Only C and above then increment
-            for(int i = 0; i < studentGrades.length; i++)
+        // Check need supportive qualification or not
+        if(dacRuleAttribute.isNeedSupportiveQualification())
+        {
+            // If need, check whether the supportive subject's grade is smaller or equal to the required supportive subject's grade
+            for (int j = 0; j < dacRuleAttribute.getSupportiveSubjectRequired().size(); j++)
             {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "G"))
+                switch(dacRuleAttribute.getSupportiveSubjectRequired().get(j))
                 {
-                    dacRuleAttribute.incrementSPMCredit();
+                    case "Bahasa Malaysia":
+                    {
+                        if (supportiveGrades[0] <= dacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            dacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "English":
+                    {
+                        if (supportiveGrades[1] <= dacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            dacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Mathematics":
+                    {
+                        if (supportiveGrades[2] <= dacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            dacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if (supportiveGrades[3] <= dacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            dacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Science / Technical / Vocational":
+                    {
+                        if (supportiveGrades[4] <= dacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            dacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
                 }
             }
+
         }
-        else if(Objects.equals(qualificationLevel, "O-Level")) // if is O Level qualification
+
+        // For every grade, check whether the grade is smaller or equal to minimum credit grade
+        // Smaller the number the better the grade
+        for (int i = 0; i < studentGrades.length; i++) {
+            if (studentGrades[i] <= dacRuleAttribute.getMinimumCreditGrade())
+                dacRuleAttribute.incrementCountCredit();
+        }
+
+        // Checking Requirements see whether can return true or not
+        if (dacRuleAttribute.isGotRequiredSubject())
         {
-            // Check maths got credit and english pass or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // Check subject required is fulfill or not
+            if(dacRuleAttribute.getCountCorrectSubjectRequired() >= dacRuleAttribute.getAmountOfSubjectRequired())
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics - Additional")
-                        || Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Mathematics D")
-                        || Objects.equals(studentSubjects[i], "International Mathematics"))
+                // Check need supportive qualification or not
+                if(dacRuleAttribute.isNeedSupportiveQualification())
                 {
-                    if(!Objects.equals(studentGrades[i], "D")
-                            && !Objects.equals(studentGrades[i], "E")
-                            && !Objects.equals(studentGrades[i], "F")
-                            && !Objects.equals(studentGrades[i], "G")
-                            && !Objects.equals(studentGrades[i], "U"))
+                    // If need, check whether it fulfill the supportive grade or not
+                    if(dacRuleAttribute.getCountSupportiveSubjectRequired() >= dacRuleAttribute.getAmountOfSupportiveSubjectRequired())
                     {
-                        dacRuleAttribute.setGotMathSubjectAndCredit();
+                        // Check enough amount of credit or not
+                        if(dacRuleAttribute.getCountCredit() >= dacRuleAttribute.getAmountOfCreditRequired())
+                        {
+                            return true; // return true as requirements is satisfied
+                        }
                     }
                 }
-                if(Objects.equals(studentSubjects[i], "English"))
+                else
                 {
-                    if(!Objects.equals(studentGrades[i], "U"))
+                    // Check enough amount of credit or not
+                    if(dacRuleAttribute.getCountCredit() >= dacRuleAttribute.getAmountOfCreditRequired())
                     {
-                        dacRuleAttribute.setGotEnglishSubjectAndPass();
-                    }
-                }
-            }
-
-            // For all student's subject, check got C (credit) or not
-            // Only C and above then increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "F")
-                        && !Objects.equals(studentGrades[i], "G")
-                        && !Objects.equals(studentGrades[i], "U"))
-                {
-                    dacRuleAttribute.incrementOLevelCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
-        {
-            //check got credit in Mathematics and a pass in English at SPM / O-level
-            if(Objects.equals(studentSPMOLevel, "SPM"))
-            {
-                // check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "G"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                // check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "G"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                // check english
-                if(!Objects.equals(studentEnglishGrade, "G"))
-                {
-                    dacRuleAttribute.setGotEnglishSubjectAndPass();
-                }
-            }
-            else if(Objects.equals(studentSPMOLevel, "O-Level"))
-            {
-                // check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "F")
-                        && !Objects.equals(studentMathematicsGrade, "G")
-                        && !Objects.equals(studentMathematicsGrade, "U"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "F")
-                        && !Objects.equals(studentAddMathGrade, "G")
-                        && !Objects.equals(studentAddMathGrade, "U"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check english
-                if(!Objects.equals(studentEnglishGrade, "U"))
-                {
-                    dacRuleAttribute.setGotEnglishSubjectAndPass();
-                }
-            }
-
-            // For all student's subject, check got grade C or not
-            // Only C and above then increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "C-")
-                        && !Objects.equals(studentGrades[i], "D+")
-                        && !Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "F"))
-                {
-                    dacRuleAttribute.incrementSTPMCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "A-Level")) // if is A Level qualification
-        {
-            //check got credit in Mathematics and a pass in English at SPM / O-level
-            if(Objects.equals(studentSPMOLevel, "SPM"))
-            {
-                //check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "G"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "G"))
-
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check english
-                if(!Objects.equals(studentEnglishGrade, "G"))
-                {
-                    dacRuleAttribute.setGotEnglishSubjectAndPass();
-                }
-            }
-            else if(Objects.equals(studentSPMOLevel, "O-Level"))
-            {
-                // check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "F")
-                        && !Objects.equals(studentMathematicsGrade, "G")
-                        && !Objects.equals(studentMathematicsGrade, "U"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "F")
-                        && !Objects.equals(studentAddMathGrade, "G")
-                        && !Objects.equals(studentAddMathGrade, "U"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check english
-                if(!Objects.equals(studentEnglishGrade, "U"))
-                {
-                    dacRuleAttribute.setGotEnglishSubjectAndPass();
-                }
-            }
-
-            // For all student's subjects, check got minimum grade C or not
-            // Minimum grade C only increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "U"))
-                {
-                    dacRuleAttribute.incrementALevelCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
-        {
-            // check whether got credit in Mathematics and a pass in English at SPM / O-level
-            if(Objects.equals(studentSPMOLevel, "SPM")) // if is SPM
-            {
-                //check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "G"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "G"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check english
-                if(!Objects.equals(studentEnglishGrade, "G"))
-                {
-                    dacRuleAttribute.setGotEnglishSubjectAndPass();
-                }
-            }
-            else if(Objects.equals(studentSPMOLevel, "O-Level")) // if is O-Level
-            {
-                // check math
-                if(!Objects.equals(studentMathematicsGrade, "D")
-                        && !Objects.equals(studentMathematicsGrade, "E")
-                        && !Objects.equals(studentMathematicsGrade, "F")
-                        && !Objects.equals(studentMathematicsGrade, "G")
-                        && !Objects.equals(studentMathematicsGrade, "U"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check add math
-                if(!Objects.equals(studentAddMathGrade, "None")
-                        && !Objects.equals(studentAddMathGrade, "D")
-                        && !Objects.equals(studentAddMathGrade, "E")
-                        && !Objects.equals(studentAddMathGrade, "F")
-                        && !Objects.equals(studentAddMathGrade, "G")
-                        && !Objects.equals(studentAddMathGrade, "U"))
-                {
-                    dacRuleAttribute.setGotMathSubjectAndCredit();
-                }
-
-                //check english
-                if(!Objects.equals(studentEnglishGrade, "U"))
-                {
-                    dacRuleAttribute.setGotEnglishSubjectAndPass();
-                }
-            }
-
-            // minimum grade of Maqbul, only increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if( !Objects.equals(studentGrades[i], "Rasib"))
-                {
-                    dacRuleAttribute.incrementSTAMCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
-        {
-            //check got math and english subject or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics") )
-                {
-                    dacRuleAttribute.setGotMathSubject();
-                }
-                if(Objects.equals(studentSubjects[i], "English") )
-                {
-                    dacRuleAttribute.setGotEnglishSubject();
-                }
-            }
-
-            // If either 1 not exist, return false
-            if(!dacRuleAttribute.isGotMathSubject() || !dacRuleAttribute.isGotEnglishSubject())
-            {
-                return false;
-            }
-
-            // For all student subjects, check mathematics is credit
-            // and english is pass or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics") || Objects.equals(studentSubjects[i], "Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C7")
-                            && !Objects.equals(studentGrades[i], "C8")
-                            && !Objects.equals(studentGrades[i], "F9"))
-                    {
-                        dacRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                }
-                if(Objects.equals(studentSubjects[i], "English"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C7")
-                            && !Objects.equals(studentGrades[i], "C8")
-                            && !Objects.equals(studentGrades[i], "F9"))
-                    {
-                        // Here pass means credit(at least B6 and above)
-                        dacRuleAttribute.setGotEnglishSubjectAndPass();
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
-
-            // For all subject check got at least minimum grade B or not
-            for(int i = 0; i < studentSubjects.length; i++)
+        }
+        else // No subject required
+        {
+            // Check need supportive qualification or not
+            if(dacRuleAttribute.isNeedSupportiveQualification())
             {
-                if(!Objects.equals(studentGrades[i], "C7")
-                        && !Objects.equals(studentGrades[i], "C8")
-                        && !Objects.equals(studentGrades[i], "F9"))
+                // If need, check whether it fulfill the supportive grade or not
+                if(dacRuleAttribute.getCountSupportiveSubjectRequired() >= dacRuleAttribute.getAmountOfSupportiveSubjectRequired())
                 {
-                    dacRuleAttribute.incrementUECCredit();
+                    // Check enough amount of credit or not
+                    if(dacRuleAttribute.getCountCredit() >= dacRuleAttribute.getAmountOfCreditRequired())
+                    {
+                        return true; // return true as requirements is satisfied
+                    }
+                }
+            }
+            else
+            {
+                // Check enough amount of credit or not
+                if(dacRuleAttribute.getCountCredit() >= dacRuleAttribute.getAmountOfCreditRequired())
+                {
+                    return true; // return true as requirements is satisfied
                 }
             }
         }
-        else // SKM level 3
-        {
-            // TODO SKM level 3
-        }
 
-        // For all the qualification, check got more than the credit or not
-        // If more than, then check english is pass and math is credit or not
-        // If both true, return true for all requirements is statisfied
-        if(dacRuleAttribute.getSpmCredit() >= 3
-                || dacRuleAttribute.getStamCredit() >= 1
-                || dacRuleAttribute.getStpmCredit() >= 1
-                || dacRuleAttribute.getALevelCredit() >= 1
-                || dacRuleAttribute.getoLevelCredit() >= 3
-                || dacRuleAttribute.getUecCredit() >= 3)
-        {
-            if(dacRuleAttribute.isGotEnglishSubjectAndPass() && dacRuleAttribute.isGotMathSubjectAndCredit())
-            {
-                return true;
-            }
-        }
-        // If requirements not satisfy, return false
+        // Return false as requirements not satisfied
         return false;
     }
-
-    //then
+    
     @Action
-    public void joinProgramme() throws Exception
-    {
-        // If requirements is statisfied (return true), this action will be executed
+    public void joinProgramme() throws Exception {
+        // If requirements is satisfied (return true), this action will be executed
         dacRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplomaInAccountancy", "Joined");
     }
@@ -407,5 +200,127 @@ public class DAC
     public static boolean isJoinProgramme()
     {
         return dacRuleAttribute.isJoinProgramme();
+    }
+
+    private void setJSONAttribute(String mainQualificationLevel, String supportiveQualificationLevel) {
+        switch(mainQualificationLevel)
+        {
+            case "SPM":
+            {
+                dacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSPM().getAmountOfCreditRequired());
+                dacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getSPM().getMinimumCreditGrade());
+                dacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDac().getSPM().isGotRequiredSubject());
+
+                if(dacRuleAttribute.isGotRequiredSubject()) {
+                    dacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSPM().getWhatSubjectRequired().getSubject());
+                    dacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getSPM().getMinimumSubjectRequiredGrade().getGrade());
+                    dacRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.spm_science_technical_vocational_subject));
+                    dacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSPM().getAmountOfSubjectRequired());
+                }
+            }
+            break;
+            case "O-Level":
+            {
+                dacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getOLevel().getAmountOfCreditRequired());
+                dacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getOLevel().getMinimumCreditGrade());
+                dacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDac().getOLevel().isGotRequiredSubject());
+
+                if(dacRuleAttribute.isGotRequiredSubject()) {
+                    dacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getOLevel().getWhatSubjectRequired().getSubject());
+                    dacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getOLevel().getMinimumSubjectRequiredGrade().getGrade());
+                    dacRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.oLevel_science_technical_vocational_subject));
+                    dacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getOLevel().getAmountOfSubjectRequired());
+                }
+            }
+            break;
+            case "UEC":
+            {
+                dacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getUEC().getAmountOfCreditRequired());
+                dacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getUEC().getMinimumCreditGrade());
+                dacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDac().getUEC().isGotRequiredSubject());
+
+                if(dacRuleAttribute.isGotRequiredSubject()) {
+                    dacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getUEC().getWhatSubjectRequired().getSubject());
+                    dacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getUEC().getMinimumSubjectRequiredGrade().getGrade());
+                    dacRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
+                    dacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getUEC().getAmountOfSubjectRequired());
+                }
+            }
+            case "STPM":
+            {
+                dacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTPM().getAmountOfCreditRequired());
+                dacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getSTPM().getMinimumCreditGrade());
+                dacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDac().getSTPM().isGotRequiredSubject());
+
+                if(dacRuleAttribute.isGotRequiredSubject()) {
+                    dacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTPM().getWhatSubjectRequired().getSubject());
+                    dacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getSTPM().getMinimumSubjectRequiredGrade().getGrade());
+                    dacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTPM().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                dacRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getDac().getSTPM().isNeedSupportiveQualification());
+                if(dacRuleAttribute.isNeedSupportiveQualification()) {
+                    dacRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTPM().getWhatSupportiveSubject().getSubject());
+                    dacRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTPM().getWhatSupportiveGrade().getGrade());
+                    dacRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTPM().getAmountOfSupportiveSubjectRequired());
+
+                    // Convert supportive grade to Integer
+                    dacRuleAttribute.initializeIntegerSupportiveGrade();
+                    dacRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, dacRuleAttribute.getSupportiveGradeRequired());
+                }
+            }
+            break;
+            case "A-Level":
+            {
+                dacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getALevel().getAmountOfCreditRequired());
+                dacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getALevel().getMinimumCreditGrade());
+                dacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDac().getALevel().isGotRequiredSubject());
+
+                if(dacRuleAttribute.isGotRequiredSubject()) {
+                    dacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getALevel().getWhatSubjectRequired().getSubject());
+                    dacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getALevel().getMinimumSubjectRequiredGrade().getGrade());
+                    dacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getALevel().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                dacRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getDac().getALevel().isNeedSupportiveQualification());
+                if(dacRuleAttribute.isNeedSupportiveQualification()) {
+                    dacRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getALevel().getWhatSupportiveSubject().getSubject());
+                    dacRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getALevel().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    dacRuleAttribute.initializeIntegerSupportiveGrade();
+                    dacRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, dacRuleAttribute.getSupportiveGradeRequired());
+                    dacRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getALevel().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+            case "STAM":
+            {
+                dacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTAM().getAmountOfCreditRequired());
+                dacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getSTAM().getMinimumCreditGrade());
+                dacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDac().getSTAM().isGotRequiredSubject());
+
+                if(dacRuleAttribute.isGotRequiredSubject()) {
+                    dacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTAM().getWhatSubjectRequired().getSubject());
+                    dacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDac().getSTAM().getMinimumSubjectRequiredGrade().getGrade());
+                    dacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTAM().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                dacRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getDac().getSTAM().isNeedSupportiveQualification());
+                if(dacRuleAttribute.isNeedSupportiveQualification()) {
+                    dacRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTAM().getWhatSupportiveSubject().getSubject());
+                    dacRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTAM().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    dacRuleAttribute.initializeIntegerSupportiveGrade();
+                    dacRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, dacRuleAttribute.getSupportiveGradeRequired());
+                    dacRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDac().getSTAM().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+        }
     }
 }

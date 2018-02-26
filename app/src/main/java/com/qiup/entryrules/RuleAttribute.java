@@ -1,101 +1,37 @@
 package com.qiup.entryrules;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RuleAttribute
 {
-    private int foundationCredit, countRequiredScienceSubject, spmCredit, stpmCredit,
-            stamCredit, aLevelCredit, uecCredit, oLevelCredit, countPassScienceSubjects,
-            countCorrectSubjectRequired, countSupportiveSubjectRequired, countScienceSubjectRequired;
-    private float minimumCGPA, minimumGP;
-    private boolean joinProgramme,
-            gotMathSubject, gotMathSubjectAndPass, gotMathSubjectAndCredit,
-            gotAddMaths,
-            gotEnglishSubject, gotEnglishSubjectAndPass, gotEnglishSubjectAndCredit,
-            gotChemi, gotChemiAndCredit,
-            gotBio, gotBioAndCredit,
-            gotPhysics, gotPhysicsAndCredit,
-            gotScienceSubjectsCredit,
-            scienceTechnicalVocationalSubjectsCredit,
-            isScienceStream;
+    // For general usage
+    private int countCredit, countCorrectRequiredScienceSubject, countCorrectSubjectRequired,
+            countSupportiveSubjectRequired;
+    // private float minimumCGPA, minimumGP; // TODO for future matriculation / foundation
+    private boolean joinProgramme;
 
-    // total 14, here 12
-    private int amountOfCreditRequired, minimumCreditGrade;
-    private boolean gotRequiredSubject, needSupportiveQualification;
+    // JSON Attribute
+    private String[] scienceTechnicalVocationalSubjectArrays;
+    private int amountOfCreditRequired, minimumCreditGrade, minimumRequiredScienceSubject,
+    amountOfSubjectRequired, amountOfSupportiveSubjectRequired;
+    private boolean gotRequiredSubject, needSupportiveQualification, exempted;
     private String whatSupportiveQualification;
-    private int minimumRequiredScienceSubject; // for IsScienceStream / NotScienceStream and SPM
     private List<String> subjectRequired; // WhatSubjectRequired
-    private List<Integer> minimumGradeRequired; // MinimumSubjectRequiredGrade
-
+    private List<Integer> minimumSubjectRequiredGrade; // MinimumSubjectRequiredGrade
     private List<String> supportiveSubjectRequired; // WhatSupportiveSubject
     private List<String> supportiveGradeRequired; // WhatSupportiveGrade
-
+    private List<Integer> supportiveIntegerGradeRequired; // Integer WhatSupportiveGrade
     private List<String> scienceSubjectRequired; // WhatScienceSubjectRequired
     private List<Integer> minimumScienceSubjectGradeRequired; // MinimumScienceSubjectGrade
 
     RuleAttribute() {
         joinProgramme = false;
-        gotMathSubject = false;
-        gotMathSubjectAndPass = false;
-        gotMathSubjectAndCredit = false;
-        gotEnglishSubject = false;
-        gotEnglishSubjectAndPass = false;
-        gotEnglishSubjectAndCredit = false;
-        gotChemi = false;
-        gotChemiAndCredit = false;
-        gotBio = false;
-        gotBioAndCredit = false;
-        gotPhysics = false;
-        gotPhysicsAndCredit = false;
-        scienceTechnicalVocationalSubjectsCredit = false;
-        isScienceStream = false;
-        gotScienceSubjectsCredit = false;
-        gotAddMaths = false;
-        foundationCredit = 0;
-        countRequiredScienceSubject = 0;
-        stpmCredit = 0;
-        stamCredit = 0;
-        aLevelCredit = 0;
-        uecCredit = 0;
-        spmCredit = 0;
-        oLevelCredit = 0;
-        countPassScienceSubjects = 0;
-
+        countCredit = 0;
+        countCorrectRequiredScienceSubject = 0;
         countCorrectSubjectRequired = 0;
         countSupportiveSubjectRequired = 0;
-        countScienceSubjectRequired = 0;
-    }
-
-    public int getUecCredit() {
-        return uecCredit;
-    }
-
-    public void incrementUECCredit() {
-        this.uecCredit++;
-    }
-
-    public int getALevelCredit() {
-        return aLevelCredit;
-    }
-
-    public void incrementALevelCredit() {
-        this.aLevelCredit++;
-    }
-
-    public int getStamCredit() {
-        return stamCredit;
-    }
-
-    public void incrementSTAMCredit() {
-        this.stamCredit++;
-    }
-
-    public int getStpmCredit() {
-        return stpmCredit;
-    }
-
-    public void incrementSTPMCredit() {
-        this.stpmCredit++;
     }
 
     public boolean isJoinProgramme() {
@@ -106,170 +42,20 @@ public class RuleAttribute
         this.joinProgramme = true;
     }
 
-    int getFoundationCredit() {
-        return foundationCredit;
+    int getCountCredit() {
+        return countCredit;
     }
 
-    void incrementFoundationCredit() {
-        this.foundationCredit++;
+    void incrementCountCredit() {
+        this.countCredit++;
     }
 
-    int getCountRequiredScienceSubject() {
-        return countRequiredScienceSubject;
+    int getCountCorrectRequiredScienceSubject() {
+        return countCorrectRequiredScienceSubject;
     }
 
-    void incrementCountRequiredScienceSubject() {
-        this.countRequiredScienceSubject++;
-    }
-
-    int getSpmCredit() {
-        return spmCredit;
-    }
-
-    void incrementSPMCredit() {this.spmCredit++; }
-
-    int getoLevelCredit() {
-        return oLevelCredit;
-    }
-
-    void incrementOLevelCredit() {
-        this.oLevelCredit++;
-    }
-
-    public boolean isGotMathSubject() {
-        return gotMathSubject;
-    }
-
-    public void setGotMathSubject() {
-        this.gotMathSubject = true;
-    }
-
-    boolean isGotMathSubjectAndPass() {
-        return gotMathSubjectAndPass;
-    }
-
-    void setGotMathSubjectAndPass() {
-        this.gotMathSubjectAndPass = true;
-    }
-
-    public boolean isGotMathSubjectAndCredit() {
-        return gotMathSubjectAndCredit;
-    }
-
-    public void setGotMathSubjectAndCredit() {
-        this.gotMathSubjectAndCredit = true;
-    }
-
-    boolean isGotEnglishSubject() {
-        return gotEnglishSubject;
-    }
-
-    void setGotEnglishSubject() {
-        this.gotEnglishSubject = true;
-    }
-
-    public boolean isGotEnglishSubjectAndPass() {
-        return gotEnglishSubjectAndPass;
-    }
-
-    public void setGotEnglishSubjectAndPass() {
-        this.gotEnglishSubjectAndPass = true;
-    }
-
-    boolean isGotEnglishSubjectAndCredit() {
-        return gotEnglishSubjectAndCredit;
-    }
-
-    void setGotEnglishSubjectAndCredit() {
-        this.gotEnglishSubjectAndCredit = true;
-    }
-
-    boolean isGotChemi() {
-        return gotChemi;
-    }
-
-    void setGotChemi() {
-        this.gotChemi = true;
-    }
-
-    boolean isGotChemiAndCredit() {
-        return gotChemiAndCredit;
-    }
-
-    void setGotChemiAndCredit() {
-        this.gotChemiAndCredit = true;
-    }
-
-    boolean isGotBio() {
-        return gotBio;
-    }
-
-    void setGotBio() {
-        this.gotBio = true;
-    }
-
-    boolean isGotBioAndCredit() {
-        return gotBioAndCredit;
-    }
-
-    void setGotBioAndCredit() {
-        this.gotBioAndCredit = true;
-    }
-
-    boolean isGotPhysics() {
-        return gotPhysics;
-    }
-
-    void setGotPhysics() {
-        this.gotPhysics = true;
-    }
-
-    boolean isGotPhysicsAndCredit() {
-        return gotPhysicsAndCredit;
-    }
-
-    void setGotPhysicsAndCredit() {
-        this.gotPhysicsAndCredit = true;
-    }
-
-    boolean isScienceTechnicalVocationalSubjectsCredit() {
-        return scienceTechnicalVocationalSubjectsCredit;
-    }
-
-    void setScienceTechnicalVocationalSubjectsCredit() {
-        this.scienceTechnicalVocationalSubjectsCredit = true;
-    }
-
-    boolean isScienceStream() {
-        return isScienceStream;
-    }
-
-    void setScienceStreamTrue() {
-        isScienceStream = true;
-    }
-
-    int getCountPassScienceSubjects() {
-        return countPassScienceSubjects;
-    }
-
-    void incrementCountPassScienceSubjects() {
-        this.countPassScienceSubjects++;
-    }
-
-    boolean isGotScienceSubjectsCredit() {
-        return gotScienceSubjectsCredit;
-    }
-
-    void setGotScienceSubjectsCredit() {
-        this.gotScienceSubjectsCredit = true;
-    }
-
-    boolean isGotAddMaths() {
-        return gotAddMaths;
-    }
-
-    void setGotAddMaths() {
-        this.gotAddMaths = true;
+    void incrementCountCorrectRequiredScienceSubject() {
+        this.countCorrectRequiredScienceSubject++;
     }
 
     // JSON attribute
@@ -329,12 +115,12 @@ public class RuleAttribute
         this.subjectRequired = subjectRequired;
     }
 
-    public List<Integer> getMinimumGradeRequired() {
-        return minimumGradeRequired;
+    public List<Integer> getMinimumSubjectRequiredGrade() {
+        return minimumSubjectRequiredGrade;
     }
 
-    public void setMinimumGradeRequired(List<Integer> gradeRequired) {
-        this.minimumGradeRequired = gradeRequired;
+    public void setMinimumSubjectRequiredGrade(List<Integer> gradeRequired) {
+        this.minimumSubjectRequiredGrade = gradeRequired;
     }
 
     public List<String> getSupportiveSubjectRequired() {
@@ -369,12 +155,48 @@ public class RuleAttribute
         this.minimumScienceSubjectGradeRequired = minimumScienceSubjectGradeRequired;
     }
 
+    public List<Integer> getSupportiveIntegerGradeRequired() {
+        return supportiveIntegerGradeRequired;
+    }
+
+    public void setSupportiveIntegrGradeRequired(int gradeNumber) {
+        supportiveIntegerGradeRequired.add(gradeNumber);
+    }
+
+    public String[] getScienceTechnicalVocationalSubjectArrays() {
+        return scienceTechnicalVocationalSubjectArrays;
+    }
+
+    public void setScienceTechnicalVocationalSubjectArrays(String[] scienceTechnicalVocationalSubjectArrays) {
+        this.scienceTechnicalVocationalSubjectArrays = scienceTechnicalVocationalSubjectArrays;
+    }
+
+    public int getAmountOfSubjectRequired() {
+        return amountOfSubjectRequired;
+    }
+
+    public void setAmountOfSubjectRequired(int amountOfSubjectRequired) {
+        this.amountOfSubjectRequired = amountOfSubjectRequired;
+    }
+
+    public int getAmountOfSupportiveSubjectRequired() {
+        return amountOfSupportiveSubjectRequired;
+    }
+
+    public void setAmountOfSupportiveSubjectRequired(int amountOfSupportiveSubjectRequired) {
+        this.amountOfSupportiveSubjectRequired = amountOfSupportiveSubjectRequired;
+    }
+
+    public boolean isExempted() { return exempted; }
+
+    public void setExempted(boolean exempted) { this.exempted = exempted; }
+
     // For the length of required things
     public int getCountCorrectSubjectRequired() {
         return countCorrectSubjectRequired;
     }
 
-    public void incrementCountSubjectRequired() {
+    public void incrementCountCorrectSubjectRequired() {
         this.countCorrectSubjectRequired++;
     }
 
@@ -386,11 +208,34 @@ public class RuleAttribute
         this.countSupportiveSubjectRequired++;
     }
 
-    public int getCountScienceSubjectRequired() {
-        return countScienceSubjectRequired;
+    // Convert supportive grade to Integer
+    public void convertSupportiveGradeToInteger(String qualificationLevel, List<String> supportiveStringGrades) {
+        if(Objects.equals(qualificationLevel, "SPM"))
+        {
+            for(int i = 0; i < supportiveStringGrades.size(); i++) {
+                if(Objects.equals(supportiveStringGrades.get(i), "Credit")) {
+                    setSupportiveIntegrGradeRequired(7); // If required supportive grade is credit, set it to 1
+                }
+                else if(Objects.equals(supportiveStringGrades.get(i), "Pass")) {
+                    setSupportiveIntegrGradeRequired(9); // If required supportive grade is pass, set it to 2
+                }
+            }
+        }
+        else // is O-Level
+        {
+            for(int i = 0; i < supportiveStringGrades.size(); i++) {
+                if(Objects.equals(supportiveStringGrades.get(i), "Credit")) {
+                    setSupportiveIntegrGradeRequired(3); // If required supportive grade is credit, set it to 1
+                }
+                else if(Objects.equals(supportiveStringGrades.get(i), "Pass")) {
+                    setSupportiveIntegrGradeRequired(7); // If required supportive grade is pass, set it to 2
+                }
+            }
+        }
     }
 
-    public void incrementCountScienceSubjectRequired() {
-        this.countScienceSubjectRequired++;
-    }
+   public void initializeIntegerSupportiveGrade() {
+       supportiveIntegerGradeRequired = new ArrayList<>();
+   }
+
 }

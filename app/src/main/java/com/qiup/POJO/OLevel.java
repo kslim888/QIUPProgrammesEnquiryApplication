@@ -46,6 +46,15 @@ public class OLevel {
 	@SerializedName("NotScienceStream")
 	private NotScienceStream notScienceStream;
 
+	@SerializedName("amount_of_subject_required")
+	private int amountOfSubjectRequired;
+
+	@SerializedName("amount_of_supportive_subject_required")
+	private int amountOfSupportiveSubjectRequired;
+
+	@SerializedName("exempted")
+	private boolean exempted;
+
 	public int getMinimumCreditGrade() {
 		return minimumCreditGrade;
 	}
@@ -70,7 +79,7 @@ public class OLevel {
 		return whatSupportiveGrade;
 	}
 
-	public Object getWhatSupportiveQualification(){
+	public String getWhatSupportiveQualification(){
 		return whatSupportiveQualification;
 	}
 
@@ -82,9 +91,7 @@ public class OLevel {
 		return whatSubjectRequired;
 	}
 
-	public int getAmountOfCreditRequired(){
-		return amountOfCreditRequired;
-	}
+	public int getAmountOfCreditRequired(){ return amountOfCreditRequired; }
 
 	public int getMinimumRequiredScienceSubject(){
 		return minimumRequiredScienceSubject;
@@ -102,4 +109,11 @@ public class OLevel {
 		return needSupportiveQualification;
 	}
 
+	public int getAmountOfSubjectRequired() { return amountOfSubjectRequired; }
+
+	public int getAmountOfSupportiveSubjectRequired() { return amountOfSupportiveSubjectRequired; }
+
+	public boolean isExempted() {
+		return exempted;
+	}
 }

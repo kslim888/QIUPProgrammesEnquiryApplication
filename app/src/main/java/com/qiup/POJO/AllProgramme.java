@@ -49,6 +49,60 @@ public class AllProgramme {
 	@SerializedName("BSNE")
 	private BSNE bsne;
 
+	@SerializedName("BBA")
+	private BBA bba;
+
+	@SerializedName("BAC")
+	private BAC bac;
+
+	@SerializedName("BFI")
+	private BFI bfi;
+
+	@SerializedName("BCS")
+	private BCS bcs;
+
+	@SerializedName("BIT")
+	private BIT bit;
+
+	@SerializedName("BIS")
+	private BIS bis;
+
+	@SerializedName("CorporateComm")
+	private CorporateComm corporateComm;
+
+	@SerializedName("MassCommJournalism")
+	private MassCommJournalism massCommJournalism;
+
+	@SerializedName("MassCommAdvertising")
+	private MassCommAdvertising massCommAdvertising;
+
+	@SerializedName("TESL")
+	private TESL tesl;
+
+	@SerializedName("ECE")
+	private ECE ece;
+
+	@SerializedName("BioTech")
+	private BioTech bioTech;
+
+	@SerializedName("BS_ActuarialSciences")
+	private BS_ActuarialSciences bs_actuarialSciences;
+
+	@SerializedName("MBBS")
+	private MBBS mbbs;
+
+	@SerializedName("Pharmacy")
+	private Pharmacy pharmacy;
+
+	@SerializedName("BBS")
+	private BBS bbs;
+
+	@SerializedName("BET")
+	private BET bet;
+
+	@SerializedName("BEM")
+	private BEM bem;
+
 	// Foundation
 	public FIS getFis() {
 		return fis;
@@ -94,10 +148,47 @@ public class AllProgramme {
 	}
 
 	// Degree
-
 	public BHT getBht() { return bht; }
 
 	public BCE getBce() { return bce; }
 
 	public BSNE getBsne() { return bsne; }
+
+	public BBA getBba() { return bba; }
+
+	public BAC getBac() { return bac; }
+
+	public BFI getBfi() {
+		return bfi;
+	}
+
+	public BCS getBcs() { return bcs; }
+
+	public BIT getBit() { return bit; }
+
+	public BIS getBis() { return bis; }
+
+	public CorporateComm getCorporateComm() { return corporateComm; }
+
+	public MassCommJournalism getMassCommJournalism() { return massCommJournalism; }
+
+	public MassCommAdvertising getMassCommAdvertising() { return massCommAdvertising; }
+
+	public TESL getTesl() { return tesl; }
+
+	public ECE getEce() { return ece; }
+
+	public BioTech getBioTech() { return bioTech; }
+
+	public BS_ActuarialSciences getBs_actuarialSciences() { return bs_actuarialSciences; }
+
+	public MBBS getMbbs() { return mbbs; }
+
+	public Pharmacy getPharmacy() { return pharmacy; }
+
+	public BBS getBbs() { return bbs; }
+
+	public BET getBet() { return bet; }
+
+	public BEM getBem() { return bem; }
 }

@@ -196,7 +196,7 @@ public class CaptureData extends AppCompatActivity
 
     private void validateSchoolName()
     {
-        if (editSchool.getText().toString().trim().isEmpty() || editSchool.getText().length() < 12)
+        if (editSchool.getText().toString().trim().isEmpty())
         {
             editSchool.setError(getString(R.string.err_school_name));
             requestFocus(editSchool);
@@ -233,23 +233,23 @@ public class CaptureData extends AppCompatActivity
         }
         validateName();
         if (!getValid())
-           // return;
+            return;
 
         validateIC();
         if (!getValid())
-            //return;
+            return;
 
         validateContactNumber();
         if (!getValid())
-            //return;
+            return;
 
         validateEmail() ;
         if (!getValid())
-           // return;
+            return;
 
         validateSchoolName();
-      //  if (!getValid())
-           // return;
+        if (!getValid())
+            return;
 
         Bundle bundle = new Bundle();
 
@@ -260,11 +260,11 @@ public class CaptureData extends AppCompatActivity
         String contactNumber = editContactNumber.getText().toString();
         if(contactNumber.contains("-"))
         {
-          //  contactNumber =  contactNumber.replace('-', ' ');
+            contactNumber =  contactNumber.replace('-', ' ');
         }
         else
         {
-           // contactNumber = contactNumber.substring(0, 3) + " " +  contactNumber.substring(3, contactNumber.length());
+            contactNumber = contactNumber.substring(0, 3) + " " +  contactNumber.substring(3, contactNumber.length());
         }
         String emailInput = editEmail.getText().toString(); // Email
         String remarkInput = editRemark.getText().toString(); // Remark

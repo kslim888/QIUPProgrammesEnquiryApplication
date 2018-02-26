@@ -2,276 +2,468 @@ package com.qiup.entryrules;
 
 import android.util.Log;
 
+import com.qiup.POJO.RulePojo;
+import com.qiup.programmeenquiry.MyContext;
+import com.qiup.programmeenquiry.R;
+
 import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
 import org.jeasy.rules.annotation.Rule;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 @Rule(name = "BIT", description = "Entry rule to join Bachelor of Information Technology")
 public class BIT
 {
-    // Advanced math is additional maths
     private static RuleAttribute bitRuleAttribute;
 
     public BIT() { bitRuleAttribute = new RuleAttribute(); }
-
-    // when
+    
     @Condition
-    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
-                               @Fact("Student's Subjects")String[] studentSubjects,
-                               @Fact("Student's Grades")String[] studentGrades,
-                               @Fact("Student's SPM or O-Level") String studentSPMOLevel,
-                               @Fact("Student's Mathematics") String studentMathematicsGrade,
-                               @Fact("Student's Additional Mathematics") String studentAddMathGrade)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel
+            , @Fact("Student's Subjects")String[] studentSubjects
+            , @Fact("Student's Grades") int[] studentGrades
+            , @Fact("Student's SPM or O-Level") String supportiveQualificationLevel
+            , @Fact("Student's Supportive Grades") int[] supportiveGrades)
     {
-        if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
-        {
-            // For all students subject check got mathematics subject or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Matematik (M)")
-                        || Objects.equals(studentSubjects[i], "Matematik (T)"))
-                {
-                    bitRuleAttribute.setGotMathSubject();
-                    break;
-                }
-            }
+        setJSONAttribute(qualificationLevel, supportiveQualificationLevel); // First set json attribute to the rule
 
-            // If STPM got math subjects, check it is credit or not
-            if(bitRuleAttribute.isGotMathSubject())
+        // Check got required subject or not.
+        if (bitRuleAttribute.isGotRequiredSubject())
+        {
+            // If got, check whether the subject's grade is smaller or equal to the required subject's grade
+            for (int i = 0; i < bitRuleAttribute.getSubjectRequired().size(); i++)
             {
-                for(int i = 0; i < studentSubjects.length; i++)
+                for (int j = 0; j < studentSubjects.length; j++)
                 {
-                    if(Objects.equals(studentSubjects[i], "Matematik (M)")
-                            || Objects.equals(studentSubjects[i], "Matematik (T)"))
+                    if (Objects.equals(studentSubjects[j], bitRuleAttribute.getSubjectRequired().get(i)))
                     {
-                        if(!Objects.equals(studentGrades[i], "C-")
-                                && !Objects.equals(studentGrades[i], "D+")
-                                && !Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "F"))
+                        if (studentGrades[j] <= bitRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
                         {
-                            bitRuleAttribute.setGotMathSubjectAndCredit();
-                            break;
+                            bitRuleAttribute.incrementCountCorrectSubjectRequired();
+                        }
+                    }
+                    if (Objects.equals("Mathematics", bitRuleAttribute.getSubjectRequired().get(i)))
+                    {
+                        if(Arrays.asList(studentSubjects).contains("Additional Mathematics"))
+                        {
+                            for(int k = 0; k < studentSubjects.length; k++)
+                            {
+                                if(studentGrades[k] <= bitRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                                {
+                                    bitRuleAttribute.incrementCountCorrectSubjectRequired();
+                                }
+                            }
+                        }
+                    }
+                    if (Objects.equals("Science / Technical / Vocational", bitRuleAttribute.getSubjectRequired().get(i)))
+                    {
+                        if (Arrays.asList(bitRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[j]))
+                        {
+                            if (studentGrades[j] <= bitRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                            {
+                                bitRuleAttribute.incrementCountCorrectSubjectRequired();
+                            }
                         }
                     }
                 }
             }
-
-            // If STPM got math subject but not credit, or no math subject at STPM
-            // Check SPM / O-Level got maths subject and is credit or not
-            if(!bitRuleAttribute.isGotMathSubjectAndCredit())
-            {
-                if(Objects.equals(studentSPMOLevel, "SPM"))
-                {
-                    if(!Objects.equals(studentAddMathGrade, "None")
-                            && !Objects.equals(studentAddMathGrade, "D")
-                            && !Objects.equals(studentAddMathGrade, "E")
-                            && !Objects.equals(studentAddMathGrade, "G"))
-                    {
-                        bitRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                    else if(!Objects.equals(studentMathematicsGrade, "D")
-                            && !Objects.equals(studentMathematicsGrade, "E")
-                            && !Objects.equals(studentMathematicsGrade, "G"))
-                    {
-                        bitRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                }
-                else // if is O-level
-                {
-                    if(!Objects.equals(studentAddMathGrade, "None")
-                            && !Objects.equals(studentAddMathGrade, "D")
-                            && !Objects.equals(studentAddMathGrade, "E")
-                            && !Objects.equals(studentAddMathGrade, "F")
-                            && !Objects.equals(studentAddMathGrade, "G")
-                            && !Objects.equals(studentAddMathGrade, "U"))
-                    {
-                        bitRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                    else if(!Objects.equals(studentMathematicsGrade, "D")
-                            && !Objects.equals(studentMathematicsGrade, "E")
-                            && !Objects.equals(studentMathematicsGrade, "F")
-                            && !Objects.equals(studentMathematicsGrade, "G")
-                            && !Objects.equals(studentMathematicsGrade, "U"))
-                    {
-                        bitRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                }
-            }
-
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "C-")
-                        && !Objects.equals(studentGrades[i], "D+")
-                        && !Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "F"))
-                {
-                    bitRuleAttribute.incrementSTPMCredit();
-                }
-            }
         }
-        else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
+
+        // Check need supportive qualification or not
+        if(bitRuleAttribute.isNeedSupportiveQualification())
         {
-            // For all students subject check got mathematics subject or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // If need, check whether the supportive subject's grade is smaller or equal to the required supportive subject's grade
+            for (int j = 0; j < bitRuleAttribute.getSupportiveSubjectRequired().size(); j++)
             {
-                if(Objects.equals(studentSubjects[i], "Mathematics")
-                        || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                switch(bitRuleAttribute.getSupportiveSubjectRequired().get(j))
                 {
-                    bitRuleAttribute.setGotMathSubject();
+                    case "Bahasa Malaysia":
+                    {
+                        if (supportiveGrades[0] <= bitRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "English":
+                    {
+                        if (supportiveGrades[1] <= bitRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Mathematics":
+                    {
+                        if (supportiveGrades[2] <= bitRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if (supportiveGrades[3] <= bitRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Science / Technical / Vocational":
+                    {
+                        if (supportiveGrades[4] <= bitRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
                     break;
                 }
             }
+        }
 
-            // If A-level got math subjects, check it is credit or not
-            if(bitRuleAttribute.isGotMathSubject())
+        // If can see higher qualification to waive subject or not
+        if(bitRuleAttribute.isExempted())
+        {
+            for(int i = 0; i < bitRuleAttribute.getSupportiveSubjectRequired().size(); i++)
             {
-                for(int i = 0; i < studentSubjects.length; i++)
+                switch(bitRuleAttribute.getSupportiveSubjectRequired().get(i))
                 {
-                    if(Objects.equals(studentSubjects[i], "Mathematics")
-                            || Objects.equals(studentSubjects[i], "Further Mathematics"))
+                    case "English":
                     {
-                        if(!Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "U"))
+                        if(Objects.equals(bitRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
                         {
-                            bitRuleAttribute.setGotMathSubjectAndCredit();
-                            break;
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "English"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                    case "Mathematics":
+                    {
+                        if(Objects.equals(bitRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Mathematics") || Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if(Objects.equals(bitRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 10) // stpm pass grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 6) // a-level pass grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(Objects.equals(qualificationLevel, "STPM"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 7) // stpm credit grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                            else if(Objects.equals(qualificationLevel, "A-Level"))
+                            {
+                                for(int j = 0; j < studentSubjects.length; j++)
+                                {
+                                    if(Objects.equals(studentSubjects[j], "Additional Mathematics"))
+                                    {
+                                        if(studentGrades[j] <= 4) // a-level credit grade
+                                        {
+                                            bitRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        // For every grade, check whether the grade is smaller or equal to minimum credit grade
+        // Smaller the number the better the grade
+        for (int i = 0; i < studentGrades.length; i++) {
+            if (studentGrades[i] <= bitRuleAttribute.getMinimumCreditGrade())
+                bitRuleAttribute.incrementCountCredit();
+        }
+
+        // Checking Requirements see whether can return true or not
+        if (bitRuleAttribute.isGotRequiredSubject())
+        {
+            // Check subject required is fulfill or not
+            if(bitRuleAttribute.getCountCorrectSubjectRequired() >= bitRuleAttribute.getAmountOfSubjectRequired())
+            {
+                // Check need supportive qualification or not
+                if(bitRuleAttribute.isNeedSupportiveQualification())
+                {
+                    // If need, check whether it fulfill the supportive grade or not
+                    if(bitRuleAttribute.getCountSupportiveSubjectRequired() >= bitRuleAttribute.getAmountOfSupportiveSubjectRequired())
+                    {
+                        // Check enough amount of credit or not
+                        if(bitRuleAttribute.getCountCredit() >= bitRuleAttribute.getAmountOfCreditRequired())
+                        {
+                            return true; // return true as requirements is satisfied
                         }
                     }
                 }
-            }
-
-            // If A-level got math subject but not credit, or no math subject
-            // Check SPM / O-Level maths subject got credit or not
-            if(!bitRuleAttribute.isGotMathSubjectAndCredit())
-            {
-                if(Objects.equals(studentSPMOLevel, "SPM"))
+                else
                 {
-                    if(!Objects.equals(studentAddMathGrade, "None")
-                            && !Objects.equals(studentAddMathGrade, "D")
-                            && !Objects.equals(studentAddMathGrade, "E")
-                            && !Objects.equals(studentAddMathGrade, "G"))
+                    // Check enough amount of credit or not
+                    if(bitRuleAttribute.getCountCredit() >= bitRuleAttribute.getAmountOfCreditRequired())
                     {
-                        bitRuleAttribute.setGotMathSubjectAndCredit();
+                        return true; // return true as requirements is satisfied
                     }
-                    else if(!Objects.equals(studentMathematicsGrade, "D")
-                            && !Objects.equals(studentMathematicsGrade, "E")
-                            && !Objects.equals(studentMathematicsGrade, "G"))
-                    {
-                        bitRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                }
-                else // if is o-level
-                {
-                    if(!Objects.equals(studentAddMathGrade, "None")
-                            && !Objects.equals(studentAddMathGrade, "D")
-                            && !Objects.equals(studentAddMathGrade, "E")
-                            && !Objects.equals(studentAddMathGrade, "F")
-                            && !Objects.equals(studentAddMathGrade, "G")
-                            && !Objects.equals(studentAddMathGrade, "U"))
-                    {
-                        bitRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                    else if(!Objects.equals(studentMathematicsGrade, "D")
-                            && !Objects.equals(studentMathematicsGrade, "E")
-                            && !Objects.equals(studentMathematicsGrade, "F")
-                            && !Objects.equals(studentMathematicsGrade, "G")
-                            && !Objects.equals(studentMathematicsGrade, "U"))
-                    {
-                        bitRuleAttribute.setGotMathSubjectAndCredit();
-                    }
-                }
-            }
-
-            // Only full passes (C) then increment
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "U"))
-                {
-                    bitRuleAttribute.incrementALevelCredit();
                 }
             }
         }
-        else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
+        else // No subject required
         {
-            // For all students subject check got mathematics subject or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            // Check need supportive qualification or not
+            if(bitRuleAttribute.isNeedSupportiveQualification())
             {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
-                        || Objects.equals(studentSubjects[i], "Mathematics"))
+                // If need, check whether it fulfill the supportive grade or not
+                if(bitRuleAttribute.getCountSupportiveSubjectRequired() >= bitRuleAttribute.getAmountOfSupportiveSubjectRequired())
                 {
-                    bitRuleAttribute.setGotMathSubject();
-                }
-            }
-
-            // If math no, return false
-            if(!bitRuleAttribute.isGotMathSubject())
-            {
-                return false;
-            }
-
-            // Check math and physic is at least grade B or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if(Objects.equals(studentSubjects[i], "Additional Mathematics")
-                        || Objects.equals(studentSubjects[i], "Mathematics"))
-                {
-                    if(!Objects.equals(studentGrades[i], "C7")
-                            && !Objects.equals(studentGrades[i], "C8")
-                            && !Objects.equals(studentGrades[i], "F9"))
+                    // Check enough amount of credit or not
+                    if(bitRuleAttribute.getCountCredit() >= bitRuleAttribute.getAmountOfCreditRequired())
                     {
-                        bitRuleAttribute.setGotMathSubjectAndCredit();
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
-
-            // For all subject check got at least minimum grade B or not
-            for(int i = 0; i < studentSubjects.length; i++)
+            else
             {
-                if(!Objects.equals(studentGrades[i], "C7")
-                        && !Objects.equals(studentGrades[i], "C8")
-                        && !Objects.equals(studentGrades[i], "F9"))
+                // Check enough amount of credit or not
+                if(bitRuleAttribute.getCountCredit() >= bitRuleAttribute.getAmountOfCreditRequired())
                 {
-                    bitRuleAttribute.incrementUECCredit();
+                    return true; // return true as requirements is satisfied
                 }
             }
         }
-        else // Foundation / Program Asasi / Asas / Matriculation / Diploma
-        {
-            // TODO Foundation / Program Asasi / Asas / Matriculation / Diploma
-        }
 
-        // Check enough credit or not. If enough credit check maths is credit or not
-        // If both true, return true as all requirements satisfied
-        if(bitRuleAttribute.getALevelCredit() >= 2
-                || bitRuleAttribute.getStpmCredit() >= 2
-                || bitRuleAttribute.getUecCredit() >= 5)
-        {
-            if(bitRuleAttribute.isGotMathSubjectAndCredit())
-            {
-                return true;
-            }
-        }
-        // Return false as requirements is not satisfy
+        // Return false as requirements not satisfied
         return false;
     }
 
-    //then
+    
     @Action
-    public void joinProgramme() throws Exception
-    {
-        // if rule is statisfied (return true), this action will be executed
+    public void joinProgramme() throws Exception {
+        // if rule is satisfied (return true), this action will be executed
         bitRuleAttribute.setJoinProgrammeTrue();
         Log.d("BITjoinProgramme", "Joined");
     }
 
-    public static boolean isJoinProgramme()
-    {
-        return bitRuleAttribute.isJoinProgramme();
+    public static boolean isJoinProgramme() { return bitRuleAttribute.isJoinProgramme(); }
+
+    private void setJSONAttribute(String mainQualificationLevel, String supportiveQualificationLevel) {
+        switch(mainQualificationLevel)
+        {
+            case "UEC":
+            {
+                bitRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getUEC().getAmountOfCreditRequired());
+                bitRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBit().getUEC().getMinimumCreditGrade());
+                bitRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBit().getUEC().isGotRequiredSubject());
+
+                if(bitRuleAttribute.isGotRequiredSubject()) {
+                    bitRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getUEC().getWhatSubjectRequired().getSubject());
+                    bitRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBit().getUEC().getMinimumSubjectRequiredGrade().getGrade());
+                    bitRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
+                    bitRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getUEC().getAmountOfSubjectRequired());
+                }
+            }
+            case "STPM":
+            {
+                bitRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().getAmountOfCreditRequired());
+                bitRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().getMinimumCreditGrade());
+                bitRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().isGotRequiredSubject());
+                bitRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().isExempted());
+
+                if(bitRuleAttribute.isGotRequiredSubject()) {
+                    bitRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().getWhatSubjectRequired().getSubject());
+                    bitRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().getMinimumSubjectRequiredGrade().getGrade());
+                    bitRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                bitRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().isNeedSupportiveQualification());
+                if(bitRuleAttribute.isNeedSupportiveQualification()) {
+                    bitRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().getWhatSupportiveSubject().getSubject());
+                    bitRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().getWhatSupportiveGrade().getGrade());
+                    bitRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getSTPM().getAmountOfSupportiveSubjectRequired());
+
+                    // Convert supportive grade to Integer
+                    bitRuleAttribute.initializeIntegerSupportiveGrade();
+                    bitRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bitRuleAttribute.getSupportiveGradeRequired());
+                }
+            }
+            break;
+            case "A-Level":
+            {
+                bitRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().getAmountOfCreditRequired());
+                bitRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().getMinimumCreditGrade());
+                bitRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().isGotRequiredSubject());
+                bitRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().isExempted());
+
+                if(bitRuleAttribute.isGotRequiredSubject()) {
+                    bitRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().getWhatSubjectRequired().getSubject());
+                    bitRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().getMinimumSubjectRequiredGrade().getGrade());
+                    bitRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().getAmountOfSubjectRequired());
+                }
+
+                // Get supportive things
+                bitRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().isNeedSupportiveQualification());
+                if(bitRuleAttribute.isNeedSupportiveQualification()) {
+                    bitRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().getWhatSupportiveSubject().getSubject());
+                    bitRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    bitRuleAttribute.initializeIntegerSupportiveGrade();
+                    bitRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bitRuleAttribute.getSupportiveGradeRequired());
+                    bitRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBit().getALevel().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+        }
     }
 }

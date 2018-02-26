@@ -2,6 +2,10 @@ package com.qiup.entryrules;
 
 import android.util.Log;
 
+import com.qiup.POJO.RulePojo;
+import com.qiup.programmeenquiry.MyContext;
+import com.qiup.programmeenquiry.R;
+
 import org.jeasy.rules.annotation.Action;
 import org.jeasy.rules.annotation.Condition;
 import org.jeasy.rules.annotation.Fact;
@@ -16,264 +20,179 @@ public class DET
     private static RuleAttribute detRuleAttribute;
 
     public DET() { detRuleAttribute = new RuleAttribute();}
-
-    // when
+    
     @Condition
-    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel,
-                               @Fact("Student's Subjects")String[] studentSubjects,
-                               @Fact("Student's Grades")String[] studentGrades)
+    public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel
+            , @Fact("Student's Subjects") String[] studentSubjects
+            , @Fact("Student's Grades") int[] studentGrades
+            , @Fact("Student's SPM or O-Level") String supportiveQualificationLevel
+            , @Fact("Student's Supportive Grades") int[] supportiveGrades)
     {
-        // Start validating condition
-        if(Objects.equals(qualificationLevel, "SPM")) // if is SPM qualification
-        {
-            // First, check whether the student is science stream or not.
-            // If the student is not taking general science, the student is science stream
-            if(!Arrays.asList(studentSubjects).contains("Science"))
-            {
-                detRuleAttribute.setScienceStreamTrue();
-            }
+        setJSONAttribute(qualificationLevel, studentSubjects, supportiveQualificationLevel); // First set json attribute to the rule
 
-            // If is science stream student
-            if(detRuleAttribute.isScienceStream())
+        // Check got required subject or not.
+        if (detRuleAttribute.isGotRequiredSubject())
+        {
+            // If got, check whether the subject's grade is smaller or equal to the required subject's grade
+            for (int i = 0; i < studentSubjects.length; i++)
             {
-                for(int i = 0; i < studentSubjects.length; i++)
+                for (int j = 0; j < detRuleAttribute.getSubjectRequired().size(); j++)
                 {
-                    // Check Biology, Physics, Chemistry, Science is pass or not
-                    if(Objects.equals(studentSubjects[i], "Biology")
-                            || Objects.equals(studentSubjects[i], "Physics")
-                            || Objects.equals(studentSubjects[i], "Chemistry"))
+                    if (Objects.equals(studentSubjects[i], detRuleAttribute.getSubjectRequired().get(j)))
                     {
-                        if(!Objects.equals(studentGrades[i], "G"))
+                        if (studentGrades[i] <= detRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
                         {
-                            detRuleAttribute.incrementCountPassScienceSubjects();
+                            detRuleAttribute.incrementCountCorrectSubjectRequired();
+                        }
+                    }
+                    if (Objects.equals("Mathematics", detRuleAttribute.getSubjectRequired().get(j)))
+                    {
+                        if(Arrays.asList(studentSubjects).contains("Additional Mathematics"))
+                        {
+                            for(int k = 0; k < studentSubjects.length; k++)
+                            {
+                                if(studentGrades[k] <= detRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
+                                {
+                                    detRuleAttribute.incrementCountCorrectSubjectRequired();
+                                }
+                            }
+                        }
+                    }
+                    if (Objects.equals("Science / Technical / Vocational", detRuleAttribute.getSubjectRequired().get(j)))
+                    {
+                        if (Arrays.asList(detRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[i]))
+                        {
+                            if (studentGrades[i] <= detRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
+                            {
+                                detRuleAttribute.incrementCountCorrectSubjectRequired();
+                            }
                         }
                     }
                 }
             }
-            else // is not science stream
+        }
+
+        // Check need supportive qualification or not
+        if(detRuleAttribute.isNeedSupportiveQualification())
+        {
+            // If need, check whether the supportive subject's grade is smaller or equal to the required supportive subject's grade
+            for (int j = 0; j < detRuleAttribute.getSupportiveSubjectRequired().size(); j++)
             {
-                for(int i = 0; i < studentSubjects.length; i++)
+                switch(detRuleAttribute.getSupportiveSubjectRequired().get(j))
                 {
-                    // Check Biology, Physics, Chemistry, Science is pass or not
-                    if(Objects.equals(studentSubjects[i], "Science")
-                            || Objects.equals(studentSubjects[i], "Additional Science"))
+                    case "Bahasa Malaysia":
                     {
-                        if(!Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "G"))
+                        if (supportiveGrades[0] <= detRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            detRuleAttribute.setGotScienceSubjectsCredit();
+                            detRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "English":
+                    {
+                        if (supportiveGrades[1] <= detRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            detRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Mathematics":
+                    {
+                        if (supportiveGrades[2] <= detRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            detRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Additional Mathematics":
+                    {
+                        if (supportiveGrades[3] <= detRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            detRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                    case "Science / Technical / Vocational":
+                    {
+                        if (supportiveGrades[4] <= detRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        {
+                            detRuleAttribute.incrementCountSupportiveSubjectRequired();
+                        }
+                    }
+                    break;
+                }
+            }
+
+        }
+
+        // For every grade, check whether the grade is smaller or equal to minimum credit grade
+        // Smaller the number the better the grade
+        for (int i = 0; i < studentGrades.length; i++) {
+            if (studentGrades[i] <= detRuleAttribute.getMinimumCreditGrade())
+                detRuleAttribute.incrementCountCredit();
+        }
+
+        // Checking Requirements see whether can return true or not
+        if (detRuleAttribute.isGotRequiredSubject())
+        {
+            // Check minimum required science subject grade required is fulfill or not. Based on is science stream or not
+            if(detRuleAttribute.getCountCorrectSubjectRequired() >= detRuleAttribute.getMinimumRequiredScienceSubject())
+            {
+                // Check need supportive qualification or not
+                if(detRuleAttribute.isNeedSupportiveQualification())
+                {
+                    // If need, check whether it fulfill the supportive grade or not
+                    if(detRuleAttribute.getCountSupportiveSubjectRequired() >= detRuleAttribute.getAmountOfSupportiveSubjectRequired())
+                    {
+                        // Check enough amount of credit or not
+                        if(detRuleAttribute.getCountCredit() >= detRuleAttribute.getAmountOfCreditRequired())
+                        {
+                            return true; // return true as requirements is satisfied
                         }
                     }
                 }
-            }
-
-            // For all student's grade, check grade C or not
-            // Minimum grade C only increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "G"))
+                else
                 {
-                    detRuleAttribute.incrementSPMCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "O-Level")) // if is O-Level qualification
-        {
-            // First, check whether the student is science stream or not.
-            // If the student is not taking general science, the student is science stream
-            if(!Arrays.asList(studentSubjects).contains("Science - Combined"))
-            {
-                detRuleAttribute.setScienceStreamTrue();
-            }
-
-            // If is science stream student
-            if(detRuleAttribute.isScienceStream())
-            {
-                // Check Sciences Subject is pass or not
-                for(int i = 0; i < studentSubjects.length; i++)
-                {
-                    if(Objects.equals(studentSubjects[i], "Biology")
-                            || Objects.equals(studentSubjects[i], "Physics")
-                            || Objects.equals(studentSubjects[i], "Chemistry"))
+                    // Check enough amount of credit or not
+                    if(detRuleAttribute.getCountCredit() >= detRuleAttribute.getAmountOfCreditRequired())
                     {
-                        if(!Objects.equals(studentGrades[i], "U"))
-                        {
-                            detRuleAttribute.incrementCountPassScienceSubjects();
-                        }
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
-            else // is not science stream
+        }
+        else // No subject required
+        {
+            // Check need supportive qualification or not
+            if(detRuleAttribute.isNeedSupportiveQualification())
             {
-                for(int i = 0; i < studentSubjects.length; i++)
+                // If need, check whether it fulfill the supportive grade or not
+                if(detRuleAttribute.getCountSupportiveSubjectRequired() >= detRuleAttribute.getAmountOfSupportiveSubjectRequired())
                 {
-                    // Check Biology, Physics, Chemistry, Science is pass or not
-                    if(Objects.equals(studentSubjects[i], "Science - Combined")
-                            || Objects.equals(studentSubjects[i], "Sciences - Co-ordinated (Double)"))
+                    // Check enough amount of credit or not
+                    if(detRuleAttribute.getCountCredit() >= detRuleAttribute.getAmountOfCreditRequired())
                     {
-                        if(!Objects.equals(studentGrades[i], "D")
-                                && !Objects.equals(studentGrades[i], "E")
-                                && !Objects.equals(studentGrades[i], "F")
-                                && !Objects.equals(studentGrades[i], "G")
-                                && !Objects.equals(studentGrades[i], "U"))
-                        {
-                            detRuleAttribute.setGotScienceSubjectsCredit();
-                        }
+                        return true; // return true as requirements is satisfied
                     }
                 }
             }
-
-            // For all student's grade, check grade C or not
-            // Minimum grade C only increment
-            for(int i = 0; i < studentGrades.length; i++)
+            else
             {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "F")
-                        && !Objects.equals(studentGrades[i], "G")
-                        && !Objects.equals(studentGrades[i], "U"))
+                // Check enough amount of credit or not
+                if(detRuleAttribute.getCountCredit() >= detRuleAttribute.getAmountOfCreditRequired())
                 {
-                    detRuleAttribute.incrementOLevelCredit();
+                    return true; // return true as requirements is satisfied
                 }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "STPM")) // if is STPM qualification
-        {
-            // For all student's grade, check grade C or not
-            // Minimum grade C only increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "C-")
-                        && !Objects.equals(studentGrades[i], "D+")
-                        && !Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "F"))
-                {
-                    detRuleAttribute.incrementSTPMCredit();
-                    Log.d("hello", "allowToJoin: " + 1);
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "A-Level")) // if is A-Level qualification
-        {
-            // For all student's grade, check grade C or not
-            // Minimum grade C only increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "D")
-                        && !Objects.equals(studentGrades[i], "E")
-                        && !Objects.equals(studentGrades[i], "U"))
-                {
-                    detRuleAttribute.incrementALevelCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "STAM")) // if is STAM qualification
-        {
-            // minimum grade of Maqbul, only increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if( !Objects.equals(studentGrades[i], "Rasib"))
-                {
-                    detRuleAttribute.incrementSTAMCredit();
-                }
-            }
-        }
-        else if(Objects.equals(qualificationLevel, "UEC")) // if is UEC qualification
-        {
-            // Check Biology, Physics, Chemistry is at least grade B6 or not
-            for(int i = 0; i < studentSubjects.length; i++)
-            {
-                if (Objects.equals(studentSubjects[i], "Biology")
-                        || Objects.equals(studentSubjects[i], "Physics")
-                        || Objects.equals(studentSubjects[i], "Chemistry"))
-                {
-                    if (!Objects.equals(studentGrades[i], "C7")
-                            && !Objects.equals(studentGrades[i], "C8")
-                            && !Objects.equals(studentGrades[i], "F9"))
-                    {
-                        // here count pass is for credit (at least B6)
-                        detRuleAttribute.incrementCountPassScienceSubjects();
-                    }
-                }
-            }
-
-            // For all subject check got at least minimum grade B or not
-            // At least grade B only increment
-            for(int i = 0; i < studentGrades.length; i++)
-            {
-                if(!Objects.equals(studentGrades[i], "C7")
-                        && !Objects.equals(studentGrades[i], "C8")
-                        && !Objects.equals(studentGrades[i], "F9"))
-                {
-                    detRuleAttribute.incrementUECCredit();
-                }
-            }
-        }
-        else // SKM level 3
-        {
-            // TODO SKM level 3
-        }
-
-
-        // If is UEC, check minimum credit got 3 or not
-        if(detRuleAttribute.getUecCredit() >= 3)
-        {
-            // Dont care is from science stream or what,
-            // Minimum get 1 credit in sciences subject then return true
-            if(detRuleAttribute.getCountPassScienceSubjects() >= 1)
-            {
-                return true;
             }
         }
 
-        // If is not UEC, check other qualification level.
-        if(detRuleAttribute.isScienceStream()) // If is science stream.
-        {
-            // Check enough credit or not for SPM and O-Level
-            if(detRuleAttribute.getSpmCredit() >= 3 || detRuleAttribute.getoLevelCredit() >= 3)
-            {
-                // If enough credit, check number of pass science subject is at least 2 or not
-                // If 2 or more, return true as all requirements satisfy
-                if(detRuleAttribute.getCountPassScienceSubjects() >= 2)
-                {
-                    return true;
-                }
-            }
-        }
-        else // is not science stream
-        {
-            // Check enough credit or not
-            if(detRuleAttribute.getSpmCredit() >= 3 || detRuleAttribute.getoLevelCredit() >= 3)
-            {
-                // If enough credit, check science subject is credit or not
-                // If is credit, return true as all requirements satisfy
-                if(detRuleAttribute.isGotScienceSubjectsCredit())
-                {
-                    return true;
-                }
-            }
-
-            // If is not science stream but is STAM, STPM or A-Level
-            // Check enough credit or not. If enough return true as all requirements satisfy
-            if(detRuleAttribute.getStamCredit() >= 1
-                    || detRuleAttribute.getStpmCredit() >= 1
-                    || detRuleAttribute.getALevelCredit() >= 1)
-            {
-                return true;
-            }
-        }
-        // If requirements not satisfy, retuen false
+        // Return false as requirements not satisfied
         return false;
     }
-
-    //then
+    
     @Action
-    public void joinProgramme() throws Exception
-    {
-        // if rule is statisfied (return true), this action will be executed
+    public void joinProgramme() throws Exception {
+        // if rule is satisfied (return true), this action will be executed
         detRuleAttribute.setJoinProgrammeTrue();
         Log.d("DiplEnvironmentalTech", "Joined");
     }
@@ -282,4 +201,139 @@ public class DET
     {
         return detRuleAttribute.isJoinProgramme();
     }
+
+    private void setJSONAttribute(String mainQualificationLevel, String[] studentSubjects, String supportiveQualificationLevel) {
+        switch(mainQualificationLevel)
+        {
+            case "SPM":
+            {
+                detRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSPM().getAmountOfCreditRequired());
+                detRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getSPM().getMinimumCreditGrade());
+                detRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getSPM().isGotRequiredSubject());
+                if(detRuleAttribute.isGotRequiredSubject()) {
+                    detRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSPM().getWhatSubjectRequired().getSubject());
+                    detRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.spm_science_technical_vocational_subject));
+
+                    if (Arrays.asList(studentSubjects).contains("Science")) { // Not science stream student
+                        detRuleAttribute.setMinimumRequiredScienceSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getSPM().getNotScienceStream().getMinimumRequiredScienceSubject());
+                        detRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getSPM().getNotScienceStream().getMinimumSubjectRequiredGrade().getGrade());
+                    }
+                    else { // Is science stream student
+                        detRuleAttribute.setMinimumRequiredScienceSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getSPM().getIsScienceStream().getMinimumRequiredScienceSubject());
+                        detRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getSPM().getIsScienceStream().getMinimumSubjectRequiredGrade().getGrade());
+                    }
+                }
+            }
+            break;
+            case "O-Level":
+            {
+                detRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getOLevel().getAmountOfCreditRequired());
+                detRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getOLevel().getMinimumCreditGrade());
+                detRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getOLevel().isGotRequiredSubject());
+                if(detRuleAttribute.isGotRequiredSubject()) {
+                    detRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getOLevel().getWhatSubjectRequired().getSubject());
+                    detRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.oLevel_science_technical_vocational_subject));
+
+                    if (!Arrays.asList(studentSubjects).contains("Biology")) { // Not science stream student
+                        detRuleAttribute.setMinimumRequiredScienceSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getOLevel().getNotScienceStream().getMinimumRequiredScienceSubject());
+                        detRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getOLevel().getNotScienceStream().getMinimumSubjectRequiredGrade().getGrade());
+                    }
+                    else { // Is science stream student
+                        detRuleAttribute.setMinimumRequiredScienceSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getOLevel().getIsScienceStream().getMinimumRequiredScienceSubject());
+                        detRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getOLevel().getIsScienceStream().getMinimumSubjectRequiredGrade().getGrade());
+                    }
+                }
+            }
+            break;
+            case "UEC":
+            {
+                detRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getUEC().getAmountOfCreditRequired());
+                detRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getUEC().getMinimumCreditGrade());
+                detRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getUEC().isGotRequiredSubject());
+                if(detRuleAttribute.isGotRequiredSubject()) {
+                    detRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getUEC().getWhatSubjectRequired().getSubject());
+                    detRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
+
+                    if (!Arrays.asList(studentSubjects).contains("Biology")) { // Not science stream student because UEC science stream need Biology
+                        detRuleAttribute.setMinimumRequiredScienceSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getUEC().getNotScienceStream().getMinimumRequiredScienceSubject());
+                        detRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getUEC().getNotScienceStream().getMinimumSubjectRequiredGrade().getGrade());
+
+                    }
+                    else { // Is science stream student
+                        detRuleAttribute.setMinimumRequiredScienceSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getUEC().getIsScienceStream().getMinimumRequiredScienceSubject());
+                        detRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getUEC().getIsScienceStream().getMinimumSubjectRequiredGrade().getGrade());
+                    }
+                }
+            }
+            case "STPM":
+            {
+                detRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTPM().getAmountOfCreditRequired());
+                detRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getSTPM().getMinimumCreditGrade());
+                detRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getSTPM().isGotRequiredSubject());
+                if(detRuleAttribute.isGotRequiredSubject()) {
+                    detRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTPM().getWhatSubjectRequired().getSubject());
+                    detRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getSTPM().getMinimumSubjectRequiredGrade().getGrade());
+                }
+
+                // Get supportive things
+                detRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getDet().getSTPM().isNeedSupportiveQualification());
+                if(detRuleAttribute.isNeedSupportiveQualification()) {
+                    detRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTPM().getWhatSupportiveSubject().getSubject());
+                    detRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTPM().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    detRuleAttribute.initializeIntegerSupportiveGrade();
+                    detRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, detRuleAttribute.getSupportiveGradeRequired());
+                    detRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTPM().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+            case "A-Level":
+            {
+                detRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getALevel().getAmountOfCreditRequired());
+                detRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getALevel().getMinimumCreditGrade());
+                detRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getALevel().isGotRequiredSubject());
+                if(detRuleAttribute.isGotRequiredSubject()) {
+                    detRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getALevel().getWhatSubjectRequired().getSubject());
+                    detRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getALevel().getMinimumSubjectRequiredGrade().getGrade());
+                }
+
+                // Get supportive things
+                detRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getDet().getALevel().isNeedSupportiveQualification());
+                if(detRuleAttribute.isNeedSupportiveQualification()) {
+                    detRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getALevel().getWhatSupportiveSubject().getSubject());
+                    detRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getALevel().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    detRuleAttribute.initializeIntegerSupportiveGrade();
+                    detRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, detRuleAttribute.getSupportiveGradeRequired());
+                    detRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTPM().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+            case "STAM":
+            {
+                detRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTAM().getAmountOfCreditRequired());
+                detRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getSTAM().getMinimumCreditGrade());
+                detRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDet().getSTAM().isGotRequiredSubject());
+                if(detRuleAttribute.isGotRequiredSubject()) {
+                    detRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTAM().getWhatSubjectRequired().getSubject());
+                    detRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDet().getSTAM().getMinimumSubjectRequiredGrade().getGrade());
+                }
+
+                // Get supportive things
+                detRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getDet().getSTAM().isNeedSupportiveQualification());
+                if(detRuleAttribute.isNeedSupportiveQualification()) {
+                    detRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTAM().getWhatSupportiveSubject().getSubject());
+                    detRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTAM().getWhatSupportiveGrade().getGrade());
+
+                    // Convert supportive grade to Integer
+                    detRuleAttribute.initializeIntegerSupportiveGrade();
+                    detRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, detRuleAttribute.getSupportiveGradeRequired());
+                    detRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDet().getSTAM().getAmountOfSupportiveSubjectRequired());
+                }
+            }
+            break;
+        }
+    }    
 }
