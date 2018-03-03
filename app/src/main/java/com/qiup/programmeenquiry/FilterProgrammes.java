@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -38,7 +37,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
     MaterialSpinner qualificationSpinner, gradesSpinner, gradesSpinner1,
             spmOLevelSpinner, mathematicsSpinner, englishSpinner,
             addMathSpinner, bahasaMalaysiaSpinner, scienceTechnicalVocationalGradeSpinner;
-    AutoCompleteTextView subjectsAutoCompleteTextView, newSubjectsAutoCompleteTextView,
+    InstantAutoComplete subjectsAutoCompleteTextView, newSubjectsAutoCompleteTextView,
             scienceTechnicalVocationalAutoCompleteTextView;
     ArrayAdapter<String> subjectsAdapter, gradesAdapter;
     Button filterButton, addNewField, deleteFieldText;
@@ -234,7 +233,12 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 if(!Arrays.asList(subjectsList).contains(subjectsAutoCompleteTextView.getText().toString().toUpperCase())
                         && !Objects.equals(subjectsAutoCompleteTextView.getText().toString(), ""))
                 {
-                    Toast.makeText(FilterProgrammes.this, "Please key-in valid subjects name", Toast.LENGTH_LONG).show();
+                    new MaterialDialog.Builder(FilterProgrammes.this)
+                            .title("Invalid subject name")
+                            .content("Please key-in valid subjects name")
+                            .positiveText("Return")
+                            .build()
+                            .show();
                     return;
                 }
 
@@ -246,12 +250,17 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     {
                         if(view.getId() == R.id.newField)
                         {
-                            newSubjectsAutoCompleteTextView = (AutoCompleteTextView) ((RelativeLayout) view).getChildAt(0);
+                            newSubjectsAutoCompleteTextView = (InstantAutoComplete) ((RelativeLayout) view).getChildAt(0);
                             // If the key-in subject is not exist in subjects list according to qualification, return
                             if(!Arrays.asList(subjectsList).contains(newSubjectsAutoCompleteTextView.getText().toString().toUpperCase())
                                     && !Objects.equals(newSubjectsAutoCompleteTextView.getText().toString(), ""))
                             {
-                                Toast.makeText(FilterProgrammes.this, "Please key-in valid subjects name", Toast.LENGTH_LONG).show();
+                                new MaterialDialog.Builder(FilterProgrammes.this)
+                                        .title("Invalid subject name")
+                                        .content("Please key-in valid subjects name")
+                                        .positiveText("Return")
+                                        .build()
+                                        .show();
                                 return;
                             }
                             gradesSpinner1 = (MaterialSpinner) ((RelativeLayout) view).getChildAt(1);
@@ -285,9 +294,17 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     if(!Arrays.asList(arrayStringSubjects).contains("Bahasa Malaysia")
                             || !Arrays.asList(arrayStringSubjects).contains("Bahasa Inggeris")
                             || !Arrays.asList(arrayStringSubjects).contains("Sejarah")
-                            || !Arrays.asList(arrayStringSubjects).contains("Mathematics"))
+                            || !Arrays.asList(arrayStringSubjects).contains("Mathematics")
+                            || (!Arrays.asList(arrayStringSubjects).contains("Pendidikan Moral")
+                            && !Arrays.asList(arrayStringSubjects).contains("Pendidikan Islam")))
+
                     {
-                        Toast.makeText(FilterProgrammes.this, "Subjects must include Bahasa Malaysia, Bahasa Inggeris, Sejarah and Mathematics", Toast.LENGTH_LONG).show();
+                        new MaterialDialog.Builder(FilterProgrammes.this)
+                                .title("Compulsory Subject Needed")
+                                .content("Subjects must include Bahasa Malaysia, Bahasa Inggeris, Sejarah, Mathematics, Pendidikan Moral or Pendidikan islam")
+                                .positiveText("Return")
+                                .build()
+                                .show();
                         return;
                     }
                     for(int i = 0; i < arrayStringSubjects.length; i++)
@@ -298,12 +315,12 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         {
                             if(Objects.equals(arrayStringGrades[i], "G"))
                             {
-                                MaterialDialog materialDialog = new MaterialDialog.Builder(FilterProgrammes.this)
+                                new MaterialDialog.Builder(FilterProgrammes.this)
                                         .title("SPM Failed")
                                         .content("Sorry. Your SPM is failed.")
                                         .positiveText("Return")
-                                        .build();
-                                materialDialog.show();
+                                        .build()
+                                        .show();
                                 return;
                             }
                         }
@@ -313,7 +330,12 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 {
                     if(!Arrays.asList(arrayStringSubjects).contains("Pengajian Am"))
                     {
-                        Toast.makeText(FilterProgrammes.this, "Subjects must include Pengajian Am", Toast.LENGTH_LONG).show();
+                        new MaterialDialog.Builder(FilterProgrammes.this)
+                                .title("Compulsory Subject Needed")
+                                .content("Subjects must include Pengajiam Am")
+                                .positiveText("Return")
+                                .build()
+                                .show();
                         return;
                     }
                     for(int i = 0; i < arrayStringSubjects.length; i++)
@@ -322,12 +344,12 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                         {
                             if(Objects.equals(arrayStringGrades[i], "F"))
                             {
-                                MaterialDialog materialDialog = new MaterialDialog.Builder(FilterProgrammes.this)
-                                        .title("STPM Failed")
+                                new MaterialDialog.Builder(FilterProgrammes.this)
+                                        .title("SPM Failed")
                                         .content("Sorry. Your STPM is failed.")
                                         .positiveText("Return")
-                                        .build();
-                                materialDialog.show();
+                                        .build()
+                                        .show();
                                 return;
                             }
                         }
@@ -339,7 +361,12 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                             || !Arrays.asList(arrayStringSubjects).contains("Chinese")
                             || !Arrays.asList(arrayStringSubjects).contains("English Language"))
                     {
-                        Toast.makeText(FilterProgrammes.this, "Subjects must include Bahasa Malaysia, English Language and Chinese", Toast.LENGTH_LONG).show();
+                        new MaterialDialog.Builder(FilterProgrammes.this)
+                                .title("Compulsory Subject Needed")
+                                .content("Subjects must include Bahasa Malaysia, English Language and Chinese")
+                                .positiveText("Return")
+                                .build()
+                                .show();
                         return;
                     }
                 }
@@ -347,9 +374,14 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 // If there are subjects is not key-in / selected
                 for(int i = 0; i < arrayStringSubjects.length; i++)
                 {
-                    if(Objects.equals(arrayStringSubjects[i], ""))
+                    if(arrayStringSubjects[i].isEmpty())
                     {
-                        Toast.makeText(FilterProgrammes.this, "There are subjects not selected", Toast.LENGTH_LONG).show();
+                        new MaterialDialog.Builder(FilterProgrammes.this)
+                                .title("Subjects Not Selected")
+                                .content("Please make sure all subject is selected")
+                                .positiveText("Return")
+                                .build()
+                                .show();
                         return;
                     }
                 }
@@ -361,13 +393,32 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     {
                         if(Objects.equals(arrayStringSubjects[i], arrayStringSubjects[j]))
                         {
-                            Toast.makeText(FilterProgrammes.this, "There is a duplicate subjects", Toast.LENGTH_LONG).show();
+                            new MaterialDialog.Builder(FilterProgrammes.this)
+                                    .title("Duplicated Subject")
+                                    .content("Please make sure there is no subject duplicated")
+                                    .positiveText("Return")
+                                    .build()
+                                    .show();
                             return;
                         }
                     }
                 }
 
-                // TODO change subject name
+                // if there are Grades is not selected
+                for(int i = 0; i < arrayStringGrades.length; i++)
+                {
+                    if(arrayStringGrades[i].isEmpty())
+                    {
+                        new MaterialDialog.Builder(FilterProgrammes.this)
+                                .title("Grades Not Selected")
+                                .content("Please make sure all grade are selected")
+                                .positiveText("Return")
+                                .build()
+                                .show();
+                        return;
+                    }
+                }
+
                 // After validation, change the string value to proper subject and match with Rules
                 // English Language is for UEC, O-Level, SPM, English - First Language is for O-Level
                 // Advanced Mathematics is for UEC
@@ -410,16 +461,6 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                     if(Objects.equals(arrayStringSubjects[i], "Kimia"))
                     {
                         arrayStringSubjects[i] = "Chemistry";
-                    }
-                }
-
-                // if there are Grades is not selected
-                for(int i = 0; i < arrayStringGrades.length; i++)
-                {
-                    if(Objects.equals(arrayStringGrades[i], ""))
-                    {
-                        Toast.makeText(FilterProgrammes.this, "There are grades not selected", Toast.LENGTH_LONG).show();
-                        return;
                     }
                 }
 
@@ -473,44 +514,58 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 }
 
                 // Validate minimum input subjects
-
-                if(Objects.equals(selectedItem, "SPM"))
-                {
+                if(Objects.equals(selectedItem, "SPM")) {
                     if(parentLinearLayout.getChildCount() < 18) // min 7
                     {
-                        Toast.makeText(FilterProgrammes.this, "Need minimum 7 subjects SPM", Toast.LENGTH_LONG).show();
+                        new MaterialDialog.Builder(FilterProgrammes.this)
+                                .content("SPM need minimum 7 subjects")
+                                .positiveText("Return")
+                                .build()
+                                .show();
                         return;
                     }
                 }
-                else if(Objects.equals(selectedItem, "O-Level")) // min 7
-                {
+                else if(Objects.equals(selectedItem, "O-Level")) { // min 7
                     if(parentLinearLayout.getChildCount() < 18)
                     {
-                        Toast.makeText(FilterProgrammes.this, "Need minimum 7 subjects O-Level", Toast.LENGTH_LONG).show();
+                        new MaterialDialog.Builder(FilterProgrammes.this)
+                                .content("O-Level need minimum 7 subjects")
+                                .positiveText("Return")
+                                .build()
+                                .show();
                         return;
                     }
                 }
-                else if(Objects.equals(selectedItem, "A-Level")) // min 4
-                {
+                else if(Objects.equals(selectedItem, "A-Level")) { // min 4
                     if(parentLinearLayout.getChildCount() < 15)
                     {
-                        Toast.makeText(FilterProgrammes.this, "Need minimum 4 subjects A-Level", Toast.LENGTH_LONG).show();
+                        new MaterialDialog.Builder(FilterProgrammes.this)
+                                .content("A-Level need minimum 4 subjects")
+                                .positiveText("Return")
+                                .build()
+                                .show();
                         return;
                     }
                 }
-                else if(Objects.equals(selectedItem, "STPM")) // min 4
-                {
+                else if(Objects.equals(selectedItem, "STPM")) { // min 4
                     if(parentLinearLayout.getChildCount() < 15)
                     {
-                        Toast.makeText(FilterProgrammes.this, "Need minimum 4 subjects STPM", Toast.LENGTH_LONG).show();
+                        new MaterialDialog.Builder(FilterProgrammes.this)
+                                .content("STPM need minimum 4 subjects")
+                                .positiveText("Return")
+                                .build()
+                                .show();
                         return;
                     }
                 }
-                else if(Objects.equals(selectedItem, "UEC")) // min 8
-                {
+                else if(Objects.equals(selectedItem, "UEC")) {  // min 8
                     if(parentLinearLayout.getChildCount() < 19)
                     {
-                        Toast.makeText(FilterProgrammes.this, "Need minimum 8 subjects UEC", Toast.LENGTH_LONG).show();
+                        new MaterialDialog.Builder(FilterProgrammes.this)
+                                .content("UEC need minimum 8 subjects")
+                                .positiveText("Return")
+                                .build()
+                                .show();
                         return;
                     }
                 }
@@ -536,8 +591,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
                 // Upon submit, reset back to default
                 qualificationSpinner.setSelection(0);
-                while ( parentLinearLayout.getChildCount() != 12)
-                {
+                while ( parentLinearLayout.getChildCount() != 12) {
                     parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 10);
                 }
                 subjectsAutoCompleteTextView.setEnabled(false);
@@ -584,106 +638,10 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         });
     }
 
-    private void convertSupportiveGradeToInteger(String supportiveQualificationLevel, int[] supportiveIntegerGrade, String[] supportiveStringGrade)
-    {
-        switch(supportiveQualificationLevel)
-        {
-            case "SPM":
-            {
-                for(int i = 0; i < supportiveStringGrade.length; i++)
-                {
-                    if(Objects.equals(supportiveStringGrade[i], "A+"))
-                    {
-                        supportiveIntegerGrade[i] = 1;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "A"))
-                    {
-                        supportiveIntegerGrade[i] = 2;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "A-"))
-                    {
-                        supportiveIntegerGrade[i] = 3;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "B+"))
-                    {
-                        supportiveIntegerGrade[i] = 4;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "B"))
-                    {
-                        supportiveIntegerGrade[i] = 5;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "C+"))
-                    {
-                        supportiveIntegerGrade[i] = 6;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "C"))
-                    {
-                        supportiveIntegerGrade[i] = 7;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "D"))
-                    {
-                        supportiveIntegerGrade[i] = 8;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "E"))
-                    {
-                        supportiveIntegerGrade[i] = 9;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "G"))
-                    {
-                        supportiveIntegerGrade[i] = 10;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "None"))
-                    {
-                        supportiveIntegerGrade[i] = 100; // For indicate as error
-                    }
-                }
-            }
-            break;
-            case "O-Level":
-            {
-                for(int i = 0; i < supportiveStringGrade.length; i++)
-                {
-                    if(Objects.equals(supportiveStringGrade[i], "A"))
-                    {
-                        supportiveIntegerGrade[i] = 1;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "B"))
-                    {
-                        supportiveIntegerGrade[i] = 2;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "C"))
-                    {
-                        supportiveIntegerGrade[i] = 3;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "D"))
-                    {
-                        supportiveIntegerGrade[i] = 4;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "E"))
-                    {
-                        supportiveIntegerGrade[i] = 5;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "F"))
-                    {
-                        supportiveIntegerGrade[i] = 6;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "G"))
-                    {
-                        supportiveIntegerGrade[i] = 7;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "U"))
-                    {
-                        supportiveIntegerGrade[i] = 8;
-                    }
-                    else if(Objects.equals(supportiveStringGrade[i], "None"))
-                    {
-                        supportiveIntegerGrade[i] = 100; // For indicate as error
-                    }
-                }
-            }
-            break;
-        }
-        extras.putIntArray("STUDENT_SUPPORTIVE_GRADES_LIST", supportiveIntegerGrade);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 
     private void initializeLayoutItem() {
@@ -711,8 +669,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         scienceTechnicalVocationalGradeSpinner = findViewById(R.id.scienceTechnicalVocationalGrade);
     }
 
-    private void convertToIntegerGrade(String qualificationLevel, int[] arrayIntegerGrades, String[] arrayStringGrades)
-    {
+    private void convertToIntegerGrade(String qualificationLevel, int[] arrayIntegerGrades, String[] arrayStringGrades) {
         switch(qualificationLevel)
         {
             case "SPM":
@@ -960,55 +917,175 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        onBackPressed();
-        return super.onOptionsItemSelected(item);
+    private void convertSupportiveGradeToInteger(String supportiveQualificationLevel, int[] supportiveIntegerGrade, String[] supportiveStringGrade) {
+        switch(supportiveQualificationLevel)
+        {
+            case "SPM":
+            {
+                for(int i = 0; i < supportiveStringGrade.length; i++)
+                {
+                    if(Objects.equals(supportiveStringGrade[i], "A+"))
+                    {
+                        supportiveIntegerGrade[i] = 1;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "A"))
+                    {
+                        supportiveIntegerGrade[i] = 2;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "A-"))
+                    {
+                        supportiveIntegerGrade[i] = 3;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "B+"))
+                    {
+                        supportiveIntegerGrade[i] = 4;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "B"))
+                    {
+                        supportiveIntegerGrade[i] = 5;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "C+"))
+                    {
+                        supportiveIntegerGrade[i] = 6;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "C"))
+                    {
+                        supportiveIntegerGrade[i] = 7;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "D"))
+                    {
+                        supportiveIntegerGrade[i] = 8;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "E"))
+                    {
+                        supportiveIntegerGrade[i] = 9;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "G"))
+                    {
+                        supportiveIntegerGrade[i] = 10;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "None"))
+                    {
+                        supportiveIntegerGrade[i] = 100; // For indicate as error
+                    }
+                }
+            }
+            break;
+            case "O-Level":
+            {
+                for(int i = 0; i < supportiveStringGrade.length; i++)
+                {
+                    if(Objects.equals(supportiveStringGrade[i], "A"))
+                    {
+                        supportiveIntegerGrade[i] = 1;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "B"))
+                    {
+                        supportiveIntegerGrade[i] = 2;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "C"))
+                    {
+                        supportiveIntegerGrade[i] = 3;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "D"))
+                    {
+                        supportiveIntegerGrade[i] = 4;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "E"))
+                    {
+                        supportiveIntegerGrade[i] = 5;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "F"))
+                    {
+                        supportiveIntegerGrade[i] = 6;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "G"))
+                    {
+                        supportiveIntegerGrade[i] = 7;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "U"))
+                    {
+                        supportiveIntegerGrade[i] = 8;
+                    }
+                    else if(Objects.equals(supportiveStringGrade[i], "None"))
+                    {
+                        supportiveIntegerGrade[i] = 100; // For indicate as error
+                    }
+                }
+            }
+            break;
+        }
+        extras.putIntArray("STUDENT_SUPPORTIVE_GRADES_LIST", supportiveIntegerGrade);
     }
 
-    private boolean checkSecondQualificationError(String spmOLevelQualification, String secondMath, String secondEng, String secondAddMath, String secondBahasaMalaysia, String scienceTechnicalVocationalGrade, String qualificationLevel)
-    {
+    private boolean checkSecondQualificationError(String spmOLevelQualification, String secondMath, String secondEng, String secondAddMath, String secondBahasaMalaysia, String scienceTechnicalVocationalGrade, String qualificationLevel) {
         if(Objects.equals(qualificationLevel, "STPM") || Objects.equals(qualificationLevel, "STAM") || Objects.equals(qualificationLevel, "A-Level"))
         {
-            if(Objects.equals(spmOLevelQualification, ""))
+            if(spmOLevelQualification.isEmpty())
             {
-                Toast.makeText(FilterProgrammes.this, "Please choose SPM or O-Level Qualification", Toast.LENGTH_LONG).show();
+                new MaterialDialog.Builder(FilterProgrammes.this)
+                        .content("Please choose SPM or O-Level Qualification")
+                        .positiveText("Return")
+                        .build()
+                        .show();
                 return true;
             }
 
             if(scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim().isEmpty())
             {
-                Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " Science/Technical/Vocational subject", Toast.LENGTH_LONG).show();
+                new MaterialDialog.Builder(FilterProgrammes.this)
+                        .content("Please choose " + spmOLevelQualification + " Science/Technical/Vocational subject")
+                        .positiveText("Return")
+                        .build()
+                        .show();
                 return true;
             }
 
-            if(Objects.equals(scienceTechnicalVocationalGrade, "")
-                    && scienceTechnicalVocationalAutoCompleteTextView.getText().toString().trim().isEmpty())
+            if(scienceTechnicalVocationalGrade.isEmpty())
             {
-                Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " Science/Technical/Vocational grade", Toast.LENGTH_LONG).show();
+                new MaterialDialog.Builder(FilterProgrammes.this)
+                        .content("Please choose " + spmOLevelQualification + " Science/Technical/Vocational grade")
+                        .positiveText("Return")
+                        .build()
+                        .show();
                 return true;
             }
 
-            if(Objects.equals(secondBahasaMalaysia, ""))
+            if(secondBahasaMalaysia.isEmpty())
             {
-                Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " Bahasa Malaysia grade", Toast.LENGTH_LONG).show();
+                new MaterialDialog.Builder(FilterProgrammes.this)
+                        .content("Please choose " + spmOLevelQualification + " Bahasa Malaysia grade")
+                        .positiveText("Return")
+                        .build()
+                        .show();
                 return true;
             }
-            if(Objects.equals(secondEng, ""))
+            if(secondEng.isEmpty())
             {
-                Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " English grade", Toast.LENGTH_LONG).show();
+                new MaterialDialog.Builder(FilterProgrammes.this)
+                        .content("Please choose " + spmOLevelQualification + " English grade")
+                        .positiveText("Return")
+                        .build()
+                        .show();
                 return true;
             }
-            if(Objects.equals(secondMath, ""))
+            if(secondMath.isEmpty())
             {
-                Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " Mathematics grade", Toast.LENGTH_LONG).show();
+                new MaterialDialog.Builder(FilterProgrammes.this)
+                        .content("Please choose " + spmOLevelQualification + " Mathematics grade")
+                        .positiveText("Return")
+                        .build()
+                        .show();
                 return true;
             }
 
-            if(Objects.equals(secondAddMath, ""))
+            if(secondAddMath.isEmpty())
             {
-                Toast.makeText(FilterProgrammes.this, "Please choose " + spmOLevelQualification + " Additional Mathematics grade", Toast.LENGTH_LONG).show();
+                new MaterialDialog.Builder(FilterProgrammes.this)
+                        .content("Please choose " + spmOLevelQualification + " Additional Mathematics grade")
+                        .positiveText("Return")
+                        .build()
+                        .show();
                 return true;
             }
 
@@ -1023,7 +1100,41 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
         setSpinnerScrollbar();
     }
 
-    //results and SPMOLevel spinner listener
+    public void setSpinnerScrollbar() {
+        try {
+            Field popup = Spinner.class.getDeclaredField("mPopup");
+            popup.setAccessible(true);
+
+            if(flagForNewField) {
+                android.widget.ListPopupWindow newGradesListPopupWindow = (android.widget.ListPopupWindow) popup.get(gradesSpinner1);
+                newGradesListPopupWindow.setHeight(500);
+                return;
+            }
+
+            // Get private mPopup member variable and try cast to ListPopupWindow
+            android.widget.ListPopupWindow bahasaMalaysiaPopupWindow = (android.widget.ListPopupWindow) popup.get(bahasaMalaysiaSpinner);
+            android.widget.ListPopupWindow addMathPopupWindow = (android.widget.ListPopupWindow) popup.get(addMathSpinner);
+            android.widget.ListPopupWindow mathematicsPopupWindow = (android.widget.ListPopupWindow) popup.get(mathematicsSpinner);
+            android.widget.ListPopupWindow englishPopupWindow = (android.widget.ListPopupWindow) popup.get(englishSpinner);
+            android.widget.ListPopupWindow scienceTechnicalVocationaPopupWindow = (android.widget.ListPopupWindow) popup.get(scienceTechnicalVocationalGradeSpinner);
+            android.widget.ListPopupWindow qualificationTypePopupWindow = (android.widget.ListPopupWindow) popup.get(qualificationSpinner);
+            android.widget.ListPopupWindow gradesListPopupWindow = (android.widget.ListPopupWindow) popup.get(gradesSpinner);
+
+            // Set popupWindow height to 500px
+            bahasaMalaysiaPopupWindow.setHeight(500);
+            addMathPopupWindow.setHeight(500);
+            mathematicsPopupWindow.setHeight(500);
+            englishPopupWindow.setHeight(500);
+            gradesListPopupWindow.setHeight(500);
+            qualificationTypePopupWindow.setHeight(500);
+            scienceTechnicalVocationaPopupWindow.setHeight(500);
+        }
+        catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Results and SPMOLevel Listener
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
         String [] gradesList;
@@ -1448,39 +1559,4 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) { }
-
-    public void setSpinnerScrollbar() {
-        try {
-            Field popup = Spinner.class.getDeclaredField("mPopup");
-            popup.setAccessible(true);
-
-            if(flagForNewField) {
-                android.widget.ListPopupWindow newGradesListPopupWindow = (android.widget.ListPopupWindow) popup.get(gradesSpinner1);
-                newGradesListPopupWindow.setHeight(500);
-                return;
-            }
-
-            // Get private mPopup member variable and try cast to ListPopupWindow
-            android.widget.ListPopupWindow bahasaMalaysiaPopupWindow = (android.widget.ListPopupWindow) popup.get(bahasaMalaysiaSpinner);
-            android.widget.ListPopupWindow addMathPopupWindow = (android.widget.ListPopupWindow) popup.get(addMathSpinner);
-            android.widget.ListPopupWindow mathematicsPopupWindow = (android.widget.ListPopupWindow) popup.get(mathematicsSpinner);
-            android.widget.ListPopupWindow englishPopupWindow = (android.widget.ListPopupWindow) popup.get(englishSpinner);
-            android.widget.ListPopupWindow scienceTechnicalVocationaPopupWindow = (android.widget.ListPopupWindow) popup.get(scienceTechnicalVocationalGradeSpinner);
-            android.widget.ListPopupWindow qualificationTypePopupWindow = (android.widget.ListPopupWindow) popup.get(qualificationSpinner);
-            android.widget.ListPopupWindow gradesListPopupWindow = (android.widget.ListPopupWindow) popup.get(gradesSpinner);
-
-            // Set popupWindow height to 500px
-            bahasaMalaysiaPopupWindow.setHeight(500);
-            addMathPopupWindow.setHeight(500);
-            mathematicsPopupWindow.setHeight(500);
-            englishPopupWindow.setHeight(500);
-            gradesListPopupWindow.setHeight(500);
-            qualificationTypePopupWindow.setHeight(500);
-            scienceTechnicalVocationaPopupWindow.setHeight(500);
-        }
-        catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

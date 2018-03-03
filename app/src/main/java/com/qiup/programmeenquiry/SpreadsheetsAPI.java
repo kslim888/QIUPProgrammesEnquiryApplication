@@ -5,11 +5,9 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
-public interface SpreadsheetsAPI
-{
+public interface SpreadsheetsAPI {
 
     @POST("1FAIpQLSc-YHeXIpLuul0aNmOwhk7JuBQfc0RGN9hP-N3wl1UZ9yAIHw/formResponse")
-
     @FormUrlEncoded
     Call<Void> postToSpreadsheet(
             @Field("entry.1397369254") String Name,

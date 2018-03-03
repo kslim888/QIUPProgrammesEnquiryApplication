@@ -2,7 +2,7 @@ package com.qiup.POJO;
 
 import com.google.gson.annotations.SerializedName;
 
-public class BSNE{
+public class BIS{
 
 	@SerializedName("UEC")
 	private UEC uEC;
@@ -12,9 +12,6 @@ public class BSNE{
 
 	@SerializedName("STPM")
 	private STPM sTPM;
-
-	@SerializedName("STAM")
-	private STAM sTAM;
 
 	public UEC getUEC(){
 		return uEC;
@@ -26,9 +23,5 @@ public class BSNE{
 
 	public STPM getSTPM(){
 		return sTPM;
-	}
-
-	public STAM getSTAM(){
-		return sTAM;
 	}
 }

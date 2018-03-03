@@ -17,7 +17,6 @@ public class RuleAttribute
     private int amountOfCreditRequired, minimumCreditGrade, minimumRequiredScienceSubject,
     amountOfSubjectRequired, amountOfSupportiveSubjectRequired;
     private boolean gotRequiredSubject, needSupportiveQualification, exempted;
-    private String whatSupportiveQualification;
     private List<String> subjectRequired; // WhatSubjectRequired
     private List<Integer> minimumSubjectRequiredGrade; // MinimumSubjectRequiredGrade
     private List<String> supportiveSubjectRequired; // WhatSupportiveSubject
@@ -91,19 +90,11 @@ public class RuleAttribute
         this.needSupportiveQualification = needSupportiveQualification;
     }
 
-    public String getWhatSupportiveQualification() {
-        return whatSupportiveQualification;
-    }
-
-    public void setWhatSupportiveQualification(String whatSupportiveQualification) {
-        this.whatSupportiveQualification = whatSupportiveQualification;
-    }
-
-    public int getMinimumRequiredScienceSubject() {
+    int getMinimumRequiredScienceSubject() {
         return minimumRequiredScienceSubject;
     }
 
-    public void setMinimumRequiredScienceSubject(int minimumRequiredScienceSubject) {
+    void setMinimumRequiredScienceSubject(int minimumRequiredScienceSubject) {
         this.minimumRequiredScienceSubject = minimumRequiredScienceSubject;
     }
 
@@ -139,19 +130,19 @@ public class RuleAttribute
         this.supportiveGradeRequired = supportiveGradeRequired;
     }
 
-    public List<String> getScienceSubjectRequired() {
+    List<String> getScienceSubjectRequired() {
         return scienceSubjectRequired;
     }
 
-    public void setScienceSubjectRequired(List<String> scienceSubjectRequired) {
+    void setScienceSubjectRequired(List<String> scienceSubjectRequired) {
         this.scienceSubjectRequired = scienceSubjectRequired;
     }
 
-    public List<Integer> getMinimumScienceSubjectGradeRequired() {
+    List<Integer> getMinimumScienceSubjectGradeRequired() {
         return minimumScienceSubjectGradeRequired;
     }
 
-    public void setMinimumScienceSubjectGradeRequired(List<Integer> minimumScienceSubjectGradeRequired) {
+    void setMinimumScienceSubjectGradeRequired(List<Integer> minimumScienceSubjectGradeRequired) {
         this.minimumScienceSubjectGradeRequired = minimumScienceSubjectGradeRequired;
     }
 
@@ -159,7 +150,7 @@ public class RuleAttribute
         return supportiveIntegerGradeRequired;
     }
 
-    public void setSupportiveIntegrGradeRequired(int gradeNumber) {
+    private void setSupportiveIntegrGradeRequired(int gradeNumber) {
         supportiveIntegerGradeRequired.add(gradeNumber);
     }
 
@@ -214,10 +205,10 @@ public class RuleAttribute
         {
             for(int i = 0; i < supportiveStringGrades.size(); i++) {
                 if(Objects.equals(supportiveStringGrades.get(i), "Credit")) {
-                    setSupportiveIntegrGradeRequired(7); // If required supportive grade is credit, set it to 1
+                    setSupportiveIntegrGradeRequired(7); // If required supportive grade is credit, set it to 7
                 }
                 else if(Objects.equals(supportiveStringGrades.get(i), "Pass")) {
-                    setSupportiveIntegrGradeRequired(9); // If required supportive grade is pass, set it to 2
+                    setSupportiveIntegrGradeRequired(9); // If required supportive grade is pass, set it to 9
                 }
             }
         }

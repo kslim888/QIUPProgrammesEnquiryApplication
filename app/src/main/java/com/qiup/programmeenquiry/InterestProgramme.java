@@ -18,7 +18,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
@@ -74,7 +73,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class InterestProgramme extends AppCompatActivity {
     TextView maxTextView;
-    AutoCompleteTextView interestedProgrammeAutoComplete, newInterestedProgrammeAutoComplete;
+    InstantAutoComplete interestedProgrammeAutoComplete, newInterestedProgrammeAutoComplete;
     Button generateButton, addInterestedProgramme, deleteInterestedProgramme;
     EditText editOtherProgramme;
     CheckBox interestCheckBox;
@@ -101,6 +100,7 @@ public class InterestProgramme extends AppCompatActivity {
                 .canceledOnTouchOutside(false)
                 .content("Please wait...");
         dialog = builder.build();
+
         extras = getIntent().getExtras();
         addInterestedProgramme = findViewById(R.id.addInterestedProgrammeText);
         deleteInterestedProgramme = findViewById(R.id.deleteInterestedProgrammeText);
@@ -145,8 +145,7 @@ public class InterestProgramme extends AppCompatActivity {
 
         addInterestedProgramme.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View rowView = inflater.inflate(R.layout.new_interest_programme_field, null);
 
@@ -201,10 +200,8 @@ public class InterestProgramme extends AppCompatActivity {
 
         generateButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 dialog.show();
-
                 final StringBuilder allInterestedProgramme = new StringBuilder();
                 // Start validate inputted programme. If the key-in programme is not exist in programme list, return
                 // If checkbox is not checked, meaning that got interest programme
@@ -221,7 +218,12 @@ public class InterestProgramme extends AppCompatActivity {
 
                     // Check interested programme is blank or not. If blank then return
                     if(Objects.equals(interestedProgrammeAutoComplete.getText().toString().trim(), "")) {
-                        Toast.makeText(InterestProgramme.this, "Please key-in interest pragramme", Toast.LENGTH_LONG).show();
+                        new MaterialDialog.Builder(InterestProgramme.this)
+                                .content("Please key-in interest pragramme")
+                                .positiveText("Return")
+                                .build()
+                                .show();
+                        dialog.dismiss();
                         return;
                     }
 
@@ -230,13 +232,25 @@ public class InterestProgramme extends AppCompatActivity {
                     // If is SPM, O-Level only foundation to diploma
                     if(Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "SPM")
                             || Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "O-Level")) {
-                        if(Arrays.asList(degreeArray).contains(interestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())) {
-                            Toast.makeText(InterestProgramme.this, "SPM / O-Level can only enquiry until Diploma level", Toast.LENGTH_LONG).show();
+                        if(Arrays.asList(degreeArray).contains(interestedProgrammeAutoComplete.getText().toString().toUpperCase().trim()))
+                        {
+                            MaterialDialog md = new MaterialDialog.Builder(InterestProgramme.this)
+                                    .title("Sorry. SPM / O-Level can only enquiry until Diploma level")
+                                    .customView(R.layout.image_layout, false)
+                                    .positiveText("Return")
+                                    .build();
+                            md.show();
+                            dialog.dismiss();
                             return;
                         }
                         if(!Arrays.asList(foundationArray).contains(interestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())
                                 && !Arrays.asList(diplomaArray).contains(interestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())) {
-                            Toast.makeText(InterestProgramme.this, "Please key-in valid interest pragramme", Toast.LENGTH_LONG).show();
+                            new MaterialDialog.Builder(InterestProgramme.this)
+                                    .content("Please key-in valid interest pragramme")
+                                    .positiveText("Return")
+                                    .build()
+                                    .show();
+                            dialog.dismiss();
                             return;
                         }
                     }
@@ -246,67 +260,86 @@ public class InterestProgramme extends AppCompatActivity {
                             && !Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "O-Level")
                             && !Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "UEC")) {
                         if(Arrays.asList(foundationArray).contains(interestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())) {
-                            Toast.makeText(InterestProgramme.this, "Above SPM / O-Level qualification cannot enquiry Foundation level", Toast.LENGTH_LONG).show();
+                            new MaterialDialog.Builder(InterestProgramme.this)
+                                    .content("Above SPM / O-Level qualification cannot enquiry Foundation level")
+                                    .positiveText("Return")
+                                    .build()
+                                    .show();
+                            dialog.dismiss();
                             return;
                         }
                         if(!Arrays.asList(diplomaArray).contains(interestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())
                                 && !Arrays.asList(degreeArray).contains(interestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())) {
-                            Toast.makeText(InterestProgramme.this, "Please key-in valid interest pragramme", Toast.LENGTH_LONG).show();
+                            new MaterialDialog.Builder(InterestProgramme.this)
+                                    .content("Please key-in valid interest pragramme")
+                                    .positiveText("Return")
+                                    .build()
+                                    .show();
+                            dialog.dismiss();
                             return;
                         }
                     }
 
                     // For new added interest programme, do the same checking
-                    for (int i = 0; i < interestProgrammeParentLayout.getChildCount(); i++)
-                    {
+                    for (int i = 0; i < interestProgrammeParentLayout.getChildCount(); i++) {
                         view = interestProgrammeParentLayout.getChildAt(i);
-                        if(view instanceof LinearLayout)
-                        {
-                            if(view.getId() == R.id.newProgrammes)
-                            {
-                                newInterestedProgrammeAutoComplete = (AutoCompleteTextView) ((LinearLayout) view).getChildAt(0);
+                        if(view instanceof LinearLayout) {
+                            if(view.getId() == R.id.newProgrammes) {
+                                newInterestedProgrammeAutoComplete = (InstantAutoComplete) ((LinearLayout) view).getChildAt(0);
 
-                                if(Objects.equals(newInterestedProgrammeAutoComplete.getText().toString().trim(), ""))
-                                {
-                                    Toast.makeText(InterestProgramme.this, "Please key-in interest pragramme", Toast.LENGTH_LONG).show();
-                                    return;
-                                }
-
-                                if(Objects.equals(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase().trim(), "NONE"))
-                                {
-                                    Toast.makeText(InterestProgramme.this, "None is not allowed in added interest programme", Toast.LENGTH_LONG).show();
+                                if(Objects.equals(newInterestedProgrammeAutoComplete.getText().toString().trim(), "")) {
+                                    new MaterialDialog.Builder(InterestProgramme.this)
+                                            .content("Please key-in interest pragramme")
+                                            .positiveText("Return")
+                                            .build()
+                                            .show();
+                                    dialog.dismiss();
                                     return;
                                 }
 
                                 if(Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "SPM")
-                                        || Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "O-Level"))
-                                {
-                                    if(Arrays.asList(degreeArray).contains(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase().trim()))
-                                    {
-                                        Toast.makeText(InterestProgramme.this, "SPM / O-Level can only enquiry until Diploma level", Toast.LENGTH_LONG).show();
+                                        || Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "O-Level")) {
+                                    if(Arrays.asList(degreeArray).contains(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())) {
+                                        MaterialDialog md = new MaterialDialog.Builder(InterestProgramme.this)
+                                                .title("Sorry. SPM / O-Level can only enquiry until Diploma level")
+                                                .customView(R.layout.image_layout, false)
+                                                .positiveText("Return")
+                                                .build();
+                                        md.show();
                                         return;
                                     }
                                     if(!Arrays.asList(foundationArray).contains(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())
-                                            && !Arrays.asList(diplomaArray).contains(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase().trim()))
-                                    {
-                                        Toast.makeText(InterestProgramme.this, "Please key-in valid interest pragramme", Toast.LENGTH_LONG).show();
+                                            && !Arrays.asList(diplomaArray).contains(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())) {
+                                        new MaterialDialog.Builder(InterestProgramme.this)
+                                                .content("Please key-in valid interest pragramme")
+                                                .positiveText("Return")
+                                                .build()
+                                                .show();
+                                        dialog.dismiss();
                                         return;
                                     }
                                 }
 
                                 if(!Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "SPM")
                                         && !Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "O-Level")
-                                        && !Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "UEC"))
-                                {
-                                    if(Arrays.asList(foundationArray).contains(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase()))
-                                    {
-                                        Toast.makeText(InterestProgramme.this, "Above SPM / O-Level qualification cannot enquiry Foundation level", Toast.LENGTH_LONG).show();
+                                        && !Objects.equals(extras.getString("QUALIFICATION_LEVEL"), "UEC")) {
+                                    if(Arrays.asList(foundationArray).contains(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase())) {
+                                        new MaterialDialog.Builder(InterestProgramme.this)
+                                                .content("Above SPM / O-Level qualification cannot enquiry Foundation level")
+                                                .positiveText("Return")
+                                                .build()
+                                                .show();
+                                        dialog.dismiss();
                                         return;
                                     }
                                     if(!Arrays.asList(diplomaArray).contains(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())
-                                            && !Arrays.asList(degreeArray).contains(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase().trim()))
-                                    {
-                                        Toast.makeText(InterestProgramme.this, "Above SPM / O-Level qualification cannot enquiry Foundation level", Toast.LENGTH_LONG).show();
+                                            && !Arrays.asList(degreeArray).contains(newInterestedProgrammeAutoComplete.getText().toString().toUpperCase().trim())) {
+                                        new MaterialDialog.Builder(InterestProgramme.this)
+                                                .content("Above SPM / O-Level qualification cannot enquiry Foundation level")
+                                                .positiveText("Return")
+                                                .build()
+                                                .show();
+                                        dialog.dismiss();
                                         return;
                                     }
                                 }
@@ -316,14 +349,11 @@ public class InterestProgramme extends AppCompatActivity {
 
                     // Get all the new added interest programme view value and add to a List
                     ArrayList<String> interestedProgrammeList = new ArrayList<>();
-                    for (int i = 0; i < interestProgrammeParentLayout.getChildCount(); i++)
-                    {
+                    for (int i = 0; i < interestProgrammeParentLayout.getChildCount(); i++) {
                         view = interestProgrammeParentLayout.getChildAt(i);
-                        if(view instanceof LinearLayout)
-                        {
-                            if(view.getId() == R.id.newProgrammes)
-                            {
-                                newInterestedProgrammeAutoComplete = (AutoCompleteTextView) ((LinearLayout) view).getChildAt(0);
+                        if(view instanceof LinearLayout) {
+                            if(view.getId() == R.id.newProgrammes) {
+                                newInterestedProgrammeAutoComplete = (InstantAutoComplete) ((LinearLayout) view).getChildAt(0);
                                 interestedProgrammeList.add(newInterestedProgrammeAutoComplete.getText().toString());
                             }
                         }
@@ -334,31 +364,30 @@ public class InterestProgramme extends AppCompatActivity {
                     interestedProgrammeArray[0] = interestedProgrammeAutoComplete.getText().toString();
 
                     //if added new field of interest programme
-                    if(interestProgrammeParentLayout.getChildCount() == 7) // only added 1
-                    {
+                    if(interestProgrammeParentLayout.getChildCount() == 7) { // only added 1
                         interestedProgrammeArray[1] = interestedProgrammeList.get(0);
                     }
-                    else if (interestProgrammeParentLayout.getChildCount() == 8) // added 2
-                    {
+                    else if (interestProgrammeParentLayout.getChildCount() == 8) { // added 2
                         interestedProgrammeArray[1] = interestedProgrammeList.get(0);
                         interestedProgrammeArray[2] = interestedProgrammeList.get(1);
                     }
 
                     // Check if there are duplicated interest programme. if got then return
-                    for(int i = 0; i < interestedProgrammeArray.length; i++)
-                    {
-                        for(int j = i + 1; j < interestedProgrammeArray.length; j++)
-                        {
-                            if(Objects.equals(interestedProgrammeArray[i], interestedProgrammeArray[j]))
-                            {
-                                Toast.makeText(InterestProgramme.this, "There is a duplicate interest programme", Toast.LENGTH_LONG).show();
+                    for(int i = 0; i < interestedProgrammeArray.length; i++) {
+                        for(int j = i + 1; j < interestedProgrammeArray.length; j++) {
+                            if(Objects.equals(interestedProgrammeArray[i], interestedProgrammeArray[j])) {
+                                new MaterialDialog.Builder(InterestProgramme.this)
+                                        .content("There is a duplicate interest programme")
+                                        .positiveText("Return")
+                                        .build()
+                                        .show();
+                                dialog.dismiss();
                                 return;
                             }
                         }
                     }
 
-                    for(int i = 0; i < interestedProgrammeArray.length; i++)
-                    {
+                    for(int i = 0; i < interestedProgrammeArray.length; i++) {
                         if(i != interestedProgrammeArray.length-1) // apepend "," for every programme
                         {
                             allInterestedProgramme.append(interestedProgrammeArray[i]).append(", ");
@@ -425,8 +454,7 @@ public class InterestProgramme extends AppCompatActivity {
                 // Reset back to default upon click the button
                 editOtherProgramme.setText("");
                 editOtherProgramme.clearFocus();
-                while(interestProgrammeParentLayout.getChildCount() != 6)
-                {
+                while(interestProgrammeParentLayout.getChildCount() != 6) {
                     interestProgrammeParentLayout.removeViewAt(interestProgrammeParentLayout.getChildCount() - 4);
                 }
                 interestCheckBox.setChecked(true);
@@ -449,34 +477,26 @@ public class InterestProgramme extends AppCompatActivity {
         StringBuilder eligibleProgramme = new StringBuilder();
         StringBuilder notEligibleProgramme = new StringBuilder();
 
-        if(!Objects.equals(allInterestedProgramme.toString(), "None"))
-        {
-            for(int i = 0; i < interestedProgrammeArray.length; i++)
-            {
+        if(!Objects.equals(allInterestedProgramme.toString(), "None")) {
+            for(int i = 0; i < interestedProgrammeArray.length; i++) {
                 switch(interestedProgrammeArray[i])
                 {
                     // Foundation
                     case "Foundation in Arts":
                     {
-                        if(FIA.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(FIA.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Foundation in Arts");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Foundation in Arts");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Foundation in Arts");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Foundation in Arts");
                             }
                         }
@@ -484,25 +504,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Foundation in Business":
                     {
-                        if(FIA.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(FIA.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Foundation in Business");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Foundation in Business");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Foundation in Business");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Foundation in Business");
                             }
                         }
@@ -510,25 +524,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Foundation in Sciences":
                     {
-                        if(FIS.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(FIS.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Foundation in Sciences");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Foundation in Sciences");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Foundation in Sciences");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Foundation in Sciences");
                             }
                         }
@@ -538,10 +546,8 @@ public class InterestProgramme extends AppCompatActivity {
                     // Diploma
                     case "Diploma in Business Management":
                     {
-                        if(DBM.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(DBM.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Diploma in Business Management");
                             }
                             else
@@ -549,14 +555,11 @@ public class InterestProgramme extends AppCompatActivity {
                                 eligibleProgramme.append(", Diploma in Business Management");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Diploma in Business Management");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Diploma in Business Management");
                             }
                         }
@@ -564,25 +567,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Diploma in Hotel Management":
                     {
-                        if(DHM.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(DHM.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Diploma in Hotel Management");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Diploma in Hotel Management");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Diploma in Hotel Management");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Diploma in Hotel Management");
                             }
                         }
@@ -590,25 +587,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Diploma of Accountancy":
                     {
-                        if(DAC.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(DAC.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Diploma of Accountancy");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Diploma of Accountancy");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Diploma of Accountancy");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Diploma of Accountancy");
                             }
                         }
@@ -616,25 +607,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Diploma in Early Childhood Education":
                     {
-                        if(DCE.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(DCE.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Diploma in Early Childhood Education");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Diploma in Early Childhood Education");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Diploma in Early Childhood Education");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Diploma in Early Childhood Education");
                             }
                         }
@@ -642,25 +627,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Diploma in Information Technology":
                     {
-                        if(DIT.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(DIT.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Diploma in Information Technology");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Diploma in Information Technology");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Diploma in Information Technology");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Diploma in Information Technology");
                             }
                         }
@@ -668,25 +647,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Diploma in Business Information System":
                     {
-                        if(DIS.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(DIS.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Diploma in Business Information System");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Diploma in Business Information System");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Diploma in Business Information System");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Diploma in Business Information System");
                             }
                         }
@@ -694,25 +667,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Diploma in Mechatronics Engineering":
                     {
-                        if(DME.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(DME.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Diploma in Mechatronics Engineering");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Diploma in Mechatronics Engineering");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Diploma in Mechatronics Engineering");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Diploma in Mechatronics Engineering");
                             }
                         }
@@ -720,25 +687,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Diploma in Environmental Technology":
                     {
-                        if(DET.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(DET.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Diploma in Environmental Technology");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Diploma in Environmental Technology");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Diploma in Environmental Technology");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Diploma in Environmental Technology");
                             }
                         }
@@ -747,25 +708,19 @@ public class InterestProgramme extends AppCompatActivity {
                     //Degree
                     case "Bachelor of Business Administration (Hons)":
                     {
-                        if(BBA.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BBA.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Business Administration (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Business Administration (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Business Administration (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Business Administration (Hons)");
                             }
                         }
@@ -773,25 +728,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "BBA (Hons) in Hospitality & Tourism Management":
                     {
-                        if(BHT.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BHT.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("BBA (Hons) in Hospitality & Tourism Management");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", BBA (Hons) in Hospitality & Tourism Management");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("BBA (Hons) in Hospitality & Tourism Management");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", BBA (Hons) in Hospitality & Tourism Management");
                             }
                         }
@@ -799,25 +748,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Accountancy (Hons)":
                     {
-                        if(BAC.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BAC.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Accountancy (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Accountancy (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Accountancy (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Accountancy (Hons)");
                             }
                         }
@@ -825,25 +768,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Finance (Hons)":
                     {
-                        if(BFI.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BFI.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Finance (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Finance (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Finance (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Finance (Hons)");
                             }
                         }
@@ -851,25 +788,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Arts (Hons) TESL":
                     {
-                        if(TESL.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(TESL.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Arts (Hons) TESL");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Arts (Hons) TESL");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Arts (Hons) TESL");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Arts (Hons) TESL");
                             }
                         }
@@ -877,25 +808,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Corporate Communication (Hons)":
                     {
-                        if(CorporateComm.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(CorporateComm.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Corporate Communication (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Corporate Communication (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Corporate Communication (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Corporate Communication (Hons)");
                             }
                         }
@@ -903,25 +828,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Mass Communication (Hons) Journalism":
                     {
-                        if(MassCommJournalism.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(MassCommJournalism.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Mass Communication (Hons) Journalism");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Mass Communication (Hons) Journalism");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Mass Communication (Hons) Journalism");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Mass Communication (Hons) Journalism");
                             }
                         }
@@ -929,25 +848,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Mass Communication (Hons) Advertising":
                     {
-                        if(MassCommAdvertising.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(MassCommAdvertising.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Mass Communication (Hons) Advertising");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Mass Communication (Hons) Advertising");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Mass Communication (Hons) Advertising");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Mass Communication (Hons) Advertising");
                             }
                         }
@@ -955,25 +868,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Early Childhood Education (Hons)":
                     {
-                        if(BCE.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BCE.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Early Childhood Education (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Early Childhood Education (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Early Childhood Education (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Early Childhood Education (Hons)");
                             }
                         }
@@ -981,50 +888,38 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Special Needs Education (Hons)":
                     {
-                        if(BSNE.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BSNE.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Special Needs Education (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Special Needs Education (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Special Needs Education (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Special Needs Education (Hons)");
                             }
                         }
                     }
                     case "Bachelor of Computer Science (Hons)":
                     {
-                        if(BCS.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BCS.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Computer Science (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Computer Science (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Computer Science (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Computer Science (Hons)");
                             }
                         }
@@ -1032,25 +927,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Information Technology (Hons)":
                     {
-                        if(BIT.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BIT.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Information Technology (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Information Technology (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Information Technology (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Information Technology (Hons)");
                             }
                         }
@@ -1058,25 +947,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Business Information System (Hons)":
                     {
-                        if(BIS.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BIS.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Business Information System (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Business Information System (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Business Information System (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Business Information System (Hons)");
                             }
                         }
@@ -1084,25 +967,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Engineering (Hons) Electronics & Communications Engineering":
                     {
-                        if(ECE.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(ECE.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Engineering (Hons) Electronics & Communications Engineering");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Engineering (Hons) Electronics & Communications Engineering");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Engineering (Hons) Electronics & Communications Engineering");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Engineering (Hons) Electronics & Communications Engineering");
                             }
                         }
@@ -1110,25 +987,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Engineering (Hons) in Mechatronics":
                     {
-                        if(BEM.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BEM.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Engineering (Hons) in Mechatronics");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Engineering (Hons) in Mechatronics");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Engineering (Hons) in Mechatronics");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Engineering (Hons) in Mechatronics");
                             }
                         }
@@ -1136,25 +1007,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Science (Hons) in Biotechnology":
                     {
-                        if(BioTech.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BioTech.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Science (Hons) in Biotechnology");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Science (Hons) in Biotechnology");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Science (Hons) in Biotechnology");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Science (Hons) in Biotechnology");
                             }
                         }
@@ -1162,21 +1027,16 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Environmental Technology (Hons)":
                     {
-                        if(BET.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BET.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Environmental Technology (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Environmental Technology (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Environmental Technology (Hons)");
                             }
                             else
@@ -1188,25 +1048,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Science (Hons) Actuarial Sciences":
                     {
-                        if(BS_ActuarialSciences.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BS_ActuarialSciences.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Science (Hons) Actuarial Sciences");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Science (Hons) Actuarial Sciences");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Science (Hons) Actuarial Sciences");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Science (Hons) Actuarial Sciences");
                             }
                         }
@@ -1214,25 +1068,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Pharmacy (Hons)":
                     {
-                        if(Pharmacy.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(Pharmacy.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Pharmacy (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Pharmacy (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Pharmacy (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Pharmacy (Hons)");
                             }
                         }
@@ -1240,10 +1088,8 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Biomedical Sciences (Hons)":
                     {
-                        if(BBS.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(BBS.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Biomedical Sciences (Hons)");
                             }
                             else
@@ -1251,14 +1097,11 @@ public class InterestProgramme extends AppCompatActivity {
                                 eligibleProgramme.append(", Bachelor of Biomedical Sciences (Hons)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Biomedical Sciences (Hons)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Biomedical Sciences (Hons)");
                             }
                         }
@@ -1266,25 +1109,19 @@ public class InterestProgramme extends AppCompatActivity {
                     break;
                     case "Bachelor of Medicine & Bachelor of Surgery (MBBS)":
                     {
-                        if(MBBS.isJoinProgramme())
-                        {
-                            if(i == 0)
-                            {
+                        if(MBBS.isJoinProgramme()) {
+                            if(i == 0) {
                                 eligibleProgramme.append("Bachelor of Medicine & Bachelor of Surgery (MBBS)");
                             }
-                            else
-                            {
+                            else {
                                 eligibleProgramme.append(", Bachelor of Medicine & Bachelor of Surgery (MBBS)");
                             }
                         }
-                        else
-                        {
-                            if(i == 0)
-                            {
+                        else {
+                            if(i == 0) {
                                 notEligibleProgramme.append("Bachelor of Medicine & Bachelor of Surgery (MBBS)");
                             }
-                            else
-                            {
+                            else {
                                 notEligibleProgramme.append(", Bachelor of Medicine & Bachelor of Surgery (MBBS)");
                             }
                         }

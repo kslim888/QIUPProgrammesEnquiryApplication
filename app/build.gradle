@@ -6,8 +6,8 @@ android {
         applicationId "com.qiup.programmeenquiry"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.1"
+        versionCode 4
+        versionName "1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -23,6 +23,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.google.firebase:firebase-crash:11.8.0'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:27.0.2'
     compile 'com.android.support:design:27.0.2'
@@ -38,4 +39,11 @@ dependencies {
     implementation 'com.android.support:design:27.0.2'
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+        transitive = true
+    }
+    compile 'com.google.firebase:firebase-core:11.8.0'
 }
+
+apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'

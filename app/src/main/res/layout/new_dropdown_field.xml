@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:id="@+id/newField">
 
-        <AutoCompleteTextView
+        <com.qiup.programmeenquiry.InstantAutoComplete
             android:id="@+id/newSubjectsAutoCompleteTextView"
             android:layout_width="200dp"
             android:layout_height="wrap_content"

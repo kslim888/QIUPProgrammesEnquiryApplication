@@ -7,7 +7,7 @@ public class BCE{
 	@SerializedName("UEC")
 	private UEC uEC;
 
-	@SerializedName("A-Level")
+	@SerializedName("ALevel")
 	private ALevel aLevel;
 
 	@SerializedName("STPM")

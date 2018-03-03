@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <AutoCompleteTextView
+            <com.qiup.programmeenquiry.InstantAutoComplete
                 android:id="@+id/subjectsAutoCompleteTextView"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/any_science_technical_vocational_subject"
                 app:hintTextAppearance="@style/TextLabel">
-                <AutoCompleteTextView
+                <com.qiup.programmeenquiry.InstantAutoComplete
                     android:id="@+id/scienceTechnicalVocationalAutoCompleteTextView"
                     android:layout_width="222dp"
                     android:layout_height="wrap_content"

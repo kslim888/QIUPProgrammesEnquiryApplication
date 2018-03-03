@@ -2,7 +2,7 @@ package com.qiup.POJO;
 
 import com.google.gson.annotations.SerializedName;
 
-public class BSNE{
+public class BET{
 
 	@SerializedName("UEC")
 	private UEC uEC;

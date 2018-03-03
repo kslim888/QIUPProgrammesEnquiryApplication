@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"> Programmes Enquiry Application </string>
+    <string name="app_name"> QIUP Programmes Enquiry </string>
     <string name="hint_name"> Full Name </string>
     <string name="hint_email"> Email </string>
     <string name="hint_password"> Password </string>
@@ -42,6 +42,7 @@
     <string name="student_s_academic_qualification">Student\'s Academic Qualification</string>
     <string name="view_not_eligible">View Not Eligible</string>
     <string name="view_eligible">View Eligible</string>
+    <string name="here_is_your_path_that_you_can_join_in_qiup">Here is your path that you can join in QIUP</string>
 
     <string-array name="spm_or_oLevel_type">
         <item> </item>
