@@ -26,9 +26,38 @@ public class FIS
         setJSONAttribute(qualificationLevel); // First set json attribute to the rule
 
         // First check got required subject or not.
-        if (fisRuleAttribute.isGotRequiredSubject())
-        {
+        if (fisRuleAttribute.isGotRequiredSubject()) {
             // Check whether the subject's grade is smaller or equal to the required subject's grade
+            if (Objects.equals(qualificationLevel, "UEC"))
+            {
+                for (int i = 0; i < studentSubjects.length; i++)
+                {
+                    for (int j = 0; j < fisRuleAttribute.getSubjectRequired().size(); j++)
+                    {
+                        if (Objects.equals(fisRuleAttribute.getSubjectRequired().get(j), "Biology"))
+                        {
+                            if(Objects.equals(studentSubjects[i], "Biology"))
+                            {
+                                if (studentGrades[i] > fisRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+                        if (Objects.equals(fisRuleAttribute.getSubjectRequired().get(j), "Chemistry"))
+                        {
+                            if(Objects.equals(studentSubjects[i], "Chemistry"))
+                            {
+                                if (studentGrades[i] > fisRuleAttribute.getMinimumSubjectRequiredGrade().get(j))
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             for (int i = 0; i < studentSubjects.length; i++)
             {
                 for (int j = 0; j < fisRuleAttribute.getSubjectRequired().size(); j++)
@@ -74,7 +103,7 @@ public class FIS
         if (fisRuleAttribute.isGotRequiredSubject())
         {
             // Check subject required is fulfill or not
-            if(fisRuleAttribute.getCountCorrectSubjectRequired() >= fisRuleAttribute.getSubjectRequired().size())
+            if(fisRuleAttribute.getCountCorrectSubjectRequired() >= fisRuleAttribute.getAmountOfSubjectRequired())
             {
                 // Check enough amount of credit or not
                 if(fisRuleAttribute.getCountCredit() >= fisRuleAttribute.getAmountOfCreditRequired())
@@ -128,6 +157,7 @@ public class FIS
                 {
                     fisRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().getWhatSubjectRequired().getSubject());
                     fisRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().getMinimumSubjectRequiredGrade().getGrade());
+                    fisRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getSPM().getAmountOfSubjectRequired());
                 }
             }
             break;
@@ -143,6 +173,7 @@ public class FIS
                 {
                     fisRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().getWhatSubjectRequired().getSubject());
                     fisRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().getMinimumSubjectRequiredGrade().getGrade());
+                    fisRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getOLevel().getAmountOfSubjectRequired());
                 }
             }
             break;
@@ -150,15 +181,15 @@ public class FIS
             {
                 fisRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().getAmountOfCreditRequired());
                 fisRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().getMinimumCreditGrade());
-
-
                 fisRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().isGotRequiredSubject());
                 if(fisRuleAttribute.isGotRequiredSubject())
                 {
                     fisRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().getWhatSubjectRequired().getSubject());
                     fisRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().getMinimumSubjectRequiredGrade().getGrade());
+                    fisRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getFis().getUEC().getAmountOfSubjectRequired());
                 }
             }
+            break;
         }
     }
 }

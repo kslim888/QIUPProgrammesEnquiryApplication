@@ -23,7 +23,7 @@ public class DescriptionAdapter extends ArrayAdapter<String>
     private int descriptionPosition;
     private List<String> programmesDescriptionList;
 
-    public DescriptionAdapter(@NonNull Context context, List<String> programmesDescriptionList,
+    DescriptionAdapter(@NonNull Context context, List<String> programmesDescriptionList,
                               String qualificationLevel, boolean eligibility, String programmeLevel, String[] subjects)
     {
         super(context, R.layout.dialog_programmes_list_description);
@@ -35,7 +35,7 @@ public class DescriptionAdapter extends ArrayAdapter<String>
         setDescriptionPosition(programmeLevel);
     }
 
-    public DescriptionAdapter(@NonNull Context context, List<String> programmesDescriptionList,
+    DescriptionAdapter(@NonNull Context context, List<String> programmesDescriptionList,
                               String qualificationLevel, boolean eligibility, String programmeLevel)
     {
         super(context, R.layout.dialog_programmes_list_description, programmesDescriptionList);
@@ -48,8 +48,9 @@ public class DescriptionAdapter extends ArrayAdapter<String>
 
     public class ViewHolder
     {
-        TextView listChild;
+        TextView listChild, schorlarshipEligibility;
         ImageView correctImage, crossImage;
+        View descriptionBar;
         ViewHolder(View view)
         {
             listChild = view.findViewById(R.id.programmesDescriptionListItem);
@@ -103,15 +104,14 @@ public class DescriptionAdapter extends ArrayAdapter<String>
             {
                 descriptionPosition = 1;
             }
-        }
-
-        if(Objects.equals(qualificationLevel, "UEC"))
-        {
-            descriptionPosition = 2;
-        }
-        else if(Objects.equals(qualificationLevel, "STAM"))
-        {
-            descriptionPosition = 3;
+            if(Objects.equals(qualificationLevel, "UEC"))
+            {
+                descriptionPosition = 2;
+            }
+            else if(Objects.equals(qualificationLevel, "STAM"))
+            {
+                descriptionPosition = 3;
+            }
         }
     }
 

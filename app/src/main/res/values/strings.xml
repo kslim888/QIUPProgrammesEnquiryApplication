@@ -123,9 +123,9 @@
         <item> O-Level </item>
         <item> A-Level </item>
         <item> STAM </item>
-        <item> Foundation </item>
+       <!-- <item> Foundation </item>
         <item> Matriculation </item>
-        <item> AUSmath </item>
+        <item> AUSmath </item> -->
     </string-array>
 
     <!-- SPM -->
@@ -579,6 +579,7 @@
         <item> Diploma in Business Information System </item>
         <item> Diploma in Mechatronics Engineering </item>
         <item> Diploma in Environmental Technology </item>
+        <item> Diploma in Culinary Arts </item>
         <!--degree-->
         <item> Bachelor of Business Administration (Hons) </item>
         <item> BBA (Hons) in Hospitality &amp; Tourism Management </item>

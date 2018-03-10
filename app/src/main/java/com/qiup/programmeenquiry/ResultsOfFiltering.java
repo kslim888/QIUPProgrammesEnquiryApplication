@@ -29,6 +29,7 @@ import com.qiup.entryrules.BioTech;
 import com.qiup.entryrules.CorporateComm;
 import com.qiup.entryrules.DAC;
 import com.qiup.entryrules.DBM;
+import com.qiup.entryrules.DCA;
 import com.qiup.entryrules.DCE;
 import com.qiup.entryrules.DET;
 import com.qiup.entryrules.DHM;
@@ -56,7 +57,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
             //Requirements Description
             fiaRequirements, fibRequirements, fisRequirements,
             dbmRequirements, dhmRequirements, dacRequirements, dceRequirements,
-            ditRequirements, disRequirements, dmeRequirements, detRequirements,
+            ditRequirements, disRequirements, dmeRequirements, detRequirements, dcaRequirements,
             bbaRequirements, bbaHospitalityRequirements, bacRequirements, bfiRequirements, teslRequirements,
             corporateCommRequirements, bmcAdvertisingRequirements, bmcJournalismRequirements,
             bceRequirements, bsneRequirements, bcsRequirements, bitRequirements, bisRequirements,
@@ -64,8 +65,9 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
             actuarialScienceRequirementsm, pharmacyRequirements, bbsRequirements, mbbsRequirements;
     String qualificationLevel, otherInterestedProgramme;
     Bundle extras;
-    TextView eligibleTextView, notEligibleTextView;
+    TextView eligibleTextView, notEligibleTextView, schorlarshipEligibility;
     String[] interestedProgramme, subjectsStringArray, gradesStringArray;
+    int[] gradesIntegerArray;
     boolean isGotInterestedProgramme;
     DescriptionAdapter descriptionAdapter;
 
@@ -84,6 +86,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         interestedProgramme = extras.getStringArray("STUDENT_INTERESTED_PROGRAMME_LIST");
         subjectsStringArray = extras.getStringArray("STUDENT_SUBJECTS_LIST");
         gradesStringArray = extras.getStringArray("STUDENT_STRING_GRADES_LIST");
+        gradesIntegerArray = extras.getIntArray("STUDENT_GRADES_LIST");
         otherInterestedProgramme = extras.getString("STUDENT_OTHER_INTERESTED_PROGRAMME");
 
         // Reference to view
@@ -105,6 +108,8 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         disRequirements = new ArrayList<>();
         dmeRequirements = new ArrayList<>();
         detRequirements = new ArrayList<>();
+        dcaRequirements = new ArrayList<>();
+
         // Degree
         bbaRequirements = new ArrayList<>();
         bbaHospitalityRequirements = new ArrayList<>();
@@ -441,6 +446,18 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                     }
                 }
                 break;
+                case "Diploma in Culinary Arts":
+                {
+                    if(DCA.isJoinProgramme())
+                    {
+                        eligibleProgrammesList.add("Diploma in Culinary Arts");
+                    }
+                    else
+                    {
+                        notEligibleProgrammesList.add("Diploma in Culinary Arts");
+                    }
+                }
+                break;
 
                 //Degree
                 case "Bachelor of Business Administration (Hons)":
@@ -713,6 +730,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                         .positiveText("OK")
                         .build();
                 View v = materialDialog.getCustomView();
+                schorlarshipEligibility = v.findViewById(R.id.schorlarshipEligibility);
 
                 // Reference to list view in dialog
                 ListView listView = v.findViewById(R.id.programmesDescriptionList);
@@ -728,6 +746,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Foundation in Business":
@@ -737,6 +756,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Foundation in Sciences":
@@ -746,6 +766,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
 
@@ -757,6 +778,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Diploma in Hotel Management":
@@ -766,6 +788,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Diploma of Accountancy":
@@ -775,6 +798,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Diploma in Early Childhood Education":
@@ -784,6 +808,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Diploma in Information Technology":
@@ -793,6 +818,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Diploma in Business Information System":
@@ -802,6 +828,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Diploma in Mechatronics Engineering":
@@ -811,6 +838,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Diploma in Environmental Technology":
@@ -821,6 +849,18 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,true,
                                 selectedProgrammeFromList,
                                 subjectsStringArray);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
+                    }
+                    break;
+                    case "Diploma in Culinary Arts":
+                    {
+                        descriptionAdapter = new DescriptionAdapter(this
+                                ,dcaRequirements
+                                ,qualificationLevel
+                                ,true,
+                                selectedProgrammeFromList,
+                                subjectsStringArray);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
 
@@ -832,6 +872,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "BBA (Hons) in Hospitality & Tourism Management":
@@ -841,6 +882,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Accountancy (Hons)":
@@ -850,6 +892,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Finance (Hons)":
@@ -859,6 +902,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Arts (Hons) TESL":
@@ -868,6 +912,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Corporate Communication (Hons)":
@@ -877,6 +922,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Mass Communication (Hons) Journalism":
@@ -886,6 +932,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Mass Communication (Hons) Advertising":
@@ -895,6 +942,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Early Childhood Education (Hons)":
@@ -904,6 +952,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Special Needs Education (Hons)":
@@ -913,6 +962,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     case "Bachelor of Computer Science (Hons)":
                     {
@@ -921,6 +971,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Information Technology (Hons)":
@@ -930,6 +981,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Business Information System (Hons)":
@@ -939,6 +991,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Engineering (Hons) Electronics & Communications Engineering":
@@ -948,6 +1001,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Engineering (Hons) in Mechatronics":
@@ -957,6 +1011,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Science (Hons) in Biotechnology":
@@ -966,6 +1021,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Environmental Technology (Hons)":
@@ -975,6 +1031,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Science (Hons) Actuarial Sciences":
@@ -984,6 +1041,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Pharmacy (Hons)":
@@ -993,6 +1051,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Biomedical Sciences (Hons)":
@@ -1002,6 +1061,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                     case "Bachelor of Medicine & Bachelor of Surgery (MBBS)":
@@ -1011,6 +1071,7 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                                 ,qualificationLevel
                                 ,true,
                                 selectedProgrammeFromList);
+                        setSchorlarshipEligibility(selectedProgrammeFromList);
                     }
                     break;
                 }
@@ -1344,26 +1405,29 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         //Foundation requirements description
         fiaRequirements.add("SPM / O-Level \n Minimum 5 credits in any subjects");
         fiaRequirements.add("United Examination Certificate (UEC) \n - Minimum Grade B in at least 3 subjects");
+
         fibRequirements.add("SPM / O-Level \n Minimum 5 credits in any subjects");
         fibRequirements.add("United Examination Certificate (UEC) \n - Minimum Grade B in at least 3 subjects");
+
         fisRequirements.add("SPM / O-Level \n "
                 + "- Minimum 5 credits including Mathematics, two Sciences subjects and any other two subjects \n "
                 + "- Pass in Bahasa Malaysia and English Language ");
+        fisRequirements.add("UEC \n "
+                + "- Minimum B4 in 3 subjects : \n "
+                + " - Biology and Chemistry \n "
+                + " - Physics or Mathematics or Advanced Maths");
 
         // Diploma requirements description
-        // Diploma in Business Management
         dbmRequirements.add("SPM / O-Level \n - Minimum 3 credits in any subjects");
         dbmRequirements.add("STPM / A-Level \n - Minimum Grade C(GP 2.0) in any 1 subject");
         dbmRequirements.add("UEC \n - Minimum Grade B in any 3 subjects");
         dbmRequirements.add("STAM \n - Minimum Grade of Maqbul in any 1 subject");
 
-        // Diploma in Hotel Management
         dhmRequirements.add("SPM / O-Level \n - Minimum 3 credits in any subjects");
         dhmRequirements.add("STPM / A-Level \n - Minimum Grade C(GP 2.0) in any 1 subject");
         dhmRequirements.add("UEC \n - Minimum Grade B in any 3 subjects");
         dhmRequirements.add("STAM \n - Minimum Grade of Maqbul in any 1 subject");
 
-        // Diploma in Accountancy
         dacRequirements.add("SPM / O-Level \n "
                 + "- Minimum 3 credits in any subjects \n "
                 + "- Including credit in Mathematics and pass in English");
@@ -1377,13 +1441,11 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 + "- Minimum Grade of Maqbul in any 1 subject \n "
                 + "- Credit in Mathematics and pass in English at SPM / O-level");
 
-        // Diploma in Early Education Childhood
         dceRequirements.add("SPM / O-Level \n - Minimum 3 credits in any subjects");
         dceRequirements.add("STPM / A-Level \n - Minimum Grade C(GP 2.0) in any 1 subject");
         dceRequirements.add("UEC \n - Minimum Grade B in any 3 subjects");
         dceRequirements.add("STAM \n - Minimum Grade of Maqbul in any 1 subject");
 
-        // Diploma in Information Technology
         ditRequirements.add("SPM / O-Level \n - Minimum 3 credits in any subjects including Mathematics");
         ditRequirements.add("STPM / A-Level \n "
                 + "- Minimum Grade C(GP 2.0) in any 1 subject \n "
@@ -1393,7 +1455,6 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 + "- Minimum Grade of Maqbul in any 1 subject \n "
                 + "- Credit in Mathematics");
 
-        // Diploma in Information Technology
         disRequirements.add("SPM / O-Level \n - Minimum 3 credits in any subjects including Mathematics");
         disRequirements.add("STPM / A-Level \n "
                 + "- Minimum Grade C(GP 2.0) in any 1 subject \n "
@@ -1435,6 +1496,11 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
                 + "  - Minimum Grade C(GP 2.0) in any 1 subject \n "
                 + "- STAM \n "
                 + "  - Minimum Grade of Maqbul in any 1 subject");
+
+        dcaRequirements.add("SPM / O-Level \n "
+                + "- Minimum 3 credits in any subjects");
+        dcaRequirements.add("UEC \n "
+                + "- Minimum Grade B in any 3 subjects");
 
         // Degree requirements description
         bbaRequirements.add("STPM \n "
@@ -1774,6 +1840,14 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         {
             notEligibleProgrammesList.add("Diploma in Environmental Technology");
         }
+        if(DCA.isJoinProgramme())
+        {
+            eligibleProgrammesList.add("Diploma in Culinary Arts");
+        }
+        else
+        {
+            notEligibleProgrammesList.add("Diploma in Culinary Arts");
+        }
     }
 
     private void addDegreeJoinProgramme()
@@ -1970,5 +2044,155 @@ public class ResultsOfFiltering extends AppCompatActivity implements AdapterView
         {
             notEligibleProgrammesList.add("Bachelor of Environmental Technology (Hons)");
         }
+    }
+
+    private void setSchorlarshipEligibility(String selectedProgrammeFromList)
+    {
+        int schorlarshipCount = 0;
+        boolean gotSchorlarship = true;
+
+        // SPM / O-Level Foundation to Diploma
+        if(Objects.equals(qualificationLevel, "SPM"))
+        {
+            for(int i = 0; i < gradesIntegerArray.length; i++)
+            {
+                if(gradesIntegerArray[i] <= 2)
+                {
+                    schorlarshipCount++;
+                }
+            }
+
+            if(schorlarshipCount >= 6)
+            {
+                if(selectedProgrammeFromList.contains("Foundation"))
+                {
+                    schorlarshipEligibility.setText("You are eligible for 100% schorlarship of "+selectedProgrammeFromList);
+                }
+                else if(selectedProgrammeFromList.contains("Diploma"))
+                {
+                    schorlarshipEligibility.setText("You are eligible for 50% schorlarship of "+selectedProgrammeFromList);
+                }
+            }
+            else if(schorlarshipCount >= 3)
+            {
+                if(selectedProgrammeFromList.contains("Foundation"))
+                {
+                    schorlarshipEligibility.setText("You are eligible for 50% schorlarship of "+selectedProgrammeFromList);
+                }
+                else if(selectedProgrammeFromList.contains("Diploma"))
+                {
+                    schorlarshipEligibility.setText("You are eligible for 25% schorlarship of "+selectedProgrammeFromList);
+                }
+            }
+            else
+            {
+                schorlarshipEligibility.setText("Sorry. You are not eligible for schorlarship");
+                gotSchorlarship = false;
+            }
+        }
+        else if(Objects.equals(qualificationLevel, "O-Level"))
+        {
+            for(int i = 0; i < gradesIntegerArray.length; i++)
+            {
+                if(gradesIntegerArray[i] == 1)
+                {
+                    schorlarshipCount++;
+                }
+            }
+
+            if(schorlarshipCount >= 3)
+            {
+                if(selectedProgrammeFromList.contains("Foundation"))
+                {
+                    schorlarshipEligibility.setText("You are eligible for 50% schorlarship of "+selectedProgrammeFromList);
+                }
+                else if(selectedProgrammeFromList.contains("Diploma"))
+                {
+                    schorlarshipEligibility.setText("You are eligible for 25% schorlarship of "+selectedProgrammeFromList);
+                }
+            }
+            else if(schorlarshipCount >= 6)
+            {
+                if(selectedProgrammeFromList.contains("Foundation"))
+                {
+                    schorlarshipEligibility.setText("You are eligible for 100% schorlarship of "+selectedProgrammeFromList);
+                }
+                else if(selectedProgrammeFromList.contains("Diploma"))
+                {
+                    schorlarshipEligibility.setText("You are eligible for 50% schorlarship of "+selectedProgrammeFromList);
+                }
+            }
+            else
+            {
+                schorlarshipEligibility.setText("Sorry. You are not eligible for schorlarship");
+                gotSchorlarship = false;
+            }
+        }
+        else if(Objects.equals(qualificationLevel, "STPM")) // For STPM / A-level for Degree Programme
+        {
+            for(int i = 0; i < gradesIntegerArray.length; i++)
+            {
+                if(gradesIntegerArray[i] <= 4)
+                {
+                    schorlarshipCount++;
+                }
+            }
+
+            if(schorlarshipCount >= 3)
+            {
+                schorlarshipEligibility.setText("You are eligible for schorlarship of "+selectedProgrammeFromList);
+            }
+            else
+            {
+                schorlarshipEligibility.setText("Sorry. You are not eligible for schorlarship");
+                gotSchorlarship = false;
+            }
+        }
+        else if(Objects.equals(qualificationLevel, "A-Level"))
+        {
+            for(int i = 0; i < gradesIntegerArray.length; i++)
+            {
+                if(gradesIntegerArray[i] <= 3)
+                {
+                    schorlarshipCount++;
+                }
+            }
+
+            if(schorlarshipCount >= 3)
+            {
+                schorlarshipEligibility.setText("You are eligible for schorlarship of "+selectedProgrammeFromList);
+            }
+            else
+            {
+                schorlarshipEligibility.setText("Sorry. You are not eligible for schorlarship");
+                gotSchorlarship = false;
+            }
+        }
+        else if(Objects.equals(qualificationLevel, "UEC"))
+        {
+            for(int i = 0; i < gradesIntegerArray.length; i++)
+            {
+                if(gradesIntegerArray[i] <= 6)
+                {
+                    schorlarshipCount++;
+                }
+            }
+
+            if(schorlarshipCount >= 5)
+            {
+                schorlarshipEligibility.setText("You are eligible for schorlarship of "+selectedProgrammeFromList);
+            }
+            else
+            {
+                schorlarshipEligibility.setText("Sorry. You are not eligible for schorlarship");
+                gotSchorlarship = false;
+            }
+        }
+
+        if(gotSchorlarship)
+        {
+            schorlarshipEligibility.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+        }
+        schorlarshipEligibility.setVisibility(View.VISIBLE);
     }
 }

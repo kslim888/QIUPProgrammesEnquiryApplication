@@ -410,6 +410,7 @@ public class BioTech
                     bioTechRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBioTech().getUEC().getAmountOfSubjectRequired());
                 }
             }
+            break;
             case "STPM":
             {
                 bioTechRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBioTech().getSTPM().getAmountOfCreditRequired());

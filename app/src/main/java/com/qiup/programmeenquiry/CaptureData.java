@@ -229,27 +229,27 @@ public class CaptureData extends AppCompatActivity
         if(!isOnline())
         {
             Toast.makeText(getApplicationContext(), "Unable to submit. No Internet connection", Toast.LENGTH_LONG).show();
-            return;
+          //  return;
         }
         validateName();
         if (!getValid())
-            return;
+        //    return;
 
         validateIC();
         if (!getValid())
-            return;
+        //    return;
 
         validateContactNumber();
         if (!getValid())
-            return;
+          //  return;
 
         validateEmail() ;
         if (!getValid())
-            return;
+       //     return;
 
-        validateSchoolName();
-        if (!getValid())
-            return;
+       validateSchoolName();
+      // if (!getValid())
+       //     return;
 
         Bundle bundle = new Bundle();
 
@@ -260,11 +260,11 @@ public class CaptureData extends AppCompatActivity
         String contactNumber = editContactNumber.getText().toString();
         if(contactNumber.contains("-"))
         {
-            contactNumber =  contactNumber.replace('-', ' ');
+       //     contactNumber =  contactNumber.replace('-', ' ');
         }
         else
         {
-            contactNumber = contactNumber.substring(0, 3) + " " +  contactNumber.substring(3, contactNumber.length());
+       //     contactNumber = contactNumber.substring(0, 3) + " " +  contactNumber.substring(3, contactNumber.length());
         }
         String emailInput = editEmail.getText().toString(); // Email
         String remarkInput = editRemark.getText().toString(); // Remark

@@ -39,6 +39,9 @@ public class AllProgramme {
 	@SerializedName("DME")
 	private DME dme;
 
+	@SerializedName("DCA")
+	private DCA dca;
+
 	// Degree
 	@SerializedName("BHT")
 	private BHT bht;
@@ -146,6 +149,8 @@ public class AllProgramme {
 	public DIS getDis() {
 		return dis;
 	}
+
+	public DCA getDca() { return dca; }
 
 	// Degree
 	public BHT getBht() { return bht; }

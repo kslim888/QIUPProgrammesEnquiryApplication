@@ -39,6 +39,7 @@ import com.qiup.entryrules.BioTech;
 import com.qiup.entryrules.CorporateComm;
 import com.qiup.entryrules.DAC;
 import com.qiup.entryrules.DBM;
+import com.qiup.entryrules.DCA;
 import com.qiup.entryrules.DCE;
 import com.qiup.entryrules.DET;
 import com.qiup.entryrules.DHM;
@@ -704,6 +705,26 @@ public class InterestProgramme extends AppCompatActivity {
                             }
                         }
                     }
+                    break;
+                    case "Diploma in Culinary Arts":
+                    {
+                        if(DCA.isJoinProgramme()) {
+                            if(i == 0) {
+                                eligibleProgramme.append("Diploma in Culinary Arts");
+                            }
+                            else {
+                                eligibleProgramme.append(", Diploma in Culinary Arts");
+                            }
+                        }
+                        else {
+                            if(i == 0) {
+                                notEligibleProgramme.append("Diploma in Culinary Arts");
+                            }
+                            else {
+                                notEligibleProgramme.append(", Diploma in Culinary Arts");
+                            }
+                        }
+                    }
 
                     //Degree
                     case "Bachelor of Business Administration (Hons)":
@@ -1149,7 +1170,7 @@ public class InterestProgramme extends AppCompatActivity {
                 notEligibleProgramme.toString(),
                 extras.getString("REMARK")
         );
-        postToSpreadsheet.enqueue(new EmptyCallback<Void>());
+       // postToSpreadsheet.enqueue(new EmptyCallback<Void>());
 
         Intent resultsOfFiltering = new Intent(InterestProgramme.this, ResultsOfFiltering.class);
         resultsOfFiltering.putExtras(extras);
@@ -1168,7 +1189,7 @@ public class InterestProgramme extends AppCompatActivity {
         // Create and define rules
         Rules rules = new Rules(new FIA(), new FIB(), new FIS(),
                 new DBM(), new DHM(), new DCE(), new DAC(),
-                new DIT(), new DIS(), new DME(), new DET(),
+                new DIT(), new DIS(), new DME(), new DET(), new DCA(),
                 new BBA(), new BAC(), new BFI(), new BCS(), new BIT(),
                 new BIS(), new BHT(), new BCE(), new BSNE(),
                 new MassCommAdvertising(), new MassCommJournalism(), new CorporateComm(), new TESL(),

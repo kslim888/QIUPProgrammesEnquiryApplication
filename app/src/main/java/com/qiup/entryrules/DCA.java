@@ -14,12 +14,12 @@ import org.jeasy.rules.annotation.Rule;
 import java.util.Arrays;
 import java.util.Objects;
 
-@Rule(name = "BAC", description = "Entry rule to join Bachelor of Accountancy")
-public class BAC
+@Rule(name = "DCA", description = "Entry rule to join Diploma in Culinary Arts")
+public class DCA 
 {
-    private static RuleAttribute bacRuleAttribute;
+    private static RuleAttribute dcaRuleAttribute;
 
-    public BAC() { bacRuleAttribute = new RuleAttribute(); }
+    public DCA() { dcaRuleAttribute = new RuleAttribute(); }
 
     @Condition
     public boolean allowToJoin(@Fact("Qualification Level") String qualificationLevel
@@ -31,40 +31,40 @@ public class BAC
         setJSONAttribute(qualificationLevel, supportiveQualificationLevel); // First set json attribute to the rule
 
         // Check got required subject or not.
-        if (bacRuleAttribute.isGotRequiredSubject())
+        if (dcaRuleAttribute.isGotRequiredSubject())
         {
             // If got, check whether the subject's grade is smaller or equal to the required subject's grade
-            for (int i = 0; i < bacRuleAttribute.getSubjectRequired().size(); i++)
+            for (int i = 0; i < dcaRuleAttribute.getSubjectRequired().size(); i++)
             {
                 for (int j = 0; j < studentSubjects.length; j++)
                 {
-                    if (Objects.equals(studentSubjects[j], bacRuleAttribute.getSubjectRequired().get(i)))
+                    if (Objects.equals(studentSubjects[j], dcaRuleAttribute.getSubjectRequired().get(i)))
                     {
-                        if (studentGrades[j] <= bacRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                        if (studentGrades[j] <= dcaRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
                         {
-                            bacRuleAttribute.incrementCountCorrectSubjectRequired();
+                            dcaRuleAttribute.incrementCountCorrectSubjectRequired();
                         }
                     }
-                    if (Objects.equals("Mathematics", bacRuleAttribute.getSubjectRequired().get(i)))
+                    if (Objects.equals("Mathematics", dcaRuleAttribute.getSubjectRequired().get(i)))
                     {
                         if(Arrays.asList(studentSubjects).contains("Additional Mathematics"))
                         {
                             for(int k = 0; k < studentSubjects.length; k++)
                             {
-                                if(studentGrades[k] <= bacRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                                if(studentGrades[k] <= dcaRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
                                 {
-                                    bacRuleAttribute.incrementCountCorrectSubjectRequired();
+                                    dcaRuleAttribute.incrementCountCorrectSubjectRequired();
                                 }
                             }
                         }
                     }
-                    if (Objects.equals("Science / Technical / Vocational", bacRuleAttribute.getSubjectRequired().get(i)))
+                    if (Objects.equals("Science / Technical / Vocational", dcaRuleAttribute.getSubjectRequired().get(i)))
                     {
-                        if (Arrays.asList(bacRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[j]))
+                        if (Arrays.asList(dcaRuleAttribute.getScienceTechnicalVocationalSubjectArrays()).contains(studentSubjects[j]))
                         {
-                            if (studentGrades[j] <= bacRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
+                            if (studentGrades[j] <= dcaRuleAttribute.getMinimumSubjectRequiredGrade().get(i))
                             {
-                                bacRuleAttribute.incrementCountCorrectSubjectRequired();
+                                dcaRuleAttribute.incrementCountCorrectSubjectRequired();
                             }
                         }
                     }
@@ -73,50 +73,50 @@ public class BAC
         }
 
         // Check need supportive qualification or not
-        if(bacRuleAttribute.isNeedSupportiveQualification())
+        if(dcaRuleAttribute.isNeedSupportiveQualification())
         {
             // If need, check whether the supportive subject's grade is smaller or equal to the required supportive subject's grade
-            for (int j = 0; j < bacRuleAttribute.getSupportiveSubjectRequired().size(); j++)
+            for (int j = 0; j < dcaRuleAttribute.getSupportiveSubjectRequired().size(); j++)
             {
-                switch(bacRuleAttribute.getSupportiveSubjectRequired().get(j))
+                switch(dcaRuleAttribute.getSupportiveSubjectRequired().get(j))
                 {
                     case "Bahasa Malaysia":
                     {
-                        if (supportiveGrades[0] <= bacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        if (supportiveGrades[0] <= dcaRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                         }
                     }
                     break;
                     case "English":
                     {
-                        if (supportiveGrades[1] <= bacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        if (supportiveGrades[1] <= dcaRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                         }
                     }
                     break;
                     case "Mathematics":
                     {
-                        if (supportiveGrades[2] <= bacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        if (supportiveGrades[2] <= dcaRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                         }
                     }
                     break;
                     case "Additional Mathematics":
                     {
-                        if (supportiveGrades[3] <= bacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        if (supportiveGrades[3] <= dcaRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                         }
                     }
                     break;
                     case "Science / Technical / Vocational":
                     {
-                        if (supportiveGrades[4] <= bacRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
+                        if (supportiveGrades[4] <= dcaRuleAttribute.getSupportiveIntegerGradeRequired().get(j))
                         {
-                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                         }
                     }
                     break;
@@ -125,15 +125,15 @@ public class BAC
         }
 
         // If can see higher qualification to waive subject or not
-        if(bacRuleAttribute.isExempted())
+        if(dcaRuleAttribute.isExempted())
         {
-            for(int i = 0; i < bacRuleAttribute.getSupportiveSubjectRequired().size(); i++)
+            for(int i = 0; i < dcaRuleAttribute.getSupportiveSubjectRequired().size(); i++)
             {
-                switch(bacRuleAttribute.getSupportiveSubjectRequired().get(i))
+                switch(dcaRuleAttribute.getSupportiveSubjectRequired().get(i))
                 {
                     case "English":
                     {
-                        if(Objects.equals(bacRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        if(Objects.equals(dcaRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
                         {
                             if(Objects.equals(qualificationLevel, "STPM"))
                             {
@@ -143,7 +143,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 10) // stpm pass grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -156,7 +156,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 6) // a-level pass grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -172,7 +172,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 7) // stpm credit grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -185,7 +185,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 4) // a-level credit grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -195,7 +195,7 @@ public class BAC
                     break;
                     case "Mathematics":
                     {
-                        if(Objects.equals(bacRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        if(Objects.equals(dcaRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
                         {
                             if(Objects.equals(qualificationLevel, "STPM"))
                             {
@@ -205,7 +205,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 10) // stpm pass grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -218,7 +218,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 6) // a-level pass grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -234,7 +234,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 7) // stpm credit grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -247,7 +247,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 4) // a-level credit grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -257,7 +257,7 @@ public class BAC
                     break;
                     case "Additional Mathematics":
                     {
-                        if(Objects.equals(bacRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
+                        if(Objects.equals(dcaRuleAttribute.getSupportiveGradeRequired().get(i), "Pass"))
                         {
                             if(Objects.equals(qualificationLevel, "STPM"))
                             {
@@ -267,7 +267,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 10) // stpm pass grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -280,7 +280,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 6) // a-level pass grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -296,7 +296,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 7) // stpm credit grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -309,7 +309,7 @@ public class BAC
                                     {
                                         if(studentGrades[j] <= 4) // a-level credit grade
                                         {
-                                            bacRuleAttribute.incrementCountSupportiveSubjectRequired();
+                                            dcaRuleAttribute.incrementCountSupportiveSubjectRequired();
                                         }
                                     }
                                 }
@@ -324,24 +324,24 @@ public class BAC
         // For every grade, check whether the grade is smaller or equal to minimum credit grade
         // Smaller the number the better the grade
         for (int i = 0; i < studentGrades.length; i++) {
-            if (studentGrades[i] <= bacRuleAttribute.getMinimumCreditGrade())
-                bacRuleAttribute.incrementCountCredit();
+            if (studentGrades[i] <= dcaRuleAttribute.getMinimumCreditGrade())
+                dcaRuleAttribute.incrementCountCredit();
         }
 
         // Checking Requirements see whether can return true or not
-        if (bacRuleAttribute.isGotRequiredSubject())
+        if (dcaRuleAttribute.isGotRequiredSubject())
         {
             // Check subject required is fulfill or not
-            if(bacRuleAttribute.getCountCorrectSubjectRequired() >= bacRuleAttribute.getAmountOfSubjectRequired())
+            if(dcaRuleAttribute.getCountCorrectSubjectRequired() >= dcaRuleAttribute.getAmountOfSubjectRequired())
             {
                 // Check need supportive qualification or not
-                if(bacRuleAttribute.isNeedSupportiveQualification())
+                if(dcaRuleAttribute.isNeedSupportiveQualification())
                 {
                     // If need, check whether it fulfill the supportive grade or not
-                    if(bacRuleAttribute.getCountSupportiveSubjectRequired() >= bacRuleAttribute.getAmountOfSupportiveSubjectRequired())
+                    if(dcaRuleAttribute.getCountSupportiveSubjectRequired() >= dcaRuleAttribute.getAmountOfSupportiveSubjectRequired())
                     {
                         // Check enough amount of credit or not
-                        if(bacRuleAttribute.getCountCredit() >= bacRuleAttribute.getAmountOfCreditRequired())
+                        if(dcaRuleAttribute.getCountCredit() >= dcaRuleAttribute.getAmountOfCreditRequired())
                         {
                             return true; // return true as requirements is satisfied
                         }
@@ -350,7 +350,7 @@ public class BAC
                 else
                 {
                     // Check enough amount of credit or not
-                    if(bacRuleAttribute.getCountCredit() >= bacRuleAttribute.getAmountOfCreditRequired())
+                    if(dcaRuleAttribute.getCountCredit() >= dcaRuleAttribute.getAmountOfCreditRequired())
                     {
                         return true; // return true as requirements is satisfied
                     }
@@ -360,13 +360,13 @@ public class BAC
         else // No subject required
         {
             // Check need supportive qualification or not
-            if(bacRuleAttribute.isNeedSupportiveQualification())
+            if(dcaRuleAttribute.isNeedSupportiveQualification())
             {
                 // If need, check whether it fulfill the supportive grade or not
-                if(bacRuleAttribute.getCountSupportiveSubjectRequired() >= bacRuleAttribute.getAmountOfSupportiveSubjectRequired())
+                if(dcaRuleAttribute.getCountSupportiveSubjectRequired() >= dcaRuleAttribute.getAmountOfSupportiveSubjectRequired())
                 {
                     // Check enough amount of credit or not
-                    if(bacRuleAttribute.getCountCredit() >= bacRuleAttribute.getAmountOfCreditRequired())
+                    if(dcaRuleAttribute.getCountCredit() >= dcaRuleAttribute.getAmountOfCreditRequired())
                     {
                         return true; // return true as requirements is satisfied
                     }
@@ -375,7 +375,7 @@ public class BAC
             else
             {
                 // Check enough amount of credit or not
-                if(bacRuleAttribute.getCountCredit() >= bacRuleAttribute.getAmountOfCreditRequired())
+                if(dcaRuleAttribute.getCountCredit() >= dcaRuleAttribute.getAmountOfCreditRequired())
                 {
                     return true; // return true as requirements is satisfied
                 }
@@ -385,110 +385,60 @@ public class BAC
         // Return false as requirements not satisfied
         return false;
     }
-    
+
     @Action
     public void joinProgramme() throws Exception {
         // if rule is satisfied (return true), this action will be executed
-        bacRuleAttribute.setJoinProgrammeTrue();
-        Log.d("BACjoinProgramme", "Joined");
+        dcaRuleAttribute.setJoinProgrammeTrue();
+        Log.d("DCAjoinProgramme", "Joined");
     }
 
     public static boolean isJoinProgramme() {
-        return bacRuleAttribute.isJoinProgramme();
+        return dcaRuleAttribute.isJoinProgramme();
     }
 
     private void setJSONAttribute(String mainQualificationLevel, String supportiveQualificationLevel) {
         switch(mainQualificationLevel)
         {
+            case "SPM":
+            {
+                dcaRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDca().getSPM().getAmountOfCreditRequired());
+                dcaRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDca().getSPM().getMinimumCreditGrade());
+                dcaRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDca().getSPM().isGotRequiredSubject());
+
+                if(dcaRuleAttribute.isGotRequiredSubject()) {
+                    dcaRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDca().getSPM().getWhatSubjectRequired().getSubject());
+                    dcaRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDca().getSPM().getMinimumSubjectRequiredGrade().getGrade());
+                    dcaRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.spm_science_technical_vocational_subject));
+                    dcaRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDca().getSPM().getAmountOfSubjectRequired());
+                }
+            }
+            break;
+            case "O-Level":
+            {
+                dcaRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDca().getOLevel().getAmountOfCreditRequired());
+                dcaRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDca().getOLevel().getMinimumCreditGrade());
+                dcaRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDca().getOLevel().isGotRequiredSubject());
+
+                if(dcaRuleAttribute.isGotRequiredSubject()) {
+                    dcaRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDca().getOLevel().getWhatSubjectRequired().getSubject());
+                    dcaRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDca().getOLevel().getMinimumSubjectRequiredGrade().getGrade());
+                    dcaRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.oLevel_science_technical_vocational_subject));
+                    dcaRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDca().getOLevel().getAmountOfSubjectRequired());
+                }
+            }
+            break;            
             case "UEC":
             {
-                bacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().getAmountOfCreditRequired());
-                bacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().getMinimumCreditGrade());
-                bacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().isGotRequiredSubject());
+                dcaRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getDca().getUEC().getAmountOfCreditRequired());
+                dcaRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getDca().getUEC().getMinimumCreditGrade());
+                dcaRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getDca().getUEC().isGotRequiredSubject());
 
-                if(bacRuleAttribute.isGotRequiredSubject()) {
-                    bacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().getWhatSubjectRequired().getSubject());
-                    bacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().getMinimumSubjectRequiredGrade().getGrade());
-                    bacRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
-                    bacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getUEC().getAmountOfSubjectRequired());
-                }
-            }
-            break;
-            case "STPM":
-            {
-                bacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getAmountOfCreditRequired());
-                bacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getMinimumCreditGrade());
-                bacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().isGotRequiredSubject());
-                bacRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().isExempted());
-
-                if(bacRuleAttribute.isGotRequiredSubject()) {
-                    bacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getWhatSubjectRequired().getSubject());
-                    bacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getMinimumSubjectRequiredGrade().getGrade());
-                    bacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getAmountOfSubjectRequired());
-                }
-
-                // Get supportive things
-                bacRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().isNeedSupportiveQualification());
-                if(bacRuleAttribute.isNeedSupportiveQualification()) {
-                    bacRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getWhatSupportiveSubject().getSubject());
-                    bacRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getWhatSupportiveGrade().getGrade());
-                    bacRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTPM().getAmountOfSupportiveSubjectRequired());
-
-                    // Convert supportive grade to Integer
-                    bacRuleAttribute.initializeIntegerSupportiveGrade();
-                    bacRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bacRuleAttribute.getSupportiveGradeRequired());
-                }
-            }
-            break;
-            case "A-Level":
-            {
-                bacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getAmountOfCreditRequired());
-                bacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getMinimumCreditGrade());
-                bacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().isGotRequiredSubject());
-                bacRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().isExempted());
-
-                if(bacRuleAttribute.isGotRequiredSubject()) {
-                    bacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getWhatSubjectRequired().getSubject());
-                    bacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getMinimumSubjectRequiredGrade().getGrade());
-                    bacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getAmountOfSubjectRequired());
-                }
-
-                // Get supportive things
-                bacRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().isNeedSupportiveQualification());
-                if(bacRuleAttribute.isNeedSupportiveQualification()) {
-                    bacRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getWhatSupportiveSubject().getSubject());
-                    bacRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getWhatSupportiveGrade().getGrade());
-
-                    // Convert supportive grade to Integer
-                    bacRuleAttribute.initializeIntegerSupportiveGrade();
-                    bacRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bacRuleAttribute.getSupportiveGradeRequired());
-                    bacRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getALevel().getAmountOfSupportiveSubjectRequired());
-                }
-            }
-            break;
-            case "STAM":
-            {
-                bacRuleAttribute.setAmountOfCreditRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getAmountOfCreditRequired());
-                bacRuleAttribute.setMinimumCreditGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getMinimumCreditGrade());
-                bacRuleAttribute.setGotRequiredSubject(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().isGotRequiredSubject());
-                bacRuleAttribute.setExempted(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().isExempted());
-
-                if(bacRuleAttribute.isGotRequiredSubject()) {
-                    bacRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getWhatSubjectRequired().getSubject());
-                    bacRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getMinimumSubjectRequiredGrade().getGrade());
-                    bacRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getAmountOfSubjectRequired());
-                }
-
-                // Get supportive things
-                bacRuleAttribute.setNeedSupportiveQualification(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().isNeedSupportiveQualification());
-                if(bacRuleAttribute.isNeedSupportiveQualification()) {
-                    bacRuleAttribute.setSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getWhatSupportiveSubject().getSubject());
-                    bacRuleAttribute.setSupportiveGradeRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getWhatSupportiveGrade().getGrade());
-
-                    // Convert supportive grade to Integer
-                    bacRuleAttribute.initializeIntegerSupportiveGrade();
-                    bacRuleAttribute.convertSupportiveGradeToInteger(supportiveQualificationLevel, bacRuleAttribute.getSupportiveGradeRequired());
-                    bacRuleAttribute.setAmountOfSupportiveSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getBac().getSTAM().getAmountOfSupportiveSubjectRequired());
+                if(dcaRuleAttribute.isGotRequiredSubject()) {
+                    dcaRuleAttribute.setSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDca().getUEC().getWhatSubjectRequired().getSubject());
+                    dcaRuleAttribute.setMinimumSubjectRequiredGrade(RulePojo.getRulePojo().getAllProgramme().getDca().getUEC().getMinimumSubjectRequiredGrade().getGrade());
+                    dcaRuleAttribute.setScienceTechnicalVocationalSubjectArrays(MyContext.getContext().getResources().getStringArray(R.array.uecLevel_science_technical_vocational_subject));
+                    dcaRuleAttribute.setAmountOfSubjectRequired(RulePojo.getRulePojo().getAllProgramme().getDca().getUEC().getAmountOfSubjectRequired());
                 }
             }
             break;
