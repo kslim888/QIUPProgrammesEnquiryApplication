@@ -23,6 +23,10 @@ Latest targeting Android version 8.0 (Oreo)
 ## Scope
 Aims to create an integrating service for the Student Recruitment Division, to support their role and having an efficient way on filtering programmes’ requirement based on potential new students’ academic result
 
+## Screenshots
+![Select Current Qualification level](https://lh3.googleusercontent.com/ypZIB4jrI6gHxdgpdJdMBqNe-A9FzljBleCvIokb_frtb0GcoYhBd0dDW_E7CMSAQkOd=w720-h310-rw)
+![Details](https://lh3.googleusercontent.com/_gfZneZQn2IIF0h-qBYXLD5cPQ0-tspynkxG6Q8Q59koyhZDqa91C4Lakd8BDjtZ4A=w720-h310-rw)
+
 ## Authors
 * **Lim Kha Shing** - [kslim888](https://github.com/kslim888)
 
