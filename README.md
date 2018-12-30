@@ -17,7 +17,8 @@ Latest targeting Android version 8.0 (Oreo)
 ## Built With
 * [Android Studio](https://developer.android.com/studio/index.html) - The IDE used
 * Java programming language and XML 
-* [Maven](https://maven.apache.org/)  - Dependency Management
+* [Retrofit](https://square.github.io/retrofit/) - For helping in web services coding
+* [Maven](https://maven.apache.org/) - Dependency Management
 * [Gradle](https://gradle.org/) - Dependency Management
 
 ## Scope
