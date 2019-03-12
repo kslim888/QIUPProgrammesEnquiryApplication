@@ -29,7 +29,7 @@ Aims to create an integrating service for the Student Recruitment Division, to s
 ![Details](https://lh3.googleusercontent.com/_gfZneZQn2IIF0h-qBYXLD5cPQ0-tspynkxG6Q8Q59koyhZDqa91C4Lakd8BDjtZ4A=w720-h310-rw)
 
 ## Authors
-* **Lim Kha Shing** - [kslim888](https://github.com/kslim888)
+* **Lim Kha Shing** - [kslim888](https://www.linkedin.com/in/lim-kha-shing-836a24120/)
 
 ### Contributors who participated in this project
 * [Chooi Yi Ying](https://www.facebook.com/Yying.1008)
