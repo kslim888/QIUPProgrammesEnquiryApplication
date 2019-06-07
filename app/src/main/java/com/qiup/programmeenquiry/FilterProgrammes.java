@@ -590,7 +590,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 extras.putString("STUDENT_STV_GRADE", supportiveStringGrade[4]);
 
                 // Upon submit, reset back to default
-                /*qualificationSpinner.setSelection(0);
+                qualificationSpinner.setSelection(0);
                 while ( parentLinearLayout.getChildCount() != 12) {
                     parentLinearLayout.removeViewAt(parentLinearLayout.getChildCount() - 10);
                 }
@@ -629,7 +629,7 @@ public class FilterProgrammes extends AppCompatActivity implements AdapterView.O
                 addMathSpinner.setEnabled(false);
                 scienceTechnicalVocationalAutoCompleteTextView.setEnabled(false);
                 scienceTechnicalVocationalGradeSpinner.setEnabled(false);
-                filterButton.setEnabled(false); */
+                filterButton.setEnabled(false);
 
                 Intent nextActivity = new Intent(FilterProgrammes.this, InterestProgramme.class);
                 nextActivity.putExtras(extras);

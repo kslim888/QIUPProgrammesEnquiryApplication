@@ -413,6 +413,7 @@ public class InterestProgramme extends AppCompatActivity {
                     extras.putBoolean("STUDENT_IS_GOT_INTERESTED_PROGRAMME", false);
                 }
 
+                // TODO change this url for allprograme.json
                 final String baseURL = "https://kslim5703.000webhostapp.com";
                 Retrofit ruleRetrofit = new Retrofit.Builder()
                         .baseUrl(baseURL)
@@ -451,16 +452,6 @@ public class InterestProgramme extends AppCompatActivity {
                                 .show();
                     }
                 });
-
-                // Reset back to default upon click the button
-                editOtherProgramme.setText("");
-                editOtherProgramme.clearFocus();
-                while(interestProgrammeParentLayout.getChildCount() != 6) {
-                    interestProgrammeParentLayout.removeViewAt(interestProgrammeParentLayout.getChildCount() - 4);
-                }
-                interestCheckBox.setChecked(true);
-                interestedProgrammeAutoComplete.setText("");
-
             }
         });
 
@@ -1170,11 +1161,20 @@ public class InterestProgramme extends AppCompatActivity {
                 notEligibleProgramme.toString(),
                 extras.getString("REMARK")
         );
-       // postToSpreadsheet.enqueue(new EmptyCallback<Void>());
+        postToSpreadsheet.enqueue(new EmptyCallback<Void>());
 
         Intent resultsOfFiltering = new Intent(InterestProgramme.this, ResultsOfFiltering.class);
         resultsOfFiltering.putExtras(extras);
         startActivity(resultsOfFiltering);
+
+        // Reset back to default upon click the button
+        editOtherProgramme.setText("");
+        editOtherProgramme.clearFocus();
+        while(interestProgrammeParentLayout.getChildCount() != 6) {
+            interestProgrammeParentLayout.removeViewAt(interestProgrammeParentLayout.getChildCount() - 4);
+        }
+        interestCheckBox.setChecked(true);
+        interestedProgrammeAutoComplete.setText("");
     }
 
     private void fireRule() {
