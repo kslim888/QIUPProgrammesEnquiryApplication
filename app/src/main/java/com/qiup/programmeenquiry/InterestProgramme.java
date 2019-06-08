@@ -413,8 +413,8 @@ public class InterestProgramme extends AppCompatActivity {
                     extras.putBoolean("STUDENT_IS_GOT_INTERESTED_PROGRAMME", false);
                 }
 
-                // TODO change this url for allprograme.json
-                final String baseURL = "https://kslim5703.000webhostapp.com";
+                //final String baseURL = "https://kslim5703.000webhostapp.com";
+                final String baseURL = "https://firebasestorage.googleapis.com/";
                 Retrofit ruleRetrofit = new Retrofit.Builder()
                         .baseUrl(baseURL)
                         .addConverterFactory(GsonConverterFactory.create())

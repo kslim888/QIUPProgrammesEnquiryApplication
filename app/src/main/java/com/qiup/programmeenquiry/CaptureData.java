@@ -18,6 +18,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 public class CaptureData extends AppCompatActivity
 {
     private EditText editName,editIC,editContactNumber,editEmail,editRemark, editSchool;
