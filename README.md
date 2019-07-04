@@ -1,11 +1,7 @@
 # QIUP Programmes Enquiry Application
 
-This project aims to implement a digital system to record potential new student’s information during Education Fair.
-It comes with Mobile Application, which helps them to identify which course can or cannot join.
-
-The Mobile Application: QIUP Programme Enquiry involves Student Recruitment Division from Quest International University Perak on record and retrieve the potential new student’s information. 
-
-It also helps those potential new student who want to join Quest International University Perak can know which programme they can and cannot join beforehand.
+> This project aims to implement a digital system to record potential new student’s information during Education Fair.
+It comes with Mobile Application, which helps them to identify which course can or cannot join. The Mobile Application: QIUP Programme Enquiry involves Student Recruitment Division from Quest International University Perak on record and retrieve the potential new student’s information. 
 
 ## Getting Started
 Go to https://play.google.com/store/apps/details?id=com.qiup.programmeenquiry to install the app
