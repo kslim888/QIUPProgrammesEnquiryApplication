@@ -1,6 +1,5 @@
 # QIUP Programmes Enquiry Application
 ![java-standard-style](https://img.shields.io/appveyor/ci/gruntjs/grunt.svg)
-![Code coverage](https://img.shields.io/codecov/c/github/codecov/example-python/master.svg)
 ![Mini Project](https://img.shields.io/badge/Mini-Project-green.svg)
 
 > This project aims to implement a digital system to record potential new student’s information during Education Fair.
