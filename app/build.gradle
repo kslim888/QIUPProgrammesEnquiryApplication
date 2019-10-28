@@ -7,8 +7,8 @@ android {
         applicationId "com.qiup.programmeenquiry"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 7
-        versionName "2"
+        versionCode 7   QQQQQQQQQQQQQQQQQQQQQQ
+        versionName "2"+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
